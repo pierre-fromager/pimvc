@@ -186,6 +186,7 @@ class controller {
                 $this->result->dispatch();
                 break;
             default:
+                var_dump($this->result);
                 echo '<pre>' . print_r($this->result, true) . '</pre>';
                 break;
         }

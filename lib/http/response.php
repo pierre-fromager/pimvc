@@ -17,7 +17,6 @@ class response {
     const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
     const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
 
-
     private $content;
     private $type;
     private $headers;
@@ -26,6 +25,7 @@ class response {
         200 => '200 OK' ,
         404 => '404 Not Found' ,
     ];
+    private $redirectUrl = '';
 
     /**
      * __construct
@@ -109,12 +109,22 @@ class response {
     }
     
     /**
-     * removeHeahers
+     * removeHeaders
      * 
      * @return $this
      */
-    public function removeHeahers() {
+    public function removeHeaders() {
         header_remove();
+        return $this;
+    }
+    
+    /**
+     * redirect
+     * 
+     * @param type $url
+     */
+    public function redirect($url) {
+        $this->redirectUrl = $url;
         return $this;
     }
 
@@ -134,8 +144,13 @@ class response {
      * 
      */
     public function dispatch() {
-        $this->setHeaders()->sendHeaders();
-        echo (string) $this->content;
+        if ($this->redirectUrl) {
+            header('Location: ' . $this->redirectUrl);
+        } else {
+            $this->setHeaders()->sendHeaders();
+            echo (string) $this->content;
+        }
+
     }
 
 }
