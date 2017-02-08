@@ -2,7 +2,7 @@
     <head>
         <title>Error</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <link href="/public/error.css" rel="stylesheet">
+        <link href="/public/css/error.css" rel="stylesheet">
     </head>
     <body>
         <h1 class="textCenter title">Oops!</h1>
