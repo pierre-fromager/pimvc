@@ -1,12 +1,13 @@
 <?php
 
-namespace lib\http;
-
 /**
- * Description of request
+ * Description of lib\http\request
  *
  * @author Pierre Fromager
  */
+
+namespace lib\http;
+
 class request {
 
     const REQUEST_METHOD = 'REQUEST_METHOD';
@@ -20,7 +21,6 @@ class request {
     private $method;
     private $cookie;
     private $server;
-
 
     /**
      * __construct

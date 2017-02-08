@@ -45,7 +45,6 @@ class response {
      * @return $this
      */
     private function setHeaders() {
-        header_remove();
         $this->headers[] = self::HTTP_1 . $this->httpCodes[$this->httpCode];
         $this->headers[] = self::HEADER_CACHE_CONTROL; 
         $this->headers[] = self::HEADER_CACHE_EXPIRE;
@@ -104,7 +103,18 @@ class response {
     public function withCookie($name = '', $value = '', $ttl = 3600, $path = '/', $domain = '', $secure = false, $httponly = true) {
         if ($name) {
             setcookie($name, $value, time() + $ttl, $path, $domain, $secure, $httponly);
+            $_COOKIE[$name] = $value;
         }
+        return $this;
+    }
+    
+    /**
+     * removeHeahers
+     * 
+     * @return $this
+     */
+    public function removeHeahers() {
+        header_remove();
         return $this;
     }
 

@@ -1,21 +1,22 @@
 <?php
 
+/**
+ * Description of basicInterface
+ *
+ * @author Pierre Fromager
+ */
+
 namespace lib\controller\interfaces;
 
 use lib\app;
 
-/**
- * Description of basic
- *
- * @author Pierre Fromager
- */
 interface basicInterface {
 
     /**
      * __construct
      * 
      * @param \lib\app $app
-     * @param type $params
+     * @param array $params
      */
     public function __construct(app $app, $params);
 

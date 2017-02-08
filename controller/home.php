@@ -40,6 +40,7 @@ class home extends basicController{
         $view->setParams($params)->setFilename($filename)->render();
         return $this->getApp()->getResponse()->setContent($view)
             ->setType(\lib\http\response::TYPE_HTML)
-            ->setHttpCode(200);
+            ->setHttpCode(200)
+            ->withCookie('lastVisitView' . md5($filename), time());
     }
 }

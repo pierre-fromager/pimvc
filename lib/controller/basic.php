@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Description of basicController
+ *
+ * @author Pierre Fromager
+ */
 
 namespace lib\controller;
 
@@ -7,11 +12,6 @@ require_once __DIR__ . '/interfaces/basic.php';
 
 use lib\app;
 
-/**
- * Description of basic
- *
- * @author Pierre Fromager
- */
 abstract class basicController implements interfaces\basicInterface{
     
     private $params;
@@ -20,6 +20,7 @@ abstract class basicController implements interfaces\basicInterface{
     /**
      * __construct
      * 
+     * @param app $app
      * @param array $params
      */
     public function __construct(app $app, $params) {
