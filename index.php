@@ -6,11 +6,11 @@ ini_set('log_errors', 1);
 ini_set('date.timezone', 'Europe/Paris');
 ini_set('register_globals', 0);
 
-define('APP_PATH', __DIR__);
 require_once __DIR__ . '/lib/app.php';
 
 $routes = [
     '/^(home)$/',
+    '/^(home)\/(.*)\/(.*)$/',
     '/^(home)\/(.*)$/',
     '/^(stat)$/',
     '/^(stat)\/([a-zA-Z0-9_]{1,10})/',
