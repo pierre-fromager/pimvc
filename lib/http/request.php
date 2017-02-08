@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace lib\http;
 
 /**
  * Description of request
@@ -44,7 +44,6 @@ class request {
      * 
      */
     private function assignRequest() {
-        //$this->request = $this->get();
         $this->request = $_REQUEST;
         return $this;
     }

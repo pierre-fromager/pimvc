@@ -37,7 +37,7 @@ class error extends basicController{
         $view = $this->getApp()->getView();
         $view->setParams($params)->setFilename($filename)->render();
         return $this->getApp()->getResponse()->setContent($view)
-            ->setType(\lib\response::TYPE_HTML)
+            ->setType(\lib\http\response::TYPE_HTML)
             ->setHttpCode(200);
     }
     

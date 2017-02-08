@@ -4,18 +4,18 @@ namespace lib;
 
 $libPath = __DIR__;
 
-require_once $libPath . '/routes.php';
-require_once $libPath . '/router.php';
-require_once $libPath . '/request.php';
-require_once $libPath . '/response.php';
+require_once $libPath . '/http/routes.php';
+require_once $libPath . '/http/router.php';
+require_once $libPath . '/http/request.php';
+require_once $libPath . '/http/response.php';
 require_once $libPath . '/controller.php';
 require_once $libPath . '/controller/basic.php';
 require_once $libPath . '/view.php';
 
-use lib\routes;
-use lib\router;
-use lib\request;
-use lib\response;
+use lib\http\routes;
+use lib\http\router;
+use lib\http\request;
+use lib\http\response;
 use lib\view;
 use lib\controller;
 

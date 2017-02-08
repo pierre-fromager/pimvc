@@ -182,7 +182,7 @@ class controller {
      */
     public function dispatch() {
         switch (get_class($this->result)) {
-            case 'lib\response':
+            case 'lib\http\response':
                 $this->result->dispatch();
                 break;
             default:
