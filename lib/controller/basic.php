@@ -1,6 +1,9 @@
 <?php
 
+
 namespace lib\controller;
+
+require_once __DIR__ . '/interfaces/basic.php';
 
 use lib\app;
 
@@ -9,7 +12,7 @@ use lib\app;
  *
  * @author Pierre Fromager
  */
-abstract class basicController {
+abstract class basicController implements interfaces\basicInterface{
     
     private $params;
     private $app;
@@ -29,7 +32,7 @@ abstract class basicController {
      * 
      * @return app
      */
-    protected function getApp() {
+    public function getApp() {
         return $this->app;
     }
        
@@ -38,7 +41,7 @@ abstract class basicController {
      * 
      * @return array
      */
-    protected function getParams($key = '') {
+    public function getParams($key = '') {
         return ($key) ? $this->params[$key] : $this->params;
     }
 }
