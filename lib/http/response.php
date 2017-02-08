@@ -8,11 +8,15 @@ namespace lib\http;
  */
 class response {
     
+    const HTML = 'html';
     const TYPE_HTML = 'text/html';
     const TYPE_JSON = 'application/json';
     const TYPE_XML = 'application/xml';
     const CONTENT_TYPE = 'Content-Type: ';
     const HTTP_1 = 'HTTP/1.0 ';
+    const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
+    const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
+
 
     private $content;
     private $type;
@@ -43,8 +47,8 @@ class response {
     private function setHeaders() {
         header_remove();
         $this->headers[] = self::HTTP_1 . $this->httpCodes[$this->httpCode];
-        $this->headers[] = 'Cache-Control: no-cache, must-revalidate'; 
-        $this->headers[] = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
+        $this->headers[] = self::HEADER_CACHE_CONTROL; 
+        $this->headers[] = self::HEADER_CACHE_EXPIRE;
         $this->headers[] = $this->getContentType($this->type);
         return $this;
     }
@@ -82,7 +86,7 @@ class response {
      * @return $this
      */
     public function setType($type = null) {
-        $this->type = ($type) ? $type : 'html';
+        $this->type = ($type) ? $type : self::HTML;
         return $this;
     }
     
@@ -98,7 +102,7 @@ class response {
      * @param boolean $httponly
      */
     public function withCookie($name = '', $value = '', $ttl = 3600, $path = '/', $domain = '', $secure = false, $httponly = true) {
-        if ($name && $value) {
+        if ($name) {
             setcookie($name, $value, time() + $ttl, $path, $domain, $secure, $httponly);
         }
         return $this;

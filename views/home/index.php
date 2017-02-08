@@ -1,31 +1,22 @@
 <html>
     <head>
-        <title>Error</title>
+        <title>Home</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <link href="/public/error.css" rel="stylesheet">
     </head>
     <body>
-        <h1 class="textCenter title">Oops!</h1>
+        <h1 class="textCenter title">Welcome Home !</h1>
         <div class="block center">
-            <h2>Origin</h2>
-            <p>Controller : <?=$controller;?></p>
-            <p>Action : <?=$action;?></p>
+            <h2>Ip</h2>
+            <p>Your @ip : <?=$ip;?></p>
         </div>
         <div class="block center">
-            <h2>Errors</h2>
-            <ul>
-            <?php
-                foreach ($errors as $error) {
-                    echo '<p>[ ' . $error['code'] 
-                        . ' ]&nbsp;:&nbsp;' 
-                        . $error['message'] . '</p>';
-                }
-            ?>
-            </ul>
+            <h2>Uri</h2>
+            <p>Path : <?=$uri;?></p>
         </div>
         <div class="block center">
-            <h2>Request</h2>
-            <?='<pre>' . print_r($request,true) .'</pre>';?>
+            <h2>Params</h2>
+            <?= '<pre>' . print_r($params, true) . '</pre>'; ?>
         </div>
     </body>
 </html>

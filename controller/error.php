@@ -31,7 +31,7 @@ class error extends basicController{
      * 
      * @param array $params
      * @param string $filename
-     * @return type
+     * @return lib\http\response
      */
     private function getErrorView($params, $filename) {
         $view = $this->getApp()->getView();

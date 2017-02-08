@@ -19,6 +19,8 @@ class request {
     private $request;
     private $method;
     private $cookie;
+    private $server;
+
 
     /**
      * __construct
@@ -26,7 +28,7 @@ class request {
      * @return $this
      */
     public function __construct() {
-        $this->assignRequest()->assignMethod()->assignCookie();
+        $this->assignServer()->assignMethod()->assignCookie();
         return $this;
     }
     
@@ -40,14 +42,14 @@ class request {
     }
     
     /**
-     * assignRequest
+     * assignServer
      * 
      */
-    private function assignRequest() {
-        $this->request = $_REQUEST;
+    private function assignServer() {
+        $this->server = $_SERVER;
         return $this;
     }
-
+    
     /**
      * assignMethod
      * 
@@ -68,15 +70,14 @@ class request {
         return $this;
     }
 
-
     /**
      * getServer
      * 
      * @param string $param
      * @return array
      */
-    private function getServer($param = '') {
-        return ($param) ? $_SERVER[$param] : $_SERVER;
+    public function getServer($param = '') {
+        return ($param) ? $this->server[$param] : $this->server;
     }
 
     /**
