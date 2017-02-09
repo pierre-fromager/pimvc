@@ -93,7 +93,7 @@ class app {
     /**
      * getResponse
      * 
-     * @return response
+     * @return lib\http\response
      */
     public function getResponse() {
         return $this->response;
@@ -102,7 +102,7 @@ class app {
     /**
      * getView
      * 
-     * @return view
+     * @return lib\view
      */
     public function getView() {
         return $this->view;
@@ -118,11 +118,20 @@ class app {
     }
     
     /**
+     * getController
+     * 
+     * @return lib\controller
+     */
+    public function getController(){
+        return $this->controller;
+    }
+    
+    /**
      * run
      * 
      * @return type
      */
     public function run() {
-        return $this->controller->setDefault()->run()->dispatch();
+        return $this->getController()->setDefault()->run()->dispatch();
     }
 }

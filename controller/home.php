@@ -34,12 +34,7 @@ class home extends basicController{
      * @return lib\http\response
      */
     public function redir() {
-        return $this->getApp()
-            ->getResponse()
-            ->setContent('')
-            ->setType(\lib\http\response::TYPE_HTML)
-            ->setHttpCode(302)
-            ->redirect('http://www.google.com');
+        return $this->redirect('http://www.google.com');
     }
     
     /**

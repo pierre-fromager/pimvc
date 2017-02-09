@@ -144,8 +144,10 @@ class response {
      * 
      */
     public function dispatch() {
+        
         if ($this->redirectUrl) {
             header('Location: ' . $this->redirectUrl);
+            die;
         } else {
             $this->setHeaders()->sendHeaders();
             echo (string) $this->content;

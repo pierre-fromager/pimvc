@@ -45,4 +45,29 @@ abstract class basicController implements interfaces\basicInterface{
     public function getParams($key = '') {
         return ($key) ? $this->params[$key] : $this->params;
     }
+    
+    /**
+     * redirect
+     * 
+     * @param string $url
+     * @return lib\http\response
+     */
+    public function redirect($url) {
+        return $this->getApp()
+            ->getResponse()
+            ->setContent('')
+            ->setType(\lib\http\response::TYPE_HTML)
+            ->setHttpCode(302)
+            ->redirect($url);
+    }
+    
+    /**
+     * forward
+     * 
+     * @param string $name
+     * @param string $action
+     */
+    public function forward($name, $action) {
+        $this->getApp()->getController()->setName($name)->setAction($action);
+    }
 }

@@ -10,6 +10,7 @@ class controller {
 
     const error = 'error';
     const _namespace = 'controller';
+    const defaultController = 'home';
     const defaultAction = 'index';
     const baskSlash = '\\';
     const phpExt = '.php';
@@ -47,29 +48,6 @@ class controller {
         $this->errors = [];
         return $this;
     }
-    
-    /**
-     * setError
-     * 
-     * @param int $errorCode
-     */
-    private function addError($errorCode) {
-        $this->errorCode = $errorCode;
-        $this->errorMessage = $this->errorsMessage[$this->errorCode];
-        $this->errors[] = [
-            self::code => $this->errorCode,
-            self::message => $this->errorMessage
-        ];
-    }
-    
-    /**
-     * isError
-     * 
-     * @return type
-     */
-    private function isError() {
-        return $this->errors;
-    }
 
     /**
      * getApp
@@ -78,6 +56,28 @@ class controller {
      */
     public function getApp() {
         return $this->app;
+    }
+
+    /**
+     * setName
+     * 
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name) {
+        $this->name = $name;
+        return $this;
+    }
+    
+    /**
+     * setAction
+     * 
+     * @param string $action
+     * @return $this
+     */
+    public function setAction($action) {
+        $this->action = $action;
+        return $this;
     }
     
     /**
@@ -89,7 +89,7 @@ class controller {
         return $this->app->path . DIRECTORY_SEPARATOR . self::_namespace 
             . DIRECTORY_SEPARATOR . $this->name . self::phpExt;
     }
-
+    
     /**
      * check
      * 
@@ -124,21 +124,18 @@ class controller {
     }
     
     /**
-     * getNamespacedClass
-     * 
-     * @return string
-     */
-    private function getNamespacedClass() {
-        return self::baskSlash  . self::_namespace 
-            . self::baskSlash . $this->name;
-    }
-
-    /**
      * run
      * 
      * @return $this
      */
     public function run() {
+        if ($this->getApp()->getRequest()->isHome()) {
+            $this->name = self::defaultController;
+            $this->action = self::defaultAction;
+            $this->check($this->getNamespacedClass());
+            $this->execute();
+            return $this;
+        }
         if ($matches = $this->app->getRouter()->compile()) {
             @list($this->name, $this->action, $this->params) = $matches;
             $this->action = ($this->action) ? $this->action : self::defaultAction;
@@ -160,6 +157,56 @@ class controller {
         $this->execute();
         return $this;
     }
+
+    /**
+     * dispatch
+     * 
+     */
+    public function dispatch() {
+        
+        switch (get_class($this->result)) {
+            case 'lib\http\response':
+                $this->result->dispatch();
+                break;
+            default:
+                var_dump($this->result);
+                echo '<pre>' . print_r($this->result, true) . '</pre>';
+                break;
+        }
+    }
+    
+    /**
+     * setError
+     * 
+     * @param int $errorCode
+     */
+    private function addError($errorCode) {
+        $this->errorCode = $errorCode;
+        $this->errorMessage = $this->errorsMessage[$this->errorCode];
+        $this->errors[] = [
+            self::code => $this->errorCode,
+            self::message => $this->errorMessage
+        ];
+    }
+    
+    /**
+     * isError
+     * 
+     * @return type
+     */
+    private function isError() {
+        return $this->errors;
+    }
+    
+    /**
+     * getNamespacedClass
+     * 
+     * @return string
+     */
+    private function getNamespacedClass() {
+        return self::baskSlash  . self::_namespace 
+            . self::baskSlash . $this->name;
+    }
     
     /**
      * execute
@@ -174,22 +221,6 @@ class controller {
                 ? $this->params 
                 : []
         );
-    }
-
-    /**
-     * dispatch
-     * 
-     */
-    public function dispatch() {
-        switch (get_class($this->result)) {
-            case 'lib\http\response':
-                $this->result->dispatch();
-                break;
-            default:
-                var_dump($this->result);
-                echo '<pre>' . print_r($this->result, true) . '</pre>';
-                break;
-        }
     }
 
 }
