@@ -21,7 +21,7 @@ class home extends basicController{
         return $this->getHomeView(
             [
                 'ip' => $this->getApp()->getRequest()->getServer('REMOTE_ADDR') ,
-                'uri' => $this->getApp()->getRequest()->getServer('REQUEST_URI') ,
+                'uri' => $this->getApp()->getRequest()->getUri() ,
                 'params' => $this->getParams()
             ]
             , $this->getApp()->getPath() .'/views/home/index.php'
@@ -35,6 +35,24 @@ class home extends basicController{
      */
     public function redir() {
         return $this->redirect('http://www.google.com');
+    }
+    
+    /**
+     * json
+     * 
+     * @return lib\http\response
+     */
+    public function json() {
+        $content = [
+            'view' => 'home',
+            'ns' => __NAMESPACE__ ,
+            'class' => __CLASS__ ,
+            'method' => __METHOD__
+        ];
+        return $this->getApp()->getResponse()
+            ->setContent(json_encode($content))
+            ->setType(\lib\http\response::TYPE_JSON)
+            ->setHttpCode(200);
     }
     
     /**

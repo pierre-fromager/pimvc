@@ -48,7 +48,16 @@ class request {
      * @return boolean
      */
     public function isHome() {
-        return ($this->getServer(self::REQUEST_URI) === DIRECTORY_SEPARATOR);
+        return ($this->getUri() === DIRECTORY_SEPARATOR);
+    }
+    
+    /**
+     * getUri
+     * 
+     * @return string
+     */
+    public function getUri() {
+        return $this->getServer(self::REQUEST_URI);
     }
 
     /**
