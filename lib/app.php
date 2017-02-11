@@ -2,29 +2,24 @@
 
 namespace lib;
 
-$libPath = __DIR__;
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'loader.php';
 
-require_once $libPath . '/http/routes.php';
-require_once $libPath . '/http/router.php';
-require_once $libPath . '/http/request.php';
-require_once $libPath . '/http/response.php';
-require_once $libPath . '/controller.php';
-require_once $libPath . '/controller/basic.php';
-require_once $libPath . '/view.php';
-
+// lib usage
 use lib\http\routes;
 use lib\http\router;
 use lib\http\request;
 use lib\http\response;
 use lib\view;
 use lib\controller;
+use lib\config;
 
 /**
  * routes
  * 
  */
-class app {
+class app implements interfaces\appInterface{
     
+    public $config = null;
     public $routes = null;
     public $router = null;
     public $controller = null;
@@ -36,15 +31,17 @@ class app {
     /**
      * __construct
      * 
-     * @param array $routes
+     * @param type $config
      * @return $this
+     * @throws \Exception
      */
-    public function __construct($routes = null) {
-        if (!$routes) {
-            throw new \Exception('Routes missing');
+    public function __construct(config $config) {
+        if (!$config && !is_array($config)) {
+            throw new \Exception('Config missing');
         }
+        $this->config = $config;
         $this->request = new request();
-        $this->routes = new routes($routes);
+        $this->routes = new routes($config->getSettings('routes'));
         $this->router = new router($this->routes);
         $this->response = new response();
         $this->view = new view();
@@ -127,6 +124,15 @@ class app {
     }
     
     /**
+     * getConfig
+     * 
+     * @return lib\config
+     */
+    public function getConfig() {
+        return $this->config;
+    }
+    
+    /**
      * run
      * 
      * @return type
@@ -134,4 +140,5 @@ class app {
     public function run() {
         return $this->getController()->setDefault()->run()->dispatch();
     }
+
 }

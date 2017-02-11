@@ -8,16 +8,11 @@
 
 namespace lib\http;
 
-class request {
+require_once __DIR__ . '/interfaces/request.php';
 
-    const REQUEST_METHOD = 'REQUEST_METHOD';
-    const REQUEST_METHOD_GET = 'GET';
-    const REQUEST_METHOD_POST = 'POST';
-    const REQUEST_P_METHOD = 'method';
-    const REQUEST_P_REQUEST = 'request';
-    const REQUEST_P_COOKIE = 'cookie';
-    const REQUEST_URI = 'REQUEST_URI';
-    const REQUEST_QUERY = 'query';
+class request implements interfaces\requestInterface{
+
+
 
     private $request;
     private $method;
@@ -67,7 +62,7 @@ class request {
      * @param string $param
      * @return array
      */
-    public function getServer($param = '') {
+    public function getServer($param) {
         return ($param) ? $this->server[$param] : $this->server;
     }
     
