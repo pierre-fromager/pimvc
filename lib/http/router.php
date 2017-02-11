@@ -1,15 +1,16 @@
 <?php
 
+/**
+ * Description of router
+ *
+ * @author pierrefromager
+ */
+
 namespace lib\http;
 
-/**
- * router
- * 
- */
-class router {
-    
-    const URI_SEPARATOR = '/';
-    const REQUEST_URI = 'REQUEST_URI';
+require_once __DIR__ . '/interfaces/router.php';
+
+class router implements \lib\http\interfaces\routerInterface{
 
     private $uri = null;
     private $server = null;
@@ -19,7 +20,7 @@ class router {
      * __construct
      * 
      */
-    public function __construct($routes) {
+    public function __construct(routes $routes) {
         $this->server = $this->getServer();
         $this->uri = $this->server[self::REQUEST_URI];
         $this->uri = substr($this->uri, 1);

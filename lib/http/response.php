@@ -27,7 +27,9 @@ class response implements \lib\http\interfaces\responseInterface{
      * @return $this
      */
     public function __construct($content = []) {
-        $this->setHttpCodes()->setContent($content);
+        $this
+            ->setHttpCodes()
+            ->setContent($content);
         return $this;
     }
     
