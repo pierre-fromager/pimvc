@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * Description of routes
+ *
+ * @author pierrefromager
+ */
+
+
 namespace lib\http;
 
-/**
- * routes
- * 
- */
-class routes {
+require_once __DIR__ . '/interfaces/routes.php';
+
+class routes implements \lib\http\interfaces\routesInterface{
     
     private $routes = [];
     
@@ -37,6 +42,9 @@ class routes {
      * @return $this
      */
     public function setRoutes($routes) {
+        if (!$routes && !is_array($routes)) {
+            throw new \Exception(self::BAD_ROUTE_COLLECTION);
+        }
         $this->routes = $routes;
         return $this;
     }
