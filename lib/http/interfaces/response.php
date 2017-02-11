@@ -18,6 +18,7 @@ interface responseInterface {
     const HTTP_1 = 'HTTP/1.0 ';
     const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
     const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
+    const HEADER_LOCATION = 'Location: ';
 
     public function __construct($content = []);
             

@@ -16,10 +16,7 @@ class response implements \lib\http\interfaces\responseInterface{
     private $type;
     private $headers;
     private $httpCode;
-    private $httpCodes = [
-        200 => '200 OK' ,
-        404 => '404 Not Found' ,
-    ];
+    private $httpCodes;
     private $redirectUrl = '';
 
     /**
@@ -30,10 +27,24 @@ class response implements \lib\http\interfaces\responseInterface{
      * @return $this
      */
     public function __construct($content = []) {
-        $this->setContent($content);
+        $this->setHttpCodes()->setContent($content);
         return $this;
     }
     
+    /**
+     * setHttpCodes
+     * 
+     */
+    private function setHttpCodes() {
+        $this->httpCodes = [
+            200 => '200 OK',
+            302 => '302 Redirect',
+            404 => '404 Not Found',
+            500 => '500 Server Error'
+        ];
+        return $this;
+    }
+
     /**
      * setHeaders
      * 
@@ -139,9 +150,8 @@ class response implements \lib\http\interfaces\responseInterface{
      * 
      */
     public function dispatch() {
-        
         if ($this->redirectUrl) {
-            header('Location: ' . $this->redirectUrl);
+            header(self::HEADER_LOCATION . $this->redirectUrl);
             die;
         } else {
             $this->setHeaders()->sendHeaders();
