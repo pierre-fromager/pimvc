@@ -1,8 +1,23 @@
 <?php
 
+/**
+ * Description of interface responseInterface
+ *
+ * @author pierrefromager
+ */
+
 namespace lib\http\interfaces;
 
 interface responseInterface {
+    
+    const HTML = 'html';
+    const TYPE_HTML = 'text/html';
+    const TYPE_JSON = 'application/json';
+    const TYPE_XML = 'application/xml';
+    const CONTENT_TYPE = 'Content-Type: ';
+    const HTTP_1 = 'HTTP/1.0 ';
+    const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
+    const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
 
     public function __construct($content = []);
             

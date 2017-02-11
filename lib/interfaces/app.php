@@ -28,6 +28,8 @@ interface appInterface {
     public function getPath();
 
     public function getController();
+    
+    public function getConfig();
 
     public function run();
 }

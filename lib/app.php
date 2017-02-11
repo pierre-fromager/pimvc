@@ -36,17 +36,27 @@ class app implements interfaces\appInterface{
      * @throws \Exception
      */
     public function __construct(config $config) {
-        if (!$config && !is_array($config)) {
-            throw new \Exception('Config missing');
-        }
-        $this->config = $config;
+        $this->setConfig($config);
         $this->request = new request();
-        $this->routes = new routes($config->getSettings('routes'));
+        $this->routes = new routes($this->getConfig()->getSettings('routes'));
         $this->router = new router($this->routes);
         $this->response = new response();
         $this->view = new view();
         $this->controller = new controller($this);
         return $this;
+    }
+    
+    /**
+     * setConfig
+     * 
+     * @param config $config
+     * @throws \Exception
+     */
+    private function setConfig(config $config) {
+        if (!$config && !is_array($config)) {
+            throw new \Exception('Config error');
+        }
+        $this->config = $config;
     }
     
     /**

@@ -1,21 +1,16 @@
 <?php
 
+/**
+ * Description of response
+ *
+ * @author pierrefromager
+ */
+
 namespace lib\http;
 
-/**
- * response
- * 
- */
-class response {
-    
-    const HTML = 'html';
-    const TYPE_HTML = 'text/html';
-    const TYPE_JSON = 'application/json';
-    const TYPE_XML = 'application/xml';
-    const CONTENT_TYPE = 'Content-Type: ';
-    const HTTP_1 = 'HTTP/1.0 ';
-    const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
-    const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
+require_once __DIR__ . '/interfaces/response.php';
+
+class response implements \lib\http\interfaces\responseInterface{
 
     private $content;
     private $type;

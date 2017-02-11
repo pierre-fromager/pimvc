@@ -6,8 +6,6 @@
  * @author pierrefromager
  */
 
-namespace lib;
-
 $libPath = __DIR__ . DIRECTORY_SEPARATOR;
 $libHttp = $libPath . 'http' . DIRECTORY_SEPARATOR;
 
