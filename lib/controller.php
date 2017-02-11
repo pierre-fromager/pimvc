@@ -16,7 +16,8 @@ class controller {
     const phpExt = '.php';
     const code = 'code';
     const message = 'message';
-    
+    const questionMark = '?';
+
     private $app;
     private $name = null;
     private $action = null;
@@ -34,7 +35,6 @@ class controller {
     private $errorCode = 0;
     private $errorMessage = '';
     private $errors =  [];
-
 
     /**
      * __construct
@@ -140,6 +140,12 @@ class controller {
             @list($this->name, $this->action, $this->params) = $matches;
             $this->action = ($this->action) ? $this->action : self::defaultAction;
             $this->params = ($this->params) ? $this->params : [];
+            if (isset($this->params[0]) && $this->params[0] == self::questionMark) {
+                $this->params = $this->getApp()->getRequest()->getParsedQuery($this->params);
+            }
+            if (isset($this->params[0]) && $this->params[0] == '/') {
+                $this->params = $this->getApp()->getRequest()->getQueryTupple($this->params);
+            }
         } else {
             $this->addError(6);
         }

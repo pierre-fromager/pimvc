@@ -17,6 +17,7 @@ class request {
     const REQUEST_P_REQUEST = 'request';
     const REQUEST_P_COOKIE = 'cookie';
     const REQUEST_URI = 'REQUEST_URI';
+    const REQUEST_QUERY = 'query';
 
     private $request;
     private $method;
@@ -68,6 +69,59 @@ class request {
      */
     public function getServer($param = '') {
         return ($param) ? $this->server[$param] : $this->server;
+    }
+    
+    /**
+     * getParsedQuery
+     * 
+     * @param type $query
+     * @return type
+     */
+    public function getParsedQuery($query){
+        parse_str(parse_url($query)[self::REQUEST_QUERY], $fragments);
+        return $fragments;
+    }
+    
+    /**
+     * getParsedQueryTupple
+     * 
+     * @param type $query
+     * @return type
+     */
+    public function getParsedQueryTupple($query){
+        parse_str(parse_url($query)[self::REQUEST_QUERY], $fragments);
+        return $fragments;
+    }
+    
+    /**
+     * getTupple
+     * 
+     * @param array $array
+     * @param boolean $invert
+     * @return array
+     */
+    private function getTupple($array = [], $invert = false) {
+        return array_filter(
+            $array ,
+            function($k) use ($invert) {
+                return ($invert) ? ($k % 1) == 0 : ($k % 2) == 0;
+            }
+        );
+    }
+
+    /**
+     * getQueryTupple
+     * 
+     * @param string $query
+     * @return array
+     */
+    public function getQueryTupple($query) {
+        $qParams = explode('/', $query);
+        $keys = $this->getTupple($qParams, true);
+        $values = $this->getTupple($qParams, false);
+        $tupple = array_combine($keys, $values);
+        array_shift($tupple);
+        return $tupple;
     }
 
     /**
