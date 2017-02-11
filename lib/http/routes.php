@@ -11,7 +11,7 @@ namespace lib\http;
 
 require_once __DIR__ . '/interfaces/routes.php';
 
-class routes implements \lib\http\interfaces\routesInterface{
+class routes implements interfaces\routesInterface{
     
     private $routes = [];
     
@@ -42,7 +42,7 @@ class routes implements \lib\http\interfaces\routesInterface{
      * @return $this
      */
     public function setRoutes($routes) {
-        if (!$routes && !is_array($routes)) {
+        if (!$routes || !is_array($routes)) {
             throw new \Exception(self::BAD_ROUTE_COLLECTION);
         }
         $this->routes = $routes;

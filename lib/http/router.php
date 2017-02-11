@@ -10,7 +10,7 @@ namespace lib\http;
 
 require_once __DIR__ . '/interfaces/router.php';
 
-class router implements \lib\http\interfaces\routerInterface{
+class router implements interfaces\routerInterface{
 
     private $uri = null;
     private $server = null;
