@@ -84,26 +84,10 @@ class request implements interfaces\requestInterface{
      * @return type
      */
     public function getParsedQueryTupple($query){
-        parse_str(parse_url($query)[self::REQUEST_QUERY], $fragments);
-        return $fragments;
+        parse_str(parse_url($query)[self::REQUEST_QUERY], $tupple);
+        return $tupple;
     }
     
-    /**
-     * getTupple
-     * 
-     * @param array $array
-     * @param boolean $invert
-     * @return array
-     */
-    private function getTupple($array = [], $invert = false) {
-        return array_filter(
-            $array ,
-            function($k) use ($invert) {
-                return ($invert) ? ($k % 1) == 0 : ($k % 2) == 0;
-            }
-        );
-    }
-
     /**
      * getQueryTupple
      * 
@@ -111,12 +95,21 @@ class request implements interfaces\requestInterface{
      * @return array
      */
     public function getQueryTupple($query) {
-        $qParams = explode('/', $query);
-        $keys = $this->getTupple($qParams, true);
-        $values = $this->getTupple($qParams, false);
-        $tupple = array_combine($keys, $values);
-        array_shift($tupple);
-        return $tupple;
+        $array = explode('/', $query);
+        array_shift($array);
+        $keys = $values = [];
+        $aSize = count($array);
+        if ($aSize & 1) {
+            array_push ($array,null);
+            $aSize = count($array);
+        }
+        for ($i = 0; $i < $aSize; $i++) {
+            if ($i & 1)
+                $values[] = $array[$i];
+            else
+                $keys[] = $array[$i];
+        }
+        return array_combine($keys, $values);
     }
 
     /**

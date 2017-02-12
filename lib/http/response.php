@@ -81,6 +81,12 @@ class response implements interfaces\responseInterface{
         return $this;
     }
     
+    /**
+     * setHttpCode
+     * 
+     * @param int $code
+     * @return $this
+     */
     public function setHttpCode($code = 200) {
         $this->httpCode = $code;
         return $this;
