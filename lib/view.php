@@ -6,10 +6,7 @@ namespace lib;
  * view
  * 
  */
-class view {
-    
-    const deserializer = 'wddx';
-    const VIEW_ERROR_MISSING = 'View filename not found : ';
+class view implements interfaces\view{
     
     private $content;
     private $params;

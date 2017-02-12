@@ -12,7 +12,7 @@ $there = __DIR__;
 
 require_once $there . '/lib/autoloader.php';
 
-\lib\autoloader::register($there);
+$autoloader = (new \lib\autoloader())->register($there)->setCache();
 
 $app = (new lib\app(
     (new \lib\config())->setPath($there . '/config/')

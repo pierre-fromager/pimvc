@@ -2,7 +2,7 @@
     <head>
         <title>Home</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <link href="/public/css/error.css" rel="stylesheet">
+        <link href="/public/css/main.css" rel="stylesheet">
     </head>
     <body>
         <h1 class="textCenter title">Welcome Home !</h1>
