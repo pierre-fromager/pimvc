@@ -10,7 +10,7 @@ namespace lib\controller\interfaces;
 
 use lib\app;
 
-interface basicInterface {
+interface basic {
 
     /**
      * __construct

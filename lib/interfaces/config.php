@@ -1,14 +1,14 @@
 <?php
 
-namespace lib\interfaces;
-
 /**
- * Description of configInterface
+ * Description of lib\interfaces\config
  *
  * @author pierrefromager
  */
 
-interface configInterface {
+namespace lib\interfaces;
+
+interface config {
     
     const CONFIG_REL_PATH = '../config/';
     const ENV_DEV = 'dev';

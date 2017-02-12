@@ -8,11 +8,9 @@
 
 namespace lib\controller;
 
-require_once __DIR__ . '/interfaces/basic.php';
-
 use lib\app;
 
-abstract class basicController implements interfaces\basicInterface{
+abstract class basic implements interfaces\basic{
     
     private $params;
     private $app;
@@ -62,12 +60,21 @@ abstract class basicController implements interfaces\basicInterface{
     }
     
     /**
-     * forward
+     * call
      * 
-     * @param string $name
      * @param string $action
+     * @param array $params
+     * 
+     * @return mixed
      */
-    public function forward($name, $action) {
-        $this->getApp()->getController()->setName($name)->setAction($action);
+    public function forward($controller = '', $action = '', $params = []) {
+        $controller = ($controller) ? $controller : $this;
+        return ($action && method_exists($this, $action)) 
+            ? call_user_func_array(
+                array($controller, $action)
+                , $params
+            ) 
+            : null;
     }
+
 }

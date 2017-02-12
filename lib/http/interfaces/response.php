@@ -8,7 +8,7 @@
 
 namespace lib\http\interfaces;
 
-interface responseInterface {
+interface response {
     
     const HTML = 'html';
     const TYPE_HTML = 'text/html';

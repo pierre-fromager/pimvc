@@ -8,7 +8,7 @@
 
 namespace lib\http\interfaces;
 
-interface routesInterface {
+interface routes {
 
     const URI_SEPARATOR = '/';
     const REQUEST_URI = 'REQUEST_URI';

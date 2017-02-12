@@ -2,17 +2,13 @@
 
 namespace lib;
 
-require_once __DIR__ . '/interfaces/config.php';
-
-use lib\interfaces\configInterface;
-
 /**
  * Description of config
  *
  * @author pierrefromager
  */
 
-class config implements configInterface{
+class config implements \lib\interfaces\config{
 
     protected $path;
     protected $env;
@@ -59,6 +55,12 @@ class config implements configInterface{
         return $this->path;
     }
     
+    /**
+     * getSettings
+     * 
+     * @param string $key
+     * @return mixed
+     */
     public function getSettings($key = '') {
         return ($key) ? $this->settings[$key] : $this->settings;
     }

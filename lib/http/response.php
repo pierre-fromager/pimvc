@@ -8,9 +8,7 @@
 
 namespace lib\http;
 
-require_once __DIR__ . '/interfaces/response.php';
-
-class response implements interfaces\responseInterface{
+class response implements interfaces\response{
 
     private $content;
     private $type;

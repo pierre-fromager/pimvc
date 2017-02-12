@@ -10,6 +10,10 @@ namespace controller;
 
 class stat {
     
+    public function __construct() {
+        return $this;
+    }
+    
     public function index() {
         return [
             'view' => 'stat',

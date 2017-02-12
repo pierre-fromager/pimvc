@@ -8,11 +8,7 @@
 
 namespace lib\http;
 
-require_once __DIR__ . '/interfaces/request.php';
-
-class request implements interfaces\requestInterface{
-
-
+class request implements interfaces\request{
 
     private $request;
     private $method;

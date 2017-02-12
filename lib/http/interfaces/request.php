@@ -8,7 +8,7 @@
 
 namespace lib\http\interfaces;
 
-interface requestInterface {
+interface request {
     
     const REQUEST_METHOD = 'REQUEST_METHOD';
     const REQUEST_METHOD_GET = 'GET';

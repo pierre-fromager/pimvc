@@ -2,8 +2,6 @@
 
 namespace lib;
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'loader.php';
-
 // lib usage
 use lib\http\routes;
 use lib\http\router;
@@ -17,7 +15,7 @@ use lib\config;
  * routes
  * 
  */
-class app implements interfaces\appInterface{
+class app implements interfaces\app{
     
     public $config = null;
     public $routes = null;

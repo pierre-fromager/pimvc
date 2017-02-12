@@ -9,9 +9,7 @@
 
 namespace lib\http;
 
-require_once __DIR__ . '/interfaces/routes.php';
-
-class routes implements interfaces\routesInterface{
+class routes implements interfaces\routes{
     
     private $routes = [];
     

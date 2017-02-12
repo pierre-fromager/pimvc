@@ -6,17 +6,7 @@ namespace lib;
  * controller
  * 
  */
-class controller {
-
-    const error = 'error';
-    const _namespace = 'controller';
-    const defaultController = 'home';
-    const defaultAction = 'index';
-    const baskSlash = '\\';
-    const phpExt = '.php';
-    const code = 'code';
-    const message = 'message';
-    const questionMark = '?';
+class controller implements interfaces\controller{
 
     private $app;
     private $name = null;

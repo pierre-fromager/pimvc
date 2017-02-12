@@ -9,7 +9,7 @@
 namespace lib\interfaces;
 
 
-interface appInterface {
+interface app {
 
     public function __construct(\lib\config $config);
     

@@ -8,9 +8,7 @@
 
 namespace controller;
 
-use lib\controller\basicController;
-
-class home extends basicController{
+class home extends \lib\controller\basic{
     
     /**
      * index
@@ -38,16 +36,39 @@ class home extends basicController{
     }
     
     /**
+     * fwd
+     * 
+     */
+    public function fwd() {
+        $controller = \controller\stat::class;
+        echo $controller;die;
+        $action = 'index';
+        require_once __DIR__ . DIRECTORY_SEPARATOR . 'stat.php';
+        $i =  ( new $controller($this->getParams()))->$action();
+                var_dump($i);die;
+
+        $p = call_user_func(
+            array($i, 'index')
+            , $this->getParams()
+        );
+        var_dump($p);die;
+
+        $toto = '\\controller\\stat';
+        var_dump($toto);
+        return $this->forward($toto, 'index', $this->getParams());
+    }
+    
+    /**
      * json
      * 
      * @return lib\http\response
      */
     public function json() {
         $content = [
-            'view' => 'home',
             'ns' => __NAMESPACE__ ,
             'class' => __CLASS__ ,
-            'method' => __METHOD__
+            'method' => __METHOD__ ,
+            'params' => $this->getParams()
         ];
         return $this->getApp()->getResponse()
             ->setContent(json_encode($content))
