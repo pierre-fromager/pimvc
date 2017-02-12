@@ -148,12 +148,6 @@ class controller implements interfaces\controller{
                 'request' => $this->app->request
             ];
             $this->setDefault();
-            try {
-                //require_once ($this->getPath());
-            } catch (Exception $exc) {
-                echo $exc->getTraceAsString();die;
-            }
-
         }
         $this->execute();
         return $this;

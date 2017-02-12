@@ -40,22 +40,11 @@ class home extends \lib\controller\basic{
      * 
      */
     public function fwd() {
-        $controller = \controller\stat::class;
-        echo $controller;die;
-        $action = 'index';
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'stat.php';
-        $i =  ( new $controller($this->getParams()))->$action();
-                var_dump($i);die;
-
-        $p = call_user_func(
-            array($i, 'index')
+        return $this->forward(
+            \controller\stat::class
+            , 'index'
             , $this->getParams()
         );
-        var_dump($p);die;
-
-        $toto = '\\controller\\stat';
-        var_dump($toto);
-        return $this->forward($toto, 'index', $this->getParams());
     }
     
     /**
