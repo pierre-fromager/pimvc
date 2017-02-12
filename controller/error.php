@@ -8,7 +8,7 @@
 
 namespace controller;
 
-class error extends lib\controller\basicController{
+class error extends \lib\controller\basic{
     
     const VIEW_FILE = '/views/error/index.php';
 

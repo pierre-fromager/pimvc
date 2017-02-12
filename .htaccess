@@ -7,6 +7,7 @@ Satisfy all
 </Files>
 
 #ErrorDocument 404 /index.php
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews
@@ -23,4 +24,3 @@ Satisfy all
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
-

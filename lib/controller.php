@@ -148,7 +148,12 @@ class controller implements interfaces\controller{
                 'request' => $this->app->request
             ];
             $this->setDefault();
-            include_once($this->getPath());
+            try {
+                //require_once ($this->getPath());
+            } catch (Exception $exc) {
+                echo $exc->getTraceAsString();die;
+            }
+
         }
         $this->execute();
         return $this;
@@ -159,7 +164,6 @@ class controller implements interfaces\controller{
      * 
      */
     public function dispatch() {
-        
         switch (get_class($this->result)) {
             case 'lib\http\response':
                 $this->result->dispatch();
