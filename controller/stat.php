@@ -31,4 +31,13 @@ class stat {
             'method' => __METHOD__
         ];
     }
+        
+    public function pong() {
+        return [
+            'view' => 'stat',
+            'ns' => __NAMESPACE__ ,
+            'class' => __CLASS__ ,
+            'method' => __METHOD__
+        ];
+    }
 }

@@ -158,14 +158,13 @@ class controller implements interfaces\controller{
      * 
      */
     public function dispatch() {
-        switch (get_class($this->result)) {
-            case 'lib\http\response':
-                $this->result->dispatch();
-                break;
-            default:
-                var_dump($this->result);
-                echo '<pre>' . print_r($this->result, true) . '</pre>';
-                break;
+        $className = @get_class($this->result);
+        if ($className) {
+            switch (get_class($this->result)) {
+                case http\response::class:
+                    $this->result->dispatch();
+                    break;
+            }
         }
     }
     
@@ -209,12 +208,14 @@ class controller implements interfaces\controller{
     private function execute() {
         $controllerNs = $this->getNamespacedClass();
         $controllerInstance = new $controllerNs($this->app, $this->params);
-        $this->result = call_user_func_array(
-            [$controllerInstance, $this->action] ,
-            is_array($this->params) 
-                ? $this->params 
-                : []
-        );
+        $methodExist = method_exists($controllerInstance, $this->action);
+        $isCallable = is_callable(array($controllerInstance, $this->action));
+        if ($methodExist && $isCallable) {
+            $this->result = call_user_func_array(
+                [$controllerInstance, $this->action] , 
+                is_array($this->params) ? $this->params : []
+            );
+        }
     }
 
 }

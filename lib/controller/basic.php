@@ -69,7 +69,7 @@ abstract class basic implements interfaces\basic{
      */
     public function forward($controller = '', $action = '', $params = []) {
         $controller = ($controller) ? new $controller() : $this;
-        return ($action && method_exists($this, $action)) 
+        return ($action && method_exists($controller, $action)) 
             ? call_user_func_array(
                 array($controller, $action)
                 , $params

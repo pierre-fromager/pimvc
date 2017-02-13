@@ -36,15 +36,12 @@ class home extends \lib\controller\basic{
     }
     
     /**
-     * fwd
+     * ping
      * 
      */
-    public function fwd() {
-        return $this->forward(
-            \controller\stat::class
-            , 'index'
-            , $this->getParams()
-        );
+    public function ping() {
+        $content = $this->forward(\controller\stat::class, 'pong', $this->getParams());
+        return $this->asJson($content);
     }
     
     /**
@@ -59,8 +56,18 @@ class home extends \lib\controller\basic{
             'method' => __METHOD__ ,
             'params' => $this->getParams()
         ];
+        return $this->asJson($content);
+    }
+    
+    /**
+     * asJson
+     * 
+     * @param mixed $content
+     * @return \lib\http\response
+     */
+    private function asJson($content) {
         return $this->getApp()->getResponse()
-            ->setContent(json_encode($content))
+            ->setContent($content)
             ->setType(\lib\http\response::TYPE_JSON)
             ->setHttpCode(200);
     }

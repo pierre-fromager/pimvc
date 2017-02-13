@@ -25,9 +25,7 @@ class response implements interfaces\response{
      * @return $this
      */
     public function __construct($content = []) {
-        $this
-            ->setHttpCodes()
-            ->setContent($content);
+        $this->setHttpCodes()->setContent($content);
         return $this;
     }
     
@@ -150,6 +148,15 @@ class response implements interfaces\response{
             header($this->headers[$i]);
         }
     }
+    
+    /**
+     * isJsonType
+     * 
+     * @return boolean
+     */
+    private function isJsonType() {
+        return ($this->type === self::TYPE_JSON);
+    }
 
     /**
      * dispatch
@@ -161,7 +168,9 @@ class response implements interfaces\response{
             die;
         } else {
             $this->setHeaders()->sendHeaders();
-            echo (string) $this->content;
+            echo ($this->isJsonType()) 
+                ? json_encode($this->content, JSON_PRETTY_PRINT) 
+                : (string) $this->content;
         }
 
     }
