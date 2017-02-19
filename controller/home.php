@@ -59,6 +59,12 @@ class home extends \lib\controller\basic{
         return $this->asJson($content);
     }
     
+    public function user() {
+        $dbConfig = $this->getApp()->getConfig()->getSettings('dbPool');
+        $users = new \model\users($dbConfig);
+        echo '<pre>' . print_r($users,true) . '</pre>';die;
+    }
+    
     /**
      * asJson
      * 

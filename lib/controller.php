@@ -197,8 +197,7 @@ class controller implements interfaces\controller{
      * @return string
      */
     private function getNamespacedClass() {
-        return self::baskSlash  . self::_namespace 
-            . self::baskSlash . $this->name;
+        return self::baskSlash . self::_namespace . self::baskSlash . $this->name;
     }
     
     /**

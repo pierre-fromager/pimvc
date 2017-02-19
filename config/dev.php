@@ -11,5 +11,23 @@ return array(
         '/^(stat)\/([a-zA-Z0-9_]{1,10})/',
         '/^api\/v1\/([a-zA-Z0-9_]{1,10})/',
         '/^api\/v1\/([a-zA-Z0-9_]{1,10})\/(\d*)/',
+    ],
+    'dbPool' => [
+        'db1' => [
+            'adapter' => 'PdoMysql',
+            'name' => 'rdmax',
+            'host' => '192.168.1.48',
+            'user' => 'pierre',
+            'port' => '3306',
+            'password' => 'pierre'
+        ] ,
+        'db2' => [
+            'adapter' => 'PdoPgsql',
+            'name' => 'rdmax',
+            'host' => 'localhost',
+            'user' => 'pierre',
+            'port' => '5432',
+            'password' => 'pierre'
+        ]
     ]
 );

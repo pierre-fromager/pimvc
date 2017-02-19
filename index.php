@@ -14,6 +14,7 @@ require_once $there . '/lib/autoloader.php';
 
 $autoloader = (new \lib\autoloader())->register($there)->setCache();
 
+
 $app = (new lib\app(
     (new \lib\config())->setPath($there . '/config/')
         ->setEnv(\lib\config::ENV_DEV)

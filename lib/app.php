@@ -17,7 +17,7 @@ use lib\config;
  */
 class app implements interfaces\app{
     
-    public $config = null;
+    public $config;
     public $routes = null;
     public $router = null;
     public $controller = null;
@@ -25,6 +25,7 @@ class app implements interfaces\app{
     public $request = null;
     public $response = null;
     public $view = null;
+    public $db = null;
 
     /**
      * __construct
