@@ -10,8 +10,8 @@ namespace lib\db\model\interfaces;
 
 interface orm {
         
-    const MODEL_DEBUG = false;
-    const MODEL_TRACE = false;
+    const MODEL_DEBUG = true;
+    const MODEL_TRACE = true;
     //const MODEL_FETCH_MODE = PDO::FETCH_ASSOC;
     const MODEL_TRANS = ':TRANS_';
     const MODEL_FROM = ' FROM ';

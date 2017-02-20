@@ -66,7 +66,7 @@ abstract class orm implements ormInterface{
      */
     public function __construct($config = array()) {
         if (!isset($this->_slot)) {
-            throw new \Exception('_slot property missing in ' . get_class(this));
+            throw new \Exception('_slot property missing in ' . get_class($this));
         }
         $this->_config = $config;
         $this->_adapter = strtolower($this->_config[$this->_slot]['adapter']);
@@ -74,12 +74,12 @@ abstract class orm implements ormInterface{
         $adapter = (is_null($this->_adapter)) 
             ? self::MODEL_ADAPTER_DEFAULT 
             : $this->_adapter;*/
-        /*
-        $this->_logger = Logger::getFileInstance(
-            APP_PATH . LOG_DIR
-            , Logger::DEBUG 
-            , logger::LOG_ADAPTER_FILE
-        );*/
+        
+        $this->_logger = \lib\logger::getFileInstance(
+            APP_PATH . '/log/'
+            , \lib\logger::DEBUG 
+            , \lib\logger::LOG_ADAPTER_FILE
+        );
         $this->_useCache = (isset($config['useCache']) && $config['useCache'] == false) 
             ? false
             : self::MODEL_USE_CACHE;
