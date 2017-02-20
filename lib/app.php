@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Description of lib\app
+ * 
+ * @author Pierre Fromager <pf@pier-infor.fr>
+ */
+
 namespace lib;
 
-// lib usage
 use lib\http\routes;
 use lib\http\router;
 use lib\http\request;
@@ -11,10 +16,7 @@ use lib\view;
 use lib\controller;
 use lib\config;
 
-/**
- * routes
- * 
- */
+
 class app implements interfaces\app{
     
     public $config;
@@ -65,6 +67,7 @@ class app implements interfaces\app{
      * @return $this
      */
     public function setPath($path) {
+        define('APP_PATH', $path);
         $this->path = $path;
         return $this;
     }

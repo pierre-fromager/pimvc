@@ -17,7 +17,7 @@ class cache {
     const DEFAULT_CACHE_PATH = '/cache/';
     const DEFAULT_CACHE_EXT = '.tmp';
     const DEBUG = false;
-    const DEFAULT_ADPATER = Lib_Cache_Factory::CACHE_ADAPTER_FILE;
+    const DEFAULT_ADPATER = \lib\cache\adapter\file::class;
 
     private $adapter = '';
     private $name = '';

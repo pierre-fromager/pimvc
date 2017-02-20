@@ -1,68 +1,16 @@
 <?php
 
 /**
- * orm
+ * Description of lib\db\model\orm
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
 namespace lib\db\model;
 
+use lib\db\model\interfaces\orm as ormInterface;
 
-abstract class orm {
-    
-    const MODEL_DEBUG = false;
-    const MODEL_TRACE = false;
-    //const MODEL_FETCH_MODE = PDO::FETCH_ASSOC;
-    const MODEL_TRANS = ':TRANS_';
-    const MODEL_FROM = ' FROM ';
-    const MODEL_SELECT = 'SELECT ';
-    const MODEL_SELECT_COUNT = 'SELECT COUNT';
-    const MODEL_JOIN = ' JOIN ';
-    const MODEL_JOIN_INNER = ' INNER ';
-    const MODEL_JOIN_OUTER = ' OUTER ';
-    const MODEL_JOIN_LEFT = ' LEFT ';
-    const MODEL_JOIN_RIGHT = ' RIGHT ';
-    const MODEL_JOIN_NATURAL = ' NATURAL ';
-    const MODEL_JOIN_FULL = ' FULL ';
-    const MODEL_JOIN_UNION = ' UNION ';
-    const MODEL_JOIN_CROSS = ' CROSS ';
-    const MODEL_JOIN_ON = ' ON ';
-    const MODEL_TRUNCATE = 'TRUNCATE TABLE ';
-    const MODEL_DOT = '.';
-    const MODEL_WHERE = ' WHERE ';
-    const MODEL_ORDER = ' ORDER BY ';
-    const MODEL_ORDER_ASC = 'ASC';
-    const MODEL_ORDER_DESC = 'DESC';
-    const MODEL_UPDATE = ' UPDATE ';
-    const MODEL_SET = ' SET ';
-    const MODEL_INSERT = ' INSERT INTO ';
-    const MODEL_DELETE = ' DELETE FROM ';
-    const MODEL_ALIAS = ' AS ';
-    const MODEL_LIKE = ' LIKE ';
-    const MODEL_EQUAL = ' = ';
-    const MODEL_AND = ' AND ';
-    const MODEL_OR = ' OR ';
-    const MODEL_ALTER = ' ALTER TABLE ';
-    const MODEL_ADD = ' ADD ';
-    const MODEL_DROP = ' DROP ';
-    const MODEL_LIMIT = ' LIMIT ';
-    const MODEL_OFFSET = ' OFFSET ';
-    const MODEL_GROUP_BY = ' GROUP BY ';
-    const MODEL_OPERATOR_SPLITER = '#';
-    const MODEL_DOMAIN_CLASS_PREFIX = '\model\domain\\';
-    const MODEL_ADAPTER_DEFAULT = 'PdoMysql';
-    const MODEL_ADAPTER_MYSQL = self::MODEL_ADAPTER_DEFAULT;
-    const MODEL_ADAPTER_PGSQL = 'PdoPgsql';
-    const MODEL_ADAPTER_SQLITE = 'PdoSqlite';
-    const MODEL_ADAPTER_4D = 'Pdo4d';
-    const MODEL_PARENTH_O = '(';
-    const MODEL_PARENTH_C = ')';
-    const MODEL_CACHE_SUFFIX = 'Db/Queries/';
-    const MODEL_USE_CACHE = true;
-    const MODEL_INDEX_FIELD = 'field';
-    const MODEL_OPERATOR_TRIGGER = '[]%_';
-    const MODEL_BETWEEN = ' BETWEEN ';
+abstract class orm implements ormInterface{
 
     protected $_config = null;
     protected $_dsn = null;
@@ -117,11 +65,15 @@ abstract class orm {
      * @param type $config 
      */
     public function __construct($config = array()) {
+        if (!isset($this->_slot)) {
+            throw new \Exception('_slot property missing in ' . get_class(this));
+        }
+        $this->_config = $config;
+        $this->_adapter = strtolower($this->_config[$this->_slot]['adapter']);
         /*
         $adapter = (is_null($this->_adapter)) 
             ? self::MODEL_ADAPTER_DEFAULT 
             : $this->_adapter;*/
-        $this->_config = $config;
         /*
         $this->_logger = Logger::getFileInstance(
             APP_PATH . LOG_DIR
@@ -146,23 +98,32 @@ abstract class orm {
                 ? '' 
                 : '`' . $this->_schema . '`';
         }*/
+        $this->_schema = $config[$this->_slot]['name'];
         $this->_db = \lib\db\factory::getConnection($config[$this->_slot]);
         //$this->_db = Lib_Db_Factory::getConnection($this->_dsn->get());
         
         $this->_domainClass = $this->getDomainName();
+
         //$this->_domainClass = '\model\domain\users';
         $this->_domainInstance = new $this->_domainClass;
-        $this->_metas = ($this->_adapter != self::MODEL_ADAPTER_4D)
-            ? $this->_metas = $this->describeTable()
+        //echo $this->_adapter;die;
+        $is4dOrPg = in_array($this->_adapter, [self::MODEL_ADAPTER_4D, self::MODEL_ADAPTER_PGSQL]);
+        $this->_metas = (!$is4dOrPg) 
+            ? $this->_metas = $this->describeTable() 
             : $this->getDomainFields();
-        die;
+
+        //var_dump($this->_metas);
+        //die;
         $this->_columns = $this->getColumns();
+
+        //var_dump($this->_columns);die;
+        /*
         $this->_uid = Tools_Session::getUid();
         if ($this->_uid  && $this->_adapter == self::MODEL_ADAPTER_4D && $this->_useCache) {
             $this->_cache = new Cache($this->_uid, Cache::DEFAULT_CACHE_EXPIRATION);
             $defaultCachePath = $this->_cache->getPath();
             $this->_cache->setPath($defaultCachePath . self::MODEL_CACHE_SUFFIX);
-        }
+        }*/
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
             $this->run('SET NAMES \'UTF-8\'');
@@ -341,6 +302,8 @@ abstract class orm {
                 break;
         }
         $columns = $this->getMetasInfo($key);
+        //var_dump($this->_slot,$columns);die;
+
         $callback = array(__CLASS__, 'arrayToLower');
         $columns = array_map($callback, $columns);
         return $columns;
@@ -435,14 +398,14 @@ abstract class orm {
 
             try {
                 $this->_statement = $this->_db->prepare($sql);
-            } catch (PDOException $exc) {
+            } catch (\PDOException $exc) {
                 echo '<p style="color:red"> Prepare : ' . $sql . '</p>';
                 echo $exc->getMessage();
                 die;
             }
             try {
                 $this->_statement->execute();
-            } catch (PDOException $exc) {
+            } catch (\PDOException $exc) {
                 echo '<p style="color:red">Execute : ' . $sql . '</p>';
                 echo $exc->getMessage();
                 die;
@@ -759,8 +722,8 @@ abstract class orm {
      * @param Lib_Db_Model_Domain_Abstract $o2 
      */
     public function getDiffDomainObject(
-        Lib_Db_Model_Domain_Abstract $o1
-        , Lib_Db_Model_Domain_Abstract $o2
+        \lib\db\model\domain $o1
+        , \lib\db\model\domain $o2
     ) {
         //var_dump($o1,$o2);
         return Tools_Array::recursive_array_diff((array) $o1, (array) $o2);
@@ -1050,7 +1013,7 @@ abstract class orm {
                         , 'value (' . $value . ') and type (' . $type . ')'
                     );
                 }
-            } catch (PDOException $exc) {
+            } catch (\PDOException $exc) {
                 $this->_logger->logError(
                     'Sql Bind Error [' . $key . ':' . $value . ':' . $type . ']'
                     , $exc->getMessage()
@@ -1404,6 +1367,7 @@ abstract class orm {
                 $this->seek();
             }
         }
+        return $this;
     }
     
     /**
@@ -1552,7 +1516,7 @@ abstract class orm {
         $isSelect = (strpos($sql,'SELECT') !== false);
         try {
             $stmt = $this->_db->prepare($sql);      
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             echo $exc->getMessage();
             die;
         }
@@ -1568,7 +1532,7 @@ abstract class orm {
                 //echo $bindedKey . ' == ' . $value . '('. $type. ')<br>';
                 $stmt->bindParam($bindedKey, $prepValue, $type);
             }
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             echo $exc->getMessage();echo 'EOPDSQL1';
             die;
         }
@@ -1580,7 +1544,7 @@ abstract class orm {
             if ($isSelect) {
                 //var_dump($stmt->fetchall());
             }
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             $this->_db->rollBack();
             echo $exc->getMessage();
             echo 'EOPDSQL2';
@@ -1773,7 +1737,7 @@ abstract class orm {
                     , $this->_statement->queryString
                 );
             }
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             $this->_error = $exc->getMessage();
             $this->_errorCode = $exc->getCode();
             $this->_errorMessage = $exc->getMessage();
@@ -1790,7 +1754,7 @@ abstract class orm {
         }
         try {
             $this->_statement->execute();            
-        } catch (PDOException $exc) {
+        } catch (\PDOException $exc) {
             $this->_error = $exc->getMessage();
             $this->_errorCode = $exc->getCode();
             $this->_errorMessage = $exc->getMessage();
@@ -1818,7 +1782,7 @@ abstract class orm {
      * 
      */
     protected function hydrate() {
-        $this->_rowset = new SplFixedArray();
+        $this->_rowset = new \SplFixedArray();
         $this->_rowset->setSize($this->_statement->rowCount());
         $cpt = 0;
         $statementResult = $this->_statement->fetchAll($this->_fetchMode);
