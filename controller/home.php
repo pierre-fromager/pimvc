@@ -65,11 +65,10 @@ class home extends \lib\controller\basic{
      * @return \lib\http\response
      */
     public function user() {
-        $users = new \model\users(
-            $this->getApp()->getConfig()->getSettings('dbPool')
-        );
-        $results = $users->find()->getRowset();
-        return $this->asJson($results);
+        $users = new \model\users($this->getApp()->getConfig()->getSettings('dbPool'));
+        $what = ['id', 'email'];
+        $where = ['email' => 'pf%'];
+        return $this->asJson($users->find($what, $where)->getRowset());
     }
 
     /**

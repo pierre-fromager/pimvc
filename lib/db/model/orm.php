@@ -82,39 +82,15 @@ abstract class orm implements ormInterface{
             ? false
             : self::MODEL_USE_CACHE;
         $this->_restMode = (isset($config['restMode']) && $config['restMode'] == true);
-        //$this->_dsn = new Lib_Db_Dsn($adapter, $this->_slot);
-        /*
-        $this->_dsn = new \lib\db\dsn($config, $this->_slot);*/
-
-        /*$this->_defaultSchema = $this->_dsn->getSchema();
-        $this->_schema = (!empty($this->_schema)) 
-            ? $this->_schema
-            : $this->_dsn->getSchema();
-        $this->_dsn->setSchema($this->_schema);
-        if ($this->_adapter != self::MODEL_ADAPTER_PGSQL) {
-            $this->_schema = (empty($this->_schema)) 
-                ? '' 
-                : '`' . $this->_schema . '`';
-        }*/
         $this->_schema = $config[$this->_slot]['name'];
         $this->_db = \lib\db\factory::getConnection($config[$this->_slot]);
-        //$this->_db = Lib_Db_Factory::getConnection($this->_dsn->get());
-        
         $this->_domainClass = $this->getDomainName();
-
-        //$this->_domainClass = '\model\domain\users';
         $this->_domainInstance = new $this->_domainClass;
-        //echo $this->_adapter;die;
         $is4dOrPg = in_array($this->_adapter, [self::MODEL_ADAPTER_4D, self::MODEL_ADAPTER_PGSQL]);
         $this->_metas = (!$is4dOrPg) 
             ? $this->_metas = $this->describeTable() 
             : $this->getDomainFields();
-
-        //var_dump($this->_metas);
-        //die;
         $this->_columns = $this->getColumns();
-
-        //var_dump($this->_columns);die;
         /*
         $this->_uid = Tools_Session::getUid();
         if ($this->_uid  && $this->_adapter == self::MODEL_ADAPTER_4D && $this->_useCache) {
@@ -126,7 +102,6 @@ abstract class orm implements ormInterface{
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
             $this->run('SET NAMES \'UTF-8\'');
         }
-        //die;
         $this->_casts = [];
         return $this;
     }
@@ -979,10 +954,10 @@ abstract class orm implements ormInterface{
      * @param PDOStatement $poStatement
      * @param array $paArray
      */
-    protected function bindArray(PDOStatement &$poStatement, &$paArray, $forcedTypes = []) {
+    protected function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = []) {
         $motif = '/_' . $this->_primary . '$|id|code/';
         foreach ($paArray as $k => $v) {
-            $type = (preg_match($motif, $k)) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
             if ($this->is4dAdapter()) {
                 $type = $this->get4dTypeFromDomain($k);
                 $value = $this->get4dValueFromType($type, $v);
@@ -993,11 +968,11 @@ abstract class orm implements ormInterface{
                     $type = $forcedTypes;
                 } else {
                     $type = (preg_match($motif, $k)) 
-                        ? PDO::PARAM_INT 
-                        : PDO::PARAM_STR;
+                        ? \PDO::PARAM_INT 
+                        : \PDO::PARAM_STR;
                     $type = (is_numeric($v)) 
-                        ? PDO::PARAM_INT 
-                        : PDO::PARAM_STR;
+                        ? \PDO::PARAM_INT 
+                        : \PDO::PARAM_STR;
                 }
                 $value = is_array($v) ? serialize($v) : $v;
                 $key = ':' . $k;
