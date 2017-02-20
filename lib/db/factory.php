@@ -12,26 +12,15 @@ namespace lib\db;
 
 class factory {
 
-    const ADAPTER_PATH = '/Adapter/';
+    const ADAPTER_CLASS_PREFIX = '\lib\db\adapter\\';
+    const FACTORY_ADAPTER = 'adapter';
+    const FACTORY_NAME = 'name';
+    const FACTORY_SEP = '-';
 
     protected static $_connections = array();
 
-    /*
-     * Class Constructor - Create a new database connection if one doesn't exist
-     * Set to private so no-one can create a new instance via ' = new DB();'
-     */
-
-    private function __construct() {
-        
-    }
-
-    /*
-     * Like the constructor, we make __clone private so nobody can clone the instance
-     */
-
-    private function __clone() {
-        
-    }
+    private function __construct() {}
+    private function __clone() {}
 
     /**
      * getConnection tries to instanciate Db with Adapter
@@ -40,21 +29,10 @@ class factory {
      * @return mixed
      */
     public static function getConnection($params) {
-        $adapter = $params['adapter'];
-        $instanceName = $adapter . '-' . $params['name'];
+        $adapter = $params[self::FACTORY_ADAPTER];
+        $instanceName = $adapter . self::FACTORY_SEP . $params[self::FACTORY_NAME];
         if (!isset(self::$_connections[$instanceName])) {
-            $adapterClassName = '\lib\db\adapter\\' . strtolower($adapter);
-            /*
-            echo $adapterClassName;die;
-            $adapterName = 'Db' . ucfirst(strtolower($adapter)) . 'Adapter';
-            $adapterFile = dirname(__FILE__) . self::ADAPTER_PATH . $adapterName . '.php';
-            if (file_exists($adapterFile))
-                require_once $adapterFile;
-            else
-                throw new Exception($adapterFile . ' not found.');
-            if (!class_exists($adapterName)) {
-                die(sprintf('Adapter "%s" (%s) is not installed ', $adapter, $adapterName));
-            }*/
+            $adapterClassName = self::ADAPTER_CLASS_PREFIX . strtolower($adapter);
             try {
                 self::$_connections[$instanceName] = $adapterClassName::getInstance($params);
             } catch (PDOException $e) {
@@ -64,23 +42,4 @@ class factory {
         return self::$_connections[$instanceName];
     }
     
-    private static function setPoolInstance() {
-        
-    }
-
-    /*
-     * Passes on any static calls to this class onto the singleton PDO instance
-     * @param $chrMethod, $arrArguments
-     * @return $mix
-     */
-    /*
-      final public static function __callStatic( $chrMethod, $arrArguments ) {
-
-      $objInstance = self::getInstance();
-
-      return call_user_func_array(array($objInstance, $chrMethod), $arrArguments);
-
-      } # end method */
 }
-
-?>

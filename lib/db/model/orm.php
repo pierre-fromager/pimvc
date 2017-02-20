@@ -8,6 +8,7 @@
 
 namespace lib\db\model;
 
+use lib\db\model\exceptions\orm as ormException;
 use lib\db\model\interfaces\orm as ormInterface;
 
 abstract class orm implements ormInterface{
@@ -22,7 +23,7 @@ abstract class orm implements ormInterface{
     protected $_adapter = null;
     protected $_dependentTables = null;
     protected $_name = null;
-    protected $_types = array();
+    protected $_types = [];
     protected $_error = false;
     protected $_errorCode = 0;
     protected $_errorMessage = '';
@@ -39,12 +40,12 @@ abstract class orm implements ormInterface{
     protected $_domainClass = null;
     protected $_domainInstance = null;
     protected $_logger = null;
-    protected $_attributes = array();
+    protected $_attributes = [];
     
-    protected $_dependentModels = array();
-    protected $_refMap = array();
-    protected $_Or = array();
-    protected $_parenthesis = array();
+    protected $_dependentModels = [];
+    protected $_refMap = [];
+    protected $_Or = [];
+    protected $_parenthesis = [];
     
     public $_useCache = false;
     public $_cache = null;
@@ -53,8 +54,8 @@ abstract class orm implements ormInterface{
     protected $_uid = null;
     protected $sql = '';
     protected $patchWhere = '';
-    protected $_where = array();
-    protected $_whereCriterias = array();
+    protected $_where = [];
+    protected $_whereCriterias = [];
     protected $_fetchMode = \PDO::FETCH_ASSOC;
     protected $_restMode;
     protected $_casts;
@@ -64,17 +65,14 @@ abstract class orm implements ormInterface{
      * 
      * @param type $config 
      */
-    public function __construct($config = array()) {
-        if (!isset($this->_slot)) {
-            throw new \Exception('_slot property missing in ' . get_class($this));
-        }
+    public function __construct($config = []) {
         $this->_config = $config;
-        $this->_adapter = strtolower($this->_config[$this->_slot]['adapter']);
-        /*
-        $adapter = (is_null($this->_adapter)) 
-            ? self::MODEL_ADAPTER_DEFAULT 
-            : $this->_adapter;*/
+        if (!isset($this->_slot))
+            throw new ormException(ormException::ORM_EXC_MISSING_SLOT);
+        if (!isset($this->_config[$this->_slot]['adapter']))
+            throw new ormException(ormException::ORM_EXC_MISSING_ADAPTER);
         
+        $this->_adapter = strtolower($this->_config[$this->_slot]['adapter']);
         $this->_logger = \lib\logger::getFileInstance(
             APP_PATH . '/log/'
             , \lib\logger::DEBUG 
@@ -129,7 +127,7 @@ abstract class orm implements ormInterface{
             $this->run('SET NAMES \'UTF-8\'');
         }
         //die;
-        $this->_casts = array();
+        $this->_casts = [];
         return $this;
     }
     
@@ -256,7 +254,7 @@ abstract class orm implements ormInterface{
         $fields = array_keys($objectVars);
         $size = ($size == 0) ? $size = count($fields) : $size;
         $fields = array_slice($fields, 0, $size);
-        $formatedFields = array();
+        $formatedFields = [];
         foreach ($fields as $field) {
             $formatedFields[] = array(self::MODEL_INDEX_FIELD => $field);
         }
@@ -270,7 +268,7 @@ abstract class orm implements ormInterface{
      * @return array 
      */
     protected function getMetasInfo($info = null) {
-        $result = array();
+        $result = [];
         if (!empty($info)) {
             foreach ($this->_metas as $meta) {
                 if (isset($meta[$info])) {
@@ -418,7 +416,7 @@ abstract class orm implements ormInterface{
                 $striped = str_replace(", '", ',', $striped);
                 $striped = str_replace("'", '', $striped);
                 $arrStripped = explode(',', $striped);
-                $finalArray = array();
+                $finalArray = [];
                 foreach ($arrStripped as $column) {
                     $colInfo = explode(' ', $column);
                     $finalArray[] = array(
@@ -506,7 +504,7 @@ abstract class orm implements ormInterface{
      * 
      */   
     public function cleanRowset() {
-       $this->_rowset = array(); 
+       $this->_rowset = []; 
     }
     
     /**
@@ -524,7 +522,7 @@ abstract class orm implements ormInterface{
      * @return array 
      */
     public function getRowsetAsArray($preservedKey = '', $assignedKeyValue = '') {
-        $result = array();
+        $result = [];
         if (!empty($this->_rowset)) {
             if (empty($preservedKey)) {
                 foreach ($this->_rowset as $key => $value) {
@@ -650,7 +648,7 @@ abstract class orm implements ormInterface{
                 $this->cleanRowset();
                 $pkValue = $domainObject->$pk;
                 $where = array($pk => $pkValue);
-                $this->find(array(),$where);
+                $this->find([],$where);
                 $this->_current->hydrate((array) $domainObject);
                 if (property_exists($domainObject, 'counter')){
                     unset($domainObject->counter);
@@ -693,7 +691,7 @@ abstract class orm implements ormInterface{
             } else {           
                 $this->cleanRowset();
                 $where = array($pk => $domainObject->$pk);
-                $this->find(array(),$where);
+                $this->find([],$where);
                 $initialObject = $this->_current;
                 $lastObject = $domainObject;
                 $updatedDatas = $this->getDiffDomainObject(
@@ -829,7 +827,7 @@ abstract class orm implements ormInterface{
         $where = '';
         $excludeBind = array('in','!in','bool');
         if (!empty($criterias)) {
-            $result = array();
+            $result = [];
             $is4d = ($this->_adapter == self::MODEL_ADAPTER_4D);
             foreach ($criterias as $column => $value) {
                 $castType = (isset($this->_casts[$column])) 
@@ -981,7 +979,7 @@ abstract class orm implements ormInterface{
      * @param PDOStatement $poStatement
      * @param array $paArray
      */
-    protected function bindArray(PDOStatement &$poStatement, &$paArray, $forcedTypes = array()) {
+    protected function bindArray(PDOStatement &$poStatement, &$paArray, $forcedTypes = []) {
         $motif = '/_' . $this->_primary . '$|id|code/';
         foreach ($paArray as $k => $v) {
             $type = (preg_match($motif, $k)) ? PDO::PARAM_INT : PDO::PARAM_STR;
@@ -1052,15 +1050,15 @@ abstract class orm implements ormInterface{
      * @return \Lib_Db_Model_Domain_Abstract 
      */
     public function getParts($ri, $where) {
-        $partValues = array();
-        $dataSlice = array();
+        $partValues = [];
+        $dataSlice = [];
         $found = (($cardinality = $ri->counter($where)) > 0);
         $mi = $ri->getDomainInstance();
         $result = null;
         $isMyself = $ri instanceof $this;
         if ($found && $cardinality == 1 || $isMyself) {
             $parts = $mi->countParts();
-            $dataSlice = array();
+            $dataSlice = [];
             for ($c = 0; $c <= $parts; $c++) {
                 $this->_useCache = false;
                 $this->cleanRowset();
@@ -1100,7 +1098,7 @@ abstract class orm implements ormInterface{
         $result = new stdClass();
         $what = ($is4d) 
             ? $this->getDomainInstance()->getVars()
-            : array();
+            : [];
         $where = array($key => $value);
         $this->_useCache = false;
         $this->cleanRowset();       
@@ -1110,7 +1108,7 @@ abstract class orm implements ormInterface{
             $this->find($what, $where);
             $rowset = $this->getRowset();           
             $found = (isset($rowset[0]));
-            $result->$localAlias = ($found) ? $rowset[0] : array();           
+            $result->$localAlias = ($found) ? $rowset[0] : [];           
         } else {
             $result->$localAlias = $this->getParts($this, $where);
         }
@@ -1144,7 +1142,7 @@ abstract class orm implements ormInterface{
                     $mi = $ri->getDomainInstance();
                     $what = ($is4d) 
                         ? $this->get4dPertinentIndexes($mi) 
-                        : array();
+                        : [];
                     $alias = isset($keys['alias']) 
                         ? $keys['alias'] 
                         : get_class($mi);
@@ -1315,10 +1313,10 @@ abstract class orm implements ormInterface{
      * @param string $group
      */
     public function find(
-            $fieldList = array()
-            , $criterias = array()
-            , $orders = array()
-            , $limit = array()
+            $fieldList = []
+            , $criterias = []
+            , $orders = []
+            , $limit = []
             , $group = ''
             , $having = ''
             ) 
@@ -1375,7 +1373,8 @@ abstract class orm implements ormInterface{
      * 
      */
     protected function cleanParenthesis() {
-        $this->_parenthesis = array();
+        $this->_parenthesis = [];
+        return $this;
     }
     
     /**
@@ -1383,7 +1382,8 @@ abstract class orm implements ormInterface{
      * 
      */
     protected function cleanOr() {
-        $this->_Or = array();
+        $this->_Or = [];
+        return $this;
     }
 
 
@@ -1392,6 +1392,7 @@ abstract class orm implements ormInterface{
      */
     private function clearRowset() {
         $this->_rowset = null;
+        return $this;
     }
 
   
@@ -1444,6 +1445,7 @@ abstract class orm implements ormInterface{
      */
     public function add($mapperInstance) {
         $this->_current = $mapperInstance;
+        return $this;
     }
     
     /**
@@ -1452,7 +1454,7 @@ abstract class orm implements ormInterface{
      * @param string $modelName
      * @param array $params
      */
-    public function update($params = array()) {
+    public function update($params = []) {
         $is4d = $this->is4dAdapter();
         $pk = $this->_primary;
         $type = $this->_domainInstance->getPdo($pk);
@@ -1498,7 +1500,7 @@ abstract class orm implements ormInterface{
      * @return array 
      */
     private function getSbfParams($params) {
-        $spbParams = array();
+        $spbParams = [];
         foreach ($params as $key => $value) {
             $sbfTrans = $this->getSbfHash($key, $value);
             $spbParams[$sbfTrans] = $value;
@@ -1586,7 +1588,7 @@ abstract class orm implements ormInterface{
      * @param array $params
      */
     public function multidelete() {
-        $lot = array();
+        $lot = [];
         foreach ($this->getRowsetAsArray() as $rowset) {
             $lot[] = $rowset[$this->_primary];
         }
@@ -1605,7 +1607,7 @@ abstract class orm implements ormInterface{
      * @param boolean $forgetPrimary
      * @return boolean 
      */
-    public function insert($params = array(), $forgetPrimary = true) {
+    public function insert($params = [], $forgetPrimary = true) {
         if ($forgetPrimary) {
             unset($params[$this->_primary]);
         }      
@@ -1646,7 +1648,7 @@ abstract class orm implements ormInterface{
      * @param int $precision
      * @return float 
      */
-    public function getSum($column, $criterias = array(), $precision = 2) {
+    public function getSum($column, $criterias = [], $precision = 2) {
      return $this->getMathFn('sum', $column, $criterias, $precision);
     }
     
@@ -1658,7 +1660,7 @@ abstract class orm implements ormInterface{
      * @param int $precision
      * @return float 
      */
-    public function getAvg($column, $criterias = array(), $precision = 2) {
+    public function getAvg($column, $criterias = [], $precision = 2) {
      return $this->getMathFn('avg', $column, $criterias, $precision);
     }
     
@@ -1670,7 +1672,7 @@ abstract class orm implements ormInterface{
      * @param int $precision
      * @return float 
      */
-    public function getMathFn($fn, $column, $criterias = array(), $precision = 2, $precisionFn = 'round') {
+    public function getMathFn($fn, $column, $criterias = [], $precision = 2, $precisionFn = 'round') {
         $fnAliasName = $column . '_' . $fn;
         $expr = $fn . self::MODEL_PARENTH_O . $column . self::MODEL_PARENTH_C;
         $sql = self::MODEL_SELECT 
@@ -1704,7 +1706,7 @@ abstract class orm implements ormInterface{
      * @param array $bindParams
      * @return boolean 
      */
-    public function run($sql, $bindParams = array(), $bindTypes = array()) {
+    public function run($sql, $bindParams = [], $bindTypes = []) {
         if (self::MODEL_TRACE) {
             $this->_logger->logDebug('Sql run', $sql);
         }
@@ -1796,6 +1798,7 @@ abstract class orm implements ormInterface{
         unset($statementResult);
         $this->_statement->closeCursor();
         $this->seek();
+        return $this;
     }
     
     /**
@@ -1815,6 +1818,7 @@ abstract class orm implements ormInterface{
     public function setWhere($criterias) {
         $this->_whereCriterias = $criterias;
         $this->_where = $this->_getWhere($criterias);
+        return $this;
     }
     
     /**
@@ -1851,6 +1855,7 @@ abstract class orm implements ormInterface{
             $where = str_replace(':' . $prepKey, "'" . $value . "'", $where);
         }
         $this->_where = $where;
+        return $this;
     }
     
     /**
@@ -1887,6 +1892,7 @@ abstract class orm implements ormInterface{
      */
     public function setStatement($statement) {
         $this->_statement = $statement;
+        return $this;
     }
 
 }

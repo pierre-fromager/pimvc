@@ -17,7 +17,6 @@ class users extends \lib\db\model\orm{
     protected $_name ='user';
     protected $_primary = 'id';
     protected $_alias = 'users';
-    //protected $_adapter = self::MODEL_ADAPTER_MYSQL;
     
     private $userInfoFields = array(
         'id'
