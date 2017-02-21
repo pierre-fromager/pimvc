@@ -37,4 +37,9 @@ class users extends \lib\db\model\orm{
         parent::__construct($config);
         return $this;
     }
+    
+    public function po() {
+        $join = $this->leftJoin('po', 'uid', $this->_name, 'id');
+        var_dump($join);die;
+    }
 }
