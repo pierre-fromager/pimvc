@@ -20,9 +20,9 @@ interface response {
     const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
     const HEADER_LOCATION = 'Location: ';
 
-    public function __construct($content = []);
+    public function __construct($content);
             
-    public function setContent($content = []);
+    public function setContent($content);
 
     public function setHttpCode($code = 200);
 

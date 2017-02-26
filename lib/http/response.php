@@ -72,7 +72,7 @@ class response implements interfaces\response{
      * @param array $content
      * @return $this
      */
-    public function setContent($content = []) {
+    public function setContent($content) {
         $this->content = $content;
         return $this;
     }

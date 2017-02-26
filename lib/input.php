@@ -8,6 +8,7 @@
  * @category Security
  * @package Pimvc
  */
+
 namespace lib;
 
 class input {
@@ -47,7 +48,6 @@ class input {
     const V_URL = 'Url';
     const V_DEFAULT = 'Default';
     const V_BOOLEAN = 'Boolean';
-    
     const PARAM_FILTER = 'filter';
     const PARAM_VALIDATE = 'validate';
     const PARAM_VALUE = 'value';
@@ -86,8 +86,7 @@ class input {
      *
      * @return Input
      */
-    public function __construct(array $params, array $filters, array $validators)
-    {
+    public function __construct(array $params, array $filters, array $validators) {
         $this->_params = $params;
         $this->_filters = $filters;
         $this->_validators = $validators;
@@ -95,7 +94,7 @@ class input {
         $refl = new \ReflectionClass(__CLASS__);
         $this->_classConstants = $refl->getConstants();
     }
-    
+
     /**
      * __destruct
      * 
@@ -114,8 +113,7 @@ class input {
      * @return bool returns true if every validator is validating, or false if any validator is not
      * This method always filters before validating
      */
-    public function isValid()
-    {
+    public function isValid() {
         // 1) filter
         $this->filter();
         // 2) validate
@@ -127,8 +125,7 @@ class input {
      *
      * @return void
      */
-    public function filter()
-    {
+    public function filter() {
         $this->metaFilterAndValidate(self::PARAM_FILTER);
     }
 
@@ -137,8 +134,7 @@ class input {
      *
      * @return void
      */
-    public function validate()
-    {
+    public function validate() {
         return $this->metaFilterAndValidate(self::PARAM_VALIDATE);
     }
 
@@ -147,14 +143,13 @@ class input {
      *
      * @return array
      */
-    public function getMessages()
-    {
+    public function getMessages() {
         $messages = array();
         foreach ($this->_fields as $fieldName => $values) {
             if (!$values['isValid']) {
                 $invalidators = array();
                 foreach ($values['validators'] as $validatorName => $validatorValue) {
-                    if (! $validatorValue) {
+                    if (!$validatorValue) {
                         $invalidators[] = $validatorName;
                     }
                 }
@@ -172,33 +167,30 @@ class input {
      *
      * @return array
      */
-    public function getFields()
-    {
+    public function getFields() {
         return $this->_fields;
     }
-    
+
     /**
      * Returns every input parameter after content filtering
      *
      * @return array
      */
-    public function getFilteredFields()
-    {
+    public function getFilteredFields() {
         $filteredFields = array();
         foreach ($this->_fields as $fieldName => $data) {
             $filteredFields[$fieldName] = $data[self::PARAM_VALUE];
         }
         return $filteredFields;
     }
-    
+
     /**
      * Does all the work needed to filter and validate the input parameters
      *
      * @param string $metaAction ("filter" or "validate")
      * @return mixed
      */
-    private function metaFilterAndValidate($metaAction)
-    {
+    private function metaFilterAndValidate($metaAction) {
         if ($metaAction == self::PARAM_FILTER) {
             $metaSource = $this->_filters;
         } elseif ($metaAction == self::PARAM_VALIDATE) {
@@ -208,21 +200,17 @@ class input {
         foreach ($metaSource as $paramName => $options) {
             if ($metaAction == self::PARAM_FILTER) {
                 $this->setField(
-                    $paramName
-                    , (isset($this->_params[$paramName]) 
-                        ? $this->_params[$paramName] 
-                        : null
-                    )
+                        $paramName
+                        , (isset($this->_params[$paramName]) ? $this->_params[$paramName] : null
+                        )
                 );
             }
             if ($metaAction == self::PARAM_VALIDATE) {
                 if (!isset($this->_fields[$paramName])) {
                     $this->setField(
-                        $paramName
-                        , (isset($this->_params[$paramName]) 
-                            ? $this->_params[$paramName] 
-                            : null
-                        )
+                            $paramName
+                            , (isset($this->_params[$paramName]) ? $this->_params[$paramName] : null
+                            )
                     );
                 }
                 $validators = array();
@@ -274,32 +262,32 @@ class input {
                     if ($metaAction == self::PARAM_FILTER) {
                         if (isset($optionParameter)) {
                             $this->setField(
-                                $paramName
-                                , $className::$methodName(
-                                    $this->_fields[$paramName][self::PARAM_VALUE]
-                                    , $optionParameter
-                                )
+                                    $paramName
+                                    , $className::$methodName(
+                                            $this->_fields[$paramName][self::PARAM_VALUE]
+                                            , $optionParameter
+                                    )
                             );
                         } else {
                             $this->setField(
-                                $paramName
-                                , $className::$methodName(
-                                    $this->_fields[$paramName][self::PARAM_VALUE]
-                                )
+                                    $paramName
+                                    , $className::$methodName(
+                                            $this->_fields[$paramName][self::PARAM_VALUE]
+                                    )
                             );
                         }
                     } elseif ($metaAction == self::PARAM_VALIDATE) {
                         if (isset($optionParameter)) {
                             $ret = $className::$methodName(
-                                $this->_fields[$paramName][self::PARAM_VALUE]
-                                , $optionParameter
-                                , $this
+                                            $this->_fields[$paramName][self::PARAM_VALUE]
+                                            , $optionParameter
+                                            , $this
                             );
                         } else {
                             $ret = $className::$methodName(
-                                $this->_fields[$paramName][self::PARAM_VALUE]
-                                , null
-                                , $this
+                                            $this->_fields[$paramName][self::PARAM_VALUE]
+                                            , null
+                                            , $this
                             );
                         }
                         // add the validator to the validators for this field
@@ -317,12 +305,12 @@ class input {
                         $methodNameForOption = ($hasFilter) ? self::PARAM_FILTER : self::PARAM_VALIDATE;
                         $methodNameForOption .= $this->_classConstants[$methodNameFromConstants];
                     }
-                                        
+
                     if (in_array($methodNameForOption, $this->_classMethods)) {
                         if ($methodNameForOption == 'validateRequired') {
                             $ret = array_key_exists($paramName, $this->_params);
                         } else {
-                            if (! isset($optionParameter)) {
+                            if (!isset($optionParameter)) {
                                 $optionParameter = null;
                             }
                             if (is_array($this->_fields[$paramName][self::PARAM_VALUE])) {
@@ -373,14 +361,14 @@ class input {
                         }
                     } else {
                         throw new \Exception(
-                            __CLASS__ . ' hasn\'t a method called "' 
-                                . $methodNameForOption . '"'
+                        __CLASS__ . ' hasn\'t a method called "'
+                        . $methodNameForOption . '"'
                         );
                     }
                 }
             }
             unset($option);
-            
+
             // we set the field after all the input value went through all validators
             if ($metaAction == self::PARAM_VALIDATE) {
                 // we test for each params if one of validators is not valid.
@@ -398,7 +386,7 @@ class input {
             return $isValid;
         }
     }
-    
+
     /**
      * After filtering or validating, updates the field with additional data
      *
@@ -409,16 +397,11 @@ class input {
      *
      * @return mixed
      */
-    private function setField($paramName, $value = false, $isValid = null, $validators = null)
-    {
-        if (! isset($this->_fields[$paramName])) {
+    private function setField($paramName, $value = false, $isValid = null, $validators = null) {
+        if (!isset($this->_fields[$paramName])) {
             $this->_fields[$paramName] = array(
-                'originalValue' => (isset($this->_params[$paramName])) 
-                    ? $this->_params[$paramName] 
-                    : null
-                , self::PARAM_VALUE => (isset($this->_params[$paramName])) 
-                    ? $this->_params[$paramName] 
-                    : null
+                'originalValue' => (isset($this->_params[$paramName])) ? $this->_params[$paramName] : null
+                , self::PARAM_VALUE => (isset($this->_params[$paramName])) ? $this->_params[$paramName] : null
                 , 'isValid' => true
                 , 'validators' => array()
             );
@@ -441,8 +424,7 @@ class input {
      *
      * @return mixed
      */
-    public function __get($paramName)
-    {
+    public function __get($paramName) {
         return $this->_fields[$paramName][self::PARAM_VALUE];
     }
 
@@ -453,8 +435,7 @@ class input {
      *
      * @return boolean
      */
-    public function __isset($paramName)
-    {
+    public function __isset($paramName) {
         return isset($this->_fields[$paramName][self::PARAM_VALUE]);
     }
 
@@ -465,17 +446,15 @@ class input {
      *
      * @return boolean
      */
-    private function isAssoc($array)
-    {
+    private function isAssoc($array) {
         return (
-            is_array($array) 
-            && array_diff_key(
+            is_array($array) && array_diff_key(
                 $array
                 , array_keys(array_keys($array))
             )
         );
     }
-    
+
     // ************************************************************************
     // filter functions
     // ************************************************************************
@@ -487,11 +466,8 @@ class input {
      *
      * @return mixed
      */
-    public static function filterNullIfEmptyString($value)
-    {
-        if ($value == '') {
-            return null;
-        }
+    public static function filterNullIfEmptyString($value) {
+        if ($value == '') return null;
         return $value;
     }
 
@@ -501,8 +477,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterInt($value)
-    {
+    public static function filterInt($value) {
         return filter_var($value, FILTER_SANITIZE_NUMBER_INT);
     }
 
@@ -512,8 +487,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterNatural($value)
-    {
+    public static function filterNatural($value) {
         return abs(self::filterInt($value));
     }
 
@@ -523,8 +497,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterNaturalNonZero($value)
-    {
+    public static function filterNaturalNonZero($value) {
         $natural = self::filterNatural($value);
         if ($natural != 0) {
             return $natural;
@@ -539,8 +512,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterAlpha($value)
-    {
+    public static function filterAlpha($value) {
         return preg_replace(self::REGEXP_ALPHA, '', $value);
     }
 
@@ -550,8 +522,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterAlphaNum($value)
-    {
+    public static function filterAlphaNum($value) {
         return preg_replace(self::REGEXP_ALPHANUM, '', $value);
     }
 
@@ -561,8 +532,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterBase64($value)
-    {
+    public static function filterBase64($value) {
         return preg_replace(self::REGEXP_BASE64, '', $value);
     }
 
@@ -572,8 +542,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterBoolean($value)
-    {
+    public static function filterBoolean($value) {
         $out = filter_var($value, FILTER_VALIDATE_BOOLEAN);
         return $out;
     }
@@ -584,12 +553,11 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterNumeric($value)
-    {
+    public static function filterNumeric($value) {
         return filter_var(
-            $value
-            , FILTER_SANITIZE_NUMBER_FLOAT
-            , FILTER_FLAG_ALLOW_FRACTION
+                $value
+                , FILTER_SANITIZE_NUMBER_FLOAT
+                , FILTER_FLAG_ALLOW_FRACTION
         );
     }
 
@@ -599,8 +567,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterStripTags($value)
-    {
+    public static function filterStripTags($value) {
         return strip_tags($value);
     }
 
@@ -612,8 +579,7 @@ class input {
 
      * @return mixed
      */
-    public static function filterRegexp($value, $regexp)
-    {
+    public static function filterRegexp($value, $regexp) {
         return preg_replace($regexp, '', $value);
     }
 
@@ -623,12 +589,11 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterString($value)
-    {
+    public static function filterString($value) {
         return filter_var(
-            $value
-            , FILTER_SANITIZE_STRING
-            , FILTER_FLAG_STRIP_LOW
+                $value
+                , FILTER_SANITIZE_STRING
+                , FILTER_FLAG_STRIP_LOW
         );
     }
 
@@ -638,8 +603,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterTrim($value)
-    {
+    public static function filterTrim($value) {
         return trim($value);
     }
 
@@ -649,23 +613,21 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function filterUrl($value)
-    {
+    public static function filterUrl($value) {
         return filter_var($value, FILTER_SANITIZE_URL);
     }
-    
+
     // ************************************************************************
     // validator functions
     // ************************************************************************
-    
+
     /**
      * Validates that the input value is an integer
      *
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateInt($value)
-    {
+    public static function validateInt($value) {
         return (self::filterInt($value) == $value);
     }
 
@@ -675,8 +637,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateNatural($value)
-    {
+    public static function validateNatural($value) {
         return (self::filterNatural($value) == $value);
     }
 
@@ -686,8 +647,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateNaturalNonZero($value)
-    {
+    public static function validateNaturalNonZero($value) {
         return (self::filterNaturalNonZero($value) == $value);
     }
 
@@ -697,8 +657,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateAlpha($value)
-    {
+    public static function validateAlpha($value) {
         return (bool) preg_match(self::REGEXP_ALPHA, $value);
     }
 
@@ -708,8 +667,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateAlphaNum($value)
-    {
+    public static function validateAlphaNum($value) {
         return (bool) preg_match(self::REGEXP_ALPHANUM, $value);
     }
 
@@ -719,8 +677,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateBase64($value)
-    {
+    public static function validateBase64($value) {
         return (bool) preg_match(self::REGEXP_BASE64, $value);
     }
 
@@ -730,8 +687,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateBoolean($value)
-    {
+    public static function validateBoolean($value) {
         return (self::filterBoolean($value) == $value);
     }
 
@@ -741,8 +697,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateNumeric($value, $compare, $instance)
-    {
+    public static function validateNumeric($value, $compare, $instance) {
         return (self::filterNumeric($value) == $value);
     }
 
@@ -754,8 +709,7 @@ class input {
      *
      * @return mixed
      */
-    public static function validateEquals($value, $check)
-    {
+    public static function validateEquals($value, $check) {
         return (bool) ($value == $check);
     }
 
@@ -766,8 +720,7 @@ class input {
      * @param string $regexp the regular expression to validate to
      * @return mixed
      */
-    public static function validateRegexp($value, $regexp)
-    {
+    public static function validateRegexp($value, $regexp) {
         return (bool) preg_match($regexp, $value);
     }
 
@@ -777,8 +730,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateRequired($value)
-    {
+    public static function validateRequired($value) {
         throw new \Exception('This method should never be called');
     }
 
@@ -788,9 +740,8 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateNotEmpty($value)
-    {
-        return ! (trim($value) === '');
+    public static function validateNotEmpty($value) {
+        return !(trim($value) === '');
     }
 
     /**
@@ -800,8 +751,7 @@ class input {
      * @param mixed $compare the value to compare to
      * @return mixed
      */
-    public static function validateGreaterThan($value, $compare)
-    {
+    public static function validateGreaterThan($value, $compare) {
         return ($value >= $compare);
     }
 
@@ -812,11 +762,10 @@ class input {
      * @param mixed $compare the value to compare to
      * @return mixed
      */
-    public static function validateLessThan($value, $compare)
-    {
+    public static function validateLessThan($value, $compare) {
         return ($value <= $compare);
     }
-    
+
     /**
      * Validates that the input value has a minimum length of the given parameter
      *
@@ -824,8 +773,7 @@ class input {
      * @param mixed $compare the value to compare to
      * @return mixed
      */
-    public static function validateMinLength($value, $compare)
-    {
+    public static function validateMinLength($value, $compare) {
         return (mb_strlen($value) >= $compare);
     }
 
@@ -836,8 +784,7 @@ class input {
      * @param mixed $compare the value to compare to
      * @return mixed
      */
-    public static function validateMaxLength($value, $compare)
-    {
+    public static function validateMaxLength($value, $compare) {
         return (mb_strlen($value) <= $compare);
     }
 
@@ -848,8 +795,7 @@ class input {
      * @param mixed $compare the value to compare to
      * @return mixed
      */
-    public static function validateExactLength($value, $compare)
-    {
+    public static function validateExactLength($value, $compare) {
         return (mb_strlen($value) == $compare);
     }
 
@@ -859,8 +805,7 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateEmail($value)
-    {
+    public static function validateEmail($value) {
         $regexp = '/^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}$/i';
         return (bool) preg_match($regexp, $value);
     }
@@ -873,8 +818,7 @@ class input {
      * @param mixed $instance the instance of the Input object
      * @return mixed
      */
-    public static function validateMatches($value, $compareField, $instance)
-    {
+    public static function validateMatches($value, $compareField, $instance) {
         if (isset($instance->_fields[$compareField])) {
             return ($value == $instance->_fields[$compareField][self::PARAM_VALUE]);
         }
@@ -886,9 +830,8 @@ class input {
      * @param mixed $value the value of the input parameter
      * @return mixed
      */
-    public static function validateUrl($value)
-    {
-        if (($url = parse_url($value)) && ! empty($url['scheme']) && ! empty($url['host'])) {
+    public static function validateUrl($value) {
+        if (($url = parse_url($value)) && !empty($url['scheme']) && !empty($url['host'])) {
             return true;
         }
         return false;
@@ -901,11 +844,11 @@ class input {
      * @param mixed $defaultValue the default value to assign if the input value is empty
      * @return mixed
      */
-    public static function validateDefault($value, $defaultValue)
-    {
+    public static function validateDefault($value, $defaultValue) {
         if (empty($value)) {
             return $defaultValue;
         }
         return $value;
     }
+
 }

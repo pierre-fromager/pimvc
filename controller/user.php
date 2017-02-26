@@ -8,7 +8,12 @@
 
 namespace controller;
 
+use \lib\input\custom\filters\range as inputFilter;
+use \lib\input\custom\filters\range as inputRange;
+
 class user extends \lib\controller\basic{
+    
+    const PARAM_ID = 'id';
     
     private $modelConfig;
     private $userModel;
@@ -29,16 +34,32 @@ class user extends \lib\controller\basic{
      */
     public function index() {
         $params = $this->getParams();
-        $idThreshold = (isset($params['id'])) ? (int) $params['id'] : 800;
-        $emailContain = (isset($params['email'])) 
-            ? '%' . $params['email'] . '%' 
-            : '%';
-        return $this->asJson(
-            $this->userModel->find(
-                ['id', 'email'] , 
-                ['id#>' => $idThreshold, 'email' => $emailContain]
-            )->getRowset()
+        $input = new inputFilter(
+            $params
+            , [
+                self::PARAM_ID => new inputRange(
+                    [
+                        inputRange::MIN_RANGE => 1,
+                        inputRange::MAX_RANGE => 10000,
+                        inputRange::CAST => inputRange::FILTER_INTEGER
+                    ]
+                )
+            ]
         );
+        $transform = new \stdClass();
+        $transform->filter = $input->process();
+        //var_dump($transform);die;
+        $idThreshold = (isset($input->id)) ? $input->id : 800;
+        $emailContain = (isset($input->email)) 
+            ? '%' . $input->email . '%' 
+            : '%';
+        $transform->errors = $input->getMessages();
+        $transform->validity = $input->isValid();
+        $transform->data = $this->userModel->find(
+            ['id', 'email'] , 
+            ['id#>' => $idThreshold, 'email' => $emailContain]
+        )->getRowset();
+        return $this->asJson($transform);
     }
     
     /**
