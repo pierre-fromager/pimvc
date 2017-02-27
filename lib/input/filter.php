@@ -17,6 +17,8 @@ class filter {
     private $filterArgs;
     private $data;
     private $prepared;
+    private $result;
+
 
     /**
      * __construct
@@ -27,7 +29,7 @@ class filter {
     public function __construct($data, $filterArgs) {
         $this->filterArgs = $filterArgs;
         $this->data = $data;
-        $this->prepare();
+        $this->prepare()->process();
         return $this;
     }
     
@@ -38,21 +40,58 @@ class filter {
     protected function prepare() {
         $this->prepared = [];
         foreach ($this->filterArgs as $key => $value) {
-            $this->prepared[$key] = [
-                self::INPUT_FILTER_FILTER => FILTER_CALLBACK,
-                self::INPUT_FILTER_OPTIONS => [$value, self::INPUT_FILTER_PROCESS]
-            ];
+            $callable = is_object($value);
+            if ($callable) {
+                $this->prepared[$key] = [
+                    self::INPUT_FILTER_FILTER => FILTER_CALLBACK 
+                ];
+                $call = [$value, self::INPUT_FILTER_PROCESS];
+                $this->prepared[$key][self::INPUT_FILTER_OPTIONS] = $call;
+            } else {
+                $this->prepared[$key] = $value;
+            }
         }
         unset($this->filterArgs);
+        return $this;
     }
 
+    /**
+     * process
+     * 
+     * @return array
+     */
+    public function process() {
+        $this->result = \filter_var_array($this->data, $this->prepared);
+        return $this;
+    }
+    
     /**
      * get
      * 
      * @return array
      */
     public function get() {
-        return \filter_var_array($this->data, $this->prepared);
+        return $this->result;
+    }
+    
+    /**
+     * __get
+     * 
+     * @param string $paramName
+     * @return mixed
+     */
+    public function __get($paramName) {
+        return $this->result[$paramName];
+    }
+    
+    /**
+     * __get
+     * 
+     * @param string $paramName
+     * @return mixed
+     */
+    public function __isset($paramName) {
+        return isset($this->result[$paramName]);
     }
 
 }

@@ -27,9 +27,8 @@ abstract class filters implements \lib\input\custom\filters\interfaces{
      * @return boolean
      */
     protected function castAble($val) {
-        $isCasted = isset($this->options[self::CAST]);
-        if ($isCasted) {
-            settype($val, $this->options[self::CAST]);
+        if (isset($this->options[self::CAST]) && !settype($val, $this->options[self::CAST])) {
+            return $this->options[self::_DEFAULT];
         }
         return $val;
     }

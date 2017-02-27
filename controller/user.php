@@ -8,12 +8,14 @@
 
 namespace controller;
 
-use \lib\input\custom\filters\range as inputFilter;
+use \lib\input\filter as inputFilter;
 use \lib\input\custom\filters\range as inputRange;
 
 class user extends \lib\controller\basic{
     
     const PARAM_ID = 'id';
+    const PARAM_EMAIL = 'email';
+
     
     private $modelConfig;
     private $userModel;
@@ -33,9 +35,28 @@ class user extends \lib\controller\basic{
      * @return \lib\http\response
      */
     public function index() {
-        $params = $this->getParams();
-        $input = new inputFilter(
-            $params
+        $input = $this->getIndexInputFilter();
+        $idThreshold = (isset($input->id)) ? $input->id : 800;
+        $emailContain = (isset($input->email)) 
+            ? '%' . $input->email . '%' 
+            : '%';
+        $transform = new \stdClass();
+        $transform->filter = $input->get();
+        $transform->data = $this->userModel->find(
+            [self::PARAM_ID, self::PARAM_EMAIL] , 
+            ['id#>' => $idThreshold, self::PARAM_EMAIL => $emailContain]
+        )->getRowset();
+        return $this->asJson($transform);
+    }
+    
+    /**
+     * getIndexInputFilter
+     * 
+     * @return inputFilter
+     */
+    private function getIndexInputFilter() {
+        return new inputFilter(
+            $this->getParams()
             , [
                 self::PARAM_ID => new inputRange(
                     [
@@ -43,23 +64,10 @@ class user extends \lib\controller\basic{
                         inputRange::MAX_RANGE => 10000,
                         inputRange::CAST => inputRange::FILTER_INTEGER
                     ]
-                )
+                ),
+                self::PARAM_EMAIL => FILTER_SANITIZE_ENCODED
             ]
         );
-        $transform = new \stdClass();
-        $transform->filter = $input->process();
-        //var_dump($transform);die;
-        $idThreshold = (isset($input->id)) ? $input->id : 800;
-        $emailContain = (isset($input->email)) 
-            ? '%' . $input->email . '%' 
-            : '%';
-        $transform->errors = $input->getMessages();
-        $transform->validity = $input->isValid();
-        $transform->data = $this->userModel->find(
-            ['id', 'email'] , 
-            ['id#>' => $idThreshold, 'email' => $emailContain]
-        )->getRowset();
-        return $this->asJson($transform);
     }
     
     /**

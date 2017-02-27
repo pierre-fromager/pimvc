@@ -63,7 +63,7 @@ class range extends abstracts\filters{
     public function process($val) {
         $this->options = $this->getOptions($this->getDefault());
         if ($this->isValid($val, $this->options)) {
-            if ($castValue  = $this->castAble($val, $this->options)) {
+            if ($castValue = $this->castAble($val, $this->options)) {
                 return $castValue;
             }
             return $val;
