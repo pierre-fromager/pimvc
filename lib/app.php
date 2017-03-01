@@ -39,6 +39,7 @@ class app implements interfaces\app{
     public function __construct(config $config) {
         $this->setConfig($config);
         $this->request = new request();
+        $this->request->startSession();
         $this->routes = new routes($this->getConfig()->getSettings('routes'));
         $this->router = new router($this->routes);
         $this->response = new response();

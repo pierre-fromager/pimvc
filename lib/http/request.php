@@ -51,6 +51,42 @@ class request implements interfaces\request{
     public function getUri() {
         return $this->getServer(self::REQUEST_URI);
     }
+    
+    /**
+     * getScheme
+     * 
+     * @return string
+     */
+    public function getScheme() {
+        return $this->getServer(self::REQUEST_SCHEME);
+    }
+    
+    /**
+     * getHost
+     * 
+     * @return string
+     */
+    public function getHost() {
+        return $this->getServer(self::REQUEST_HOST);
+    }
+    
+    /**
+     * getUrl
+     * 
+     * @return string
+     */
+    public function getUrl() {
+        return  $this->getBaseUrl() . $this->getUri();
+    }
+    
+    /**
+     * getBaseUrl
+     * 
+     * @return string
+     */
+    public function getBaseUrl() {
+        return  $this->getScheme() . self::SCHEME_SUFFIX . $this->getHost();
+    }
 
     /**
      * getServer
@@ -69,6 +105,7 @@ class request implements interfaces\request{
      * @return type
      */
     public function getParsedQuery($query){
+        $fragments = [];
         parse_str(parse_url($query)[self::REQUEST_QUERY], $fragments);
         return $fragments;
     }
@@ -130,11 +167,80 @@ class request implements interfaces\request{
     }
     
     /**
+     * startSession
+     * 
+     */
+    public function startSession() {
+        session_name(sha1($this->getBaseUrl()));
+        session_start();
+        return $this;
+    }
+    
+    /**
+     * set
+     * 
+     * @param string $name
+     * @param mixed $value 
+     * @param string $key 
+     */
+    public function setSession($name, $value, $key = '') {
+        if ($key) {
+            $_SESSION[$name][$key] = $value;
+        } else {
+            $_SESSION[$name] = $value;
+        }
+        return $this;
+    }
+    
+    /**
+     * deleteSession
+     * 
+     * @param string $name
+     * @param string $key 
+     */
+    public function deleteSession($name, $key = '') {
+        if ($key) {
+            unset($_SESSION[$name][$key]);
+        } else {
+            unset($_SESSION[$name]);
+        }
+        return $this;
+    }
+
+    /**
+     * hasSession
+     * 
+     * @param string $name
+     * @param string $key
+     * @return boolean 
+     */
+    public function hasSession($name, $key = '') {
+        if (!$key) {
+            return (isset($_SESSION[$name]) && !empty($_SESSION[$name]));
+        }
+        return (isset($_SESSION[$name][$key]) && !empty($_SESSION[$name][$key]));
+    }
+
+    /**
+     * getSession
+     * 
+     * @param string $name
+     * @param string $key
+     * @return mixed 
+     */
+    public function getSession($name, $key = '') {
+        if (!$key) {
+            return (self::has($name)) ? $_SESSION[$name] : '';
+        }
+        return (self::has($name, $key)) ? $_SESSION[$name][$key] : '';
+    }
+
+    /**
      * assignServer
      * 
      */
     private function assignServer() {
-        $this->server = $_SERVER;
+        $this->server = &$_SERVER;
         return $this;
     }
     
