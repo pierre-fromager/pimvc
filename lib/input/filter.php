@@ -19,7 +19,6 @@ class filter {
     private $prepared;
     private $result;
 
-
     /**
      * __construct
      * 
@@ -32,23 +31,21 @@ class filter {
         $this->prepare()->process();
         return $this;
     }
-    
+
     /**
      * prepare
      * 
      */
     protected function prepare() {
         $this->prepared = [];
-        foreach ($this->filterArgs as $key => $value) {
-            $callable = is_object($value);
-            if ($callable) {
-                $this->prepared[$key] = [
-                    self::INPUT_FILTER_FILTER => FILTER_CALLBACK 
+        foreach ($this->filterArgs as $k => $v) {
+            if (is_object($v)) {
+                $this->prepared[$k] = [
+                    self::INPUT_FILTER_FILTER => FILTER_CALLBACK,
+                    self::INPUT_FILTER_OPTIONS => [$v, self::INPUT_FILTER_PROCESS]
                 ];
-                $call = [$value, self::INPUT_FILTER_PROCESS];
-                $this->prepared[$key][self::INPUT_FILTER_OPTIONS] = $call;
             } else {
-                $this->prepared[$key] = $value;
+                $this->prepared[$k] = $v;
             }
         }
         unset($this->filterArgs);
@@ -64,7 +61,7 @@ class filter {
         $this->result = \filter_var_array($this->data, $this->prepared);
         return $this;
     }
-    
+
     /**
      * get
      * 
@@ -73,7 +70,7 @@ class filter {
     public function get() {
         return $this->result;
     }
-    
+
     /**
      * __get
      * 
@@ -83,7 +80,7 @@ class filter {
     public function __get($paramName) {
         return $this->result[$paramName];
     }
-    
+
     /**
      * __get
      * 
@@ -92,6 +89,16 @@ class filter {
      */
     public function __isset($paramName) {
         return isset($this->result[$paramName]);
+    }
+    
+    /**
+     * __destruct
+     * 
+     */
+    public function __destruct() {
+        foreach ($this as $k => $v) {
+            unset($this->$k);
+        };
     }
 
 }
