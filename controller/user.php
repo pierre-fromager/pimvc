@@ -36,16 +36,18 @@ class user extends \lib\controller\basic{
      */
     public function index() {
         $input = $this->getIndexInputFilter();
-        $idThreshold = (isset($input->id)) ? $input->id : 800;
-        $emailContain = (isset($input->email)) 
-            ? '%' . $input->email . '%' 
-            : '%';
         $transform = new \stdClass();
         $transform->filter = $input->get();
         $transform->data = $this->userModel->find(
             [self::PARAM_ID, self::PARAM_EMAIL] , 
-            ['id#>' => $idThreshold, self::PARAM_EMAIL => $emailContain]
+            [
+                'id#>' => (isset($input->id)) ? $input->id : 800
+                , self::PARAM_EMAIL => (isset($input->email)) 
+                    ? '%' . $input->email . '%' 
+                    : '%'
+            ]
         )->getRowset();
+        unset($input);
         return $this->asJson($transform);
     }
     
@@ -62,11 +64,30 @@ class user extends \lib\controller\basic{
                     [
                         inputRange::MIN_RANGE => 1,
                         inputRange::MAX_RANGE => 10000,
+                        inputRange::_DEFAULT => 800,
                         inputRange::CAST => inputRange::FILTER_INTEGER
                     ]
                 ),
-                self::PARAM_EMAIL => FILTER_SANITIZE_ENCODED
+                self::PARAM_EMAIL => FILTER_SANITIZE_STRING
             ]
+        );
+    }
+    
+    public function register() {
+        $request = $this->getApp()->getRequest();
+        $form = (new \lib\form(
+            ['login','password']
+            , 'register-form'
+            , $request->getUrl()
+            , 'POST'
+            , $this->getParams()
+        ))->setRequest($request)->get();
+        $viewParams = [
+            'form' => $form
+        ];
+        return $this->getUserView(
+            $viewParams, 
+            $this->getApp()->getPath() .'/views/user/register.php'
         );
     }
     
