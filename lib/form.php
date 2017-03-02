@@ -11,25 +11,7 @@ namespace lib;
 
 use lib\html\element\decorator;
 
-class form {
-
-    const SUBMIT_LABEL = 'Valider';
-    const CLEAN_LABEL = 'Effacer';
-    const FORM_ELEMENT_ID_PREFIX = 'field_';
-    const FORM_MANDATORY_FIELD_MENTIONS = '<small>(*) Champs obligatoires.</small>';
-    const FORM_VALIDATOR_CLASS = 'Lib_Validator_Abstract';
-    const FORM_SIMPLE_SECTION_SIZE = 3;
-    const FORM_DEFAULT_MODE = '';
-    const FORM_FIELD_SEPARATOR = '-';
-    const FORM_ICON_PATH = 'public/images/toolbar/';
-    const FORM_FIELD_VALID_ICON = 'valid.png';
-    const FORM_FIELD_VALID_ICON_MESSAGE = 'Valid';
-    const FORM_FIELD_FAILED_ICON = 'warning.png';
-    const FORM_XCSRF = 'xcsrf';
-    const FORM_BREAK = '<br style="clear:both">';
-    const PARAM_CLASS = 'class';
-    const PARAM_ID = 'id';
-    const PARAM_FIELD = 'Field';
+class form implements interfaces\form{
    
     protected $baseUrl = '';
     protected $fieldList = array();
@@ -75,7 +57,7 @@ class form {
     protected $isPost = false;
 
     /**
-     * Constructeur de formulaire
+     * __construct
      * 
      * @param array $fieldList
      * @param string $name
