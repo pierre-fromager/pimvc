@@ -15,7 +15,10 @@ class user extends \lib\controller\basic{
     
     const PARAM_ID = 'id';
     const PARAM_EMAIL = 'email';
-
+    const PARAM_LOGIN = 'login';
+    const PARAM_PASSWORD = 'password';
+    const VIEW_USER_PATH = '/views/user/';
+    const WILDCARD = '%';
     
     private $modelConfig;
     private $userModel;
@@ -41,10 +44,10 @@ class user extends \lib\controller\basic{
         $transform->data = $this->userModel->find(
             [self::PARAM_ID, self::PARAM_EMAIL] , 
             [
-                'id#>' => (isset($input->id)) ? $input->id : 800
+                self::PARAM_ID.'#>' => (isset($input->id)) ? $input->id : 800
                 , self::PARAM_EMAIL => (isset($input->email)) 
-                    ? '%' . $input->email . '%' 
-                    : '%'
+                    ? self::WILDCARD . $input->email . self::WILDCARD 
+                    : self::WILDCARD
             ]
         )->getRowset();
         unset($input);
@@ -73,23 +76,82 @@ class user extends \lib\controller\basic{
         );
     }
     
+    /**
+     * login
+     * 
+     * @return type
+     */
+    public function login() {
+        $request = $this->getApp()->getRequest();
+        $postedData = $request->get()[$request::REQUEST_P_REQUEST];
+        $inputLoginFilter = $this->getLoginInputFilter($postedData);
+        $form = (new \lib\form())
+            ->setMethod($request::REQUEST_METHOD_POST)
+            ->setAction($request->getUrl())
+            ->setName('login-form')
+            ->setFields([self::PARAM_LOGIN, self::PARAM_PASSWORD])
+            ->setLabels([
+                self::PARAM_LOGIN => 'Email', 
+                self::PARAM_PASSWORD => 'Password'
+            ])
+            ->setDatas($inputLoginFilter->get())
+            ->setRequest($request)
+            ->get();
+        return $this->getUserView(
+            ['form' => (string) $form]
+            , $this->getViewPath(__FUNCTION__)
+        );
+    }
+    
+    /**
+     * getViewPath
+     * 
+     * @param string $method
+     * @return string
+     */
+    private function getViewPath($method) {
+        return $this->getApp()->getPath() 
+            . self::VIEW_USER_PATH . $method . '.php';
+    }
+
+    /**
+     * getLoginInputFilter
+     * 
+     * @return inputFilter
+     */
+    private function getLoginInputFilter($postedDatas) {
+        return new inputFilter(
+            $postedDatas
+            , [
+                self::PARAM_LOGIN => FILTER_SANITIZE_EMAIL,
+                self::PARAM_PASSWORD => FILTER_SANITIZE_STRING
+            ]
+        );
+    }
+    
+    /**
+     * register
+     * 
+     * @return type
+     */
     public function register() {
         $request = $this->getApp()->getRequest();
         $postedData = $request->get()[$request::REQUEST_P_REQUEST];
-
-        $form = (new \lib\form())->setMethod('POST')->setAction($request->getUrl())
+        $form = (new \lib\form())
+            ->setMethod($request::REQUEST_METHOD_POST)
+            ->setAction($request->getUrl())
             ->setName('register-form')
-            ->setFields(['login', 'password'])
-            ->setLabels(['login' => 'lolo', 'password' => 'papa'])
+            ->setFields([self::PARAM_LOGIN, self::PARAM_PASSWORD])
+            ->setLabels([
+                self::PARAM_LOGIN => 'Login', 
+                self::PARAM_PASSWORD => 'Password'
+            ])
             ->setDatas($postedData)
             ->setRequest($request)
             ->get();
-        $viewParams = [
-            'form' => $form
-        ];
         return $this->getUserView(
-            $viewParams, 
-            $this->getApp()->getPath() .'/views/user/register.php'
+            ['form' => (string) $form], 
+            $this->getViewPath(__FUNCTION__)
         );
     }
     
