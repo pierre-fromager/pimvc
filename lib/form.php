@@ -83,26 +83,60 @@ class form {
      * @param string $method
      * @param array $data
      */
-    public function __construct($fieldList, $name, $action, $method, $data, $fieldExlude = array()) {
-
-        $this->fieldExlude = $fieldExlude;
-        if ($this->fieldExlude){
-            $fieldList = array_values(array_diff($fieldList, $fieldExlude));
-        }
-        if (!empty($fieldList) && !self::isAssoc($fieldList)) {
-            $fieldList = array_map(
-                array(__CLASS__,'formatFieldsCallback')
-                , $fieldList
-            );
-        }
+    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExlude = []) {
         $this->setFields($fieldList);
-        $this->data = $data;
-        $this->name = $name;
-        $this->action = $action;
-        $this->method = $method;
+        $this->setFieldsExclude($fieldExlude);
+        $this->setDatas($data);
+        $this->setName($name);
+        $this->setAction($action);
+        $this->setMethod($method);
         $this->validLabelButton = self::SUBMIT_LABEL;
         $this->enableResetButton = false;
-        //$this->form = $this->get();
+        return $this;
+    }
+    
+    /**
+     * setFieldsExclude
+     * 
+     * @param array $fieldExlude
+     */
+    public function setFieldsExclude($fieldExlude) {
+        $this->fieldExlude = $fieldExlude;
+        if ($this->fieldExlude){
+            $this->fieldList = array_values(array_diff($this->fieldList, $fieldExlude));
+        }
+    }
+    
+    /**
+     * setName
+     * 
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name) {
+        $this->name = $name;
+        return $this;
+    }
+    
+    /**
+     * setMethod
+     * 
+     * @param string $method
+     * @return $this
+     */
+    public function setMethod($method) {
+        $this->method = $method;
+        return $this;
+    }
+    
+    /**
+     * setDatas
+     * 
+     * @param array $datas
+     * @return $this
+     */
+    public function setDatas($datas) {
+        $this->data = $datas;
         return $this;
     }
     
@@ -117,7 +151,7 @@ class form {
         $this->rootUrl = $this->request->getUrl();
         $this->isPost = ($this->request->getMethod() === 'POST');
         if ($this->isPost) {
-            $this->posted = $this->request->get()[http\request::REQUEST_METHOD_POST];
+            $this->posted = $this->request->get();
         }
         return $this;
     }
@@ -128,7 +162,14 @@ class form {
      * @param array $fields
      */
     public function setFields($fields) {
+        if (!empty($fields) && !self::isAssoc($fields)) {
+            $fields = array_map(
+                array(__CLASS__, 'formatFieldsCallback')
+                , $fields
+            );
+        }
         $this->fieldList = $fields;
+        return $this;
     }
 
     /**
@@ -1325,6 +1366,7 @@ class form {
      */
     public function setAction($name) {
         $this->action = $name;
+        return $this;
     }
     
 

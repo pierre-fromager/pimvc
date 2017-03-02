@@ -75,13 +75,14 @@ class user extends \lib\controller\basic{
     
     public function register() {
         $request = $this->getApp()->getRequest();
-        $form = (new \lib\form(
-            ['login','password']
-            , 'register-form'
-            , $request->getUrl()
-            , 'POST'
-            , $this->getParams()
-        ))->setRequest($request)->get();
+        $postedData = $request->get()[$request::REQUEST_P_REQUEST];
+
+        $form = (new \lib\form())->setMethod('POST')->setAction($request->getUrl())
+            ->setName('register-form')
+            ->setFields(['login','password'])
+            ->setDatas($postedData)
+            ->setRequest($request)
+            ->get();
         $viewParams = [
             'form' => $form
         ];
