@@ -79,7 +79,8 @@ class user extends \lib\controller\basic{
 
         $form = (new \lib\form())->setMethod('POST')->setAction($request->getUrl())
             ->setName('register-form')
-            ->setFields(['login','password'])
+            ->setFields(['login', 'password'])
+            ->setLabels(['login' => 'lolo', 'password' => 'papa'])
             ->setDatas($postedData)
             ->setRequest($request)
             ->get();

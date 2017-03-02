@@ -151,7 +151,7 @@ class form {
         $this->rootUrl = $this->request->getUrl();
         $this->isPost = ($this->request->getMethod() === 'POST');
         if ($this->isPost) {
-            $this->posted = $this->request->get();
+            $this->posted = $request->get()[$request::REQUEST_P_REQUEST];
         }
         return $this;
     }
@@ -1255,6 +1255,7 @@ class form {
      */
     protected function setLabel($name, $label) {
         $this->labels[$name] = $label;
+        return $this;
     }
     
     /**
@@ -1263,7 +1264,8 @@ class form {
      * @param array $params 
      */
     public function setLabels($labels) {
-        $this->labels = $labels;     
+        $this->labels = $labels;
+        return $this;
     }      
  
     /**
