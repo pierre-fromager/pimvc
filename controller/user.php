@@ -19,6 +19,7 @@ class user extends \lib\controller\basic{
     const PARAM_PASSWORD = 'password';
     const VIEW_USER_PATH = '/views/user/';
     const WILDCARD = '%';
+    const PHP_EXT = '.php';
     
     private $modelConfig;
     private $userModel;
@@ -44,7 +45,7 @@ class user extends \lib\controller\basic{
         $transform->data = $this->userModel->find(
             [self::PARAM_ID, self::PARAM_EMAIL] , 
             [
-                self::PARAM_ID.'#>' => (isset($input->id)) ? $input->id : 800
+                self::PARAM_ID . '#>' => (isset($input->id)) ? $input->id : 800
                 , self::PARAM_EMAIL => (isset($input->email)) 
                     ? self::WILDCARD . $input->email . self::WILDCARD 
                     : self::WILDCARD
@@ -63,14 +64,12 @@ class user extends \lib\controller\basic{
         return new inputFilter(
             $this->getParams()
             , [
-                self::PARAM_ID => new inputRange(
-                    [
-                        inputRange::MIN_RANGE => 1,
-                        inputRange::MAX_RANGE => 10000,
-                        inputRange::_DEFAULT => 800,
-                        inputRange::CAST => inputRange::FILTER_INTEGER
-                    ]
-                ),
+                self::PARAM_ID => new inputRange([
+                    inputRange::MIN_RANGE => 1,
+                    inputRange::MAX_RANGE => 10000,
+                    inputRange::_DEFAULT => 800,
+                    inputRange::CAST => inputRange::FILTER_INTEGER
+                ]) ,
                 self::PARAM_EMAIL => FILTER_SANITIZE_STRING
             ]
         );
@@ -106,12 +105,12 @@ class user extends \lib\controller\basic{
     /**
      * getViewPath
      * 
-     * @param string $method
+     * @param string $actionName
      * @return string
      */
-    private function getViewPath($method) {
-        return $this->getApp()->getPath() 
-            . self::VIEW_USER_PATH . $method . '.php';
+    private function getViewPath($actionName) {
+        return $this->getApp()->getPath() . self::VIEW_USER_PATH 
+            . $actionName . self::PHP_EXT;
     }
 
     /**
