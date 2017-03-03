@@ -201,12 +201,10 @@ abstract class orm implements ormInterface{
      * @return string 
      */
     protected function getDomainName() {
-        $getCalledClassNameSpliter = explode('\\', get_called_class());
-        $spliterCount = count($getCalledClassNameSpliter) - 1;
-        $domainName = self::MODEL_DOMAIN_CLASS_PREFIX
-            . $this->_domainSuffix
-            . $getCalledClassNameSpliter[$spliterCount];
-        return $domainName;
+        $getCalledClassNameSpliter = explode(self::BACKSLASH, get_called_class());
+        $entity = array_pop($getCalledClassNameSpliter);
+        array_push($getCalledClassNameSpliter, self::MODEL_DOMAIN, $entity);
+        return implode(self::BACKSLASH, $getCalledClassNameSpliter);
     }
     
     /**

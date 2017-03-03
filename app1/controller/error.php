@@ -5,8 +5,7 @@
  *
  * @author Pierre Fromager
  */
-
-namespace controller;
+namespace app1\controller;
 
 class error extends \lib\controller\basic{
     

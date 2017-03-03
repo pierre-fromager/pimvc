@@ -6,7 +6,7 @@
  * @author Pierre Fromager
  */
 
-namespace controller;
+namespace app1\controller;
 
 class home extends \lib\controller\basic{
     

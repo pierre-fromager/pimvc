@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace model;
+namespace app1\model;
 
 class users extends \lib\db\model\orm{
     

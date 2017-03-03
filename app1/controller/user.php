@@ -6,7 +6,7 @@
  * @author Pierre Fromager
  */
 
-namespace controller;
+namespace app1\controller;
 
 use \lib\input\filter as inputFilter;
 use \lib\input\custom\filters\range as inputRange;
@@ -30,7 +30,7 @@ class user extends \lib\controller\basic{
      */
     protected function init() {
         $this->modelConfig = $this->getApp()->getConfig()->getSettings('dbPool');
-        $this->userModel = new \model\users($this->modelConfig);
+        $this->userModel = new \app1\model\users($this->modelConfig);
     }
     
     /**

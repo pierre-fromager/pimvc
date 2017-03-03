@@ -32,5 +32,6 @@ return array(
             'port' => '5432',
             'password' => 'pierre'
         ]
-    ]
+    ],
+    'classes' => ['prefix' => 'app1']
 );

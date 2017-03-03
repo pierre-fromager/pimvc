@@ -1,22 +1,20 @@
 <?php
 
-//declare(strict_types = 1);
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('date.timezone', 'Europe/Paris');
 ini_set('register_globals', 0);
 
-$there = __DIR__;
+// Framework path
+$fwkPath = __DIR__;
+require_once $fwkPath . '/lib/autoloader.php';
+$autoloader = (new \lib\autoloader())->register($fwkPath)->setCache();
 
-require_once $there . '/lib/autoloader.php';
-
-$autoloader = (new \lib\autoloader())->register($there)->setCache();
-
-
-$app = (new lib\app(
-    (new \lib\config())->setPath($there . '/config/')
+// App path
+$appPath = $fwkPath . '/app1/';
+$app1 = (new app1\app(
+    (new \lib\config())->setPath($appPath . '/config/')
         ->setEnv(\lib\config::ENV_DEV)
         ->load()
-))->setPath($there)->run();
+))->setPath($appPath)->run();

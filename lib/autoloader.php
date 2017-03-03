@@ -30,6 +30,7 @@ class autoloader implements interfaces\autoloader {
      */
     public function register($rootPath) {
         $this->rootPath = $rootPath;
+        spl_autoload_extensions('.php');
         spl_autoload_register(array($this, self::AUTOLOAD_BOOT));
         return $this;
     }

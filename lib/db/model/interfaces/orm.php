@@ -62,6 +62,8 @@ interface orm {
     const MODEL_INDEX_FIELD = 'field';
     const MODEL_OPERATOR_TRIGGER = '[]%_';
     const MODEL_BETWEEN = ' BETWEEN ';
+    const MODEL_DOMAIN = 'domain';
+    const BACKSLASH = '\\';
 
     public function __construct($config = array());
 

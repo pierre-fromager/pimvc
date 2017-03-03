@@ -25,6 +25,7 @@ class controller implements interfaces\controller{
     private $errorCode = 0;
     private $errorMessage = '';
     private $errors =  [];
+    private $classPrefix = '';
 
     /**
      * __construct
@@ -37,6 +38,15 @@ class controller implements interfaces\controller{
         $this->app = $app;
         $this->errors = [];
         return $this;
+    }
+    
+    /**
+     * setClassPrefix
+     * 
+     * @param string $prefix
+     */
+    public function setClassPrefix($prefix) {
+        $this->classPrefix = $prefix;
     }
 
     /**
@@ -197,7 +207,12 @@ class controller implements interfaces\controller{
      * @return string
      */
     private function getNamespacedClass() {
-        return self::baskSlash . self::_namespace . self::baskSlash . $this->name;
+        $prefixable = ($this->classPrefix) 
+            ? self::baskSlash . $this->classPrefix 
+            : '';
+        $namespace = $prefixable . self::baskSlash . self::_namespace 
+            . self::baskSlash . $this->name;
+        return $namespace;
     }
     
     /**

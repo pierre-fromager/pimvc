@@ -5,7 +5,8 @@
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-namespace model\domain;
+
+namespace app1\model\domain;
 
 class users extends \lib\db\model\domain {
 

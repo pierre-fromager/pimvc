@@ -44,7 +44,9 @@ class app implements interfaces\app{
         $this->router = new router($this->routes);
         $this->response = new response();
         $this->view = new view();
+        $classPrefix = $this->getConfig()->getSettings('classes')['prefix'];
         $this->controller = new controller($this);
+        $this->controller->setClassPrefix($classPrefix);
         return $this;
     }
     
