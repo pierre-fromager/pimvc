@@ -18,7 +18,9 @@ interface autoloader {
     const AUTOLOAD_CACHE_FILE = '/tmp/cache.json';
 
     public function __construct();
-
+    
+    public function setAppPath($path);
+            
     public function register($rootPath);
 
     public function setCache();

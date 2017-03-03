@@ -9,10 +9,13 @@ ini_set('register_globals', 0);
 // Framework path
 $fwkPath = __DIR__;
 require_once $fwkPath . '/lib/autoloader.php';
-$autoloader = (new \lib\autoloader())->register($fwkPath)->setCache();
 
 // App path
-$appPath = $fwkPath . '/app1/';
+$appPath = $fwkPath . '/app1';
+
+$autoloader = new \lib\autoloader;
+$autoloader->setAppPath($appPath)->register($fwkPath)->setCache();
+
 $app1 = (new app1\app(
     (new \lib\config())->setPath($appPath . '/config/')
         ->setEnv(\lib\config::ENV_DEV)

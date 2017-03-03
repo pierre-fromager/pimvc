@@ -14,6 +14,7 @@ class autoloader implements interfaces\autoloader {
 
     private $rootPath;
     private $cache;
+    private $appPath;
 
     /**
      * __construct
@@ -21,6 +22,16 @@ class autoloader implements interfaces\autoloader {
      * @return $this
      */
     public function __construct() {
+        return $this;
+    }
+    
+    /**
+     * setAppPath
+     * 
+     * @param string $path
+     */
+    public function setAppPath($path) {
+        $this->appPath = $path;
         return $this;
     }
 
@@ -54,7 +65,7 @@ class autoloader implements interfaces\autoloader {
      * @return string
      */
     private function getCacheFilename() {
-        return $this->rootPath . self::AUTOLOAD_CACHE_FILE;
+        return $this->appPath . self::AUTOLOAD_CACHE_FILE;
     }
 
     /**

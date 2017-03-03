@@ -38,6 +38,10 @@ class users extends \lib\db\model\orm{
         return $this;
     }
     
+    /**
+     * po
+     * 
+     */
     public function po() {
         $join = $this->leftJoin('po', 'uid', $this->_name, 'id');
         var_dump($join);die;
