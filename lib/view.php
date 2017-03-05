@@ -49,6 +49,46 @@ class view implements interfaces\view{
     }
     
     /**
+     * hasParam
+     * 
+     * @param string $name
+     * @return boolean
+     */
+    public function hasParam($name) {
+        return isset($this->params[$name]);
+    }
+    
+    /**
+     * getParam
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function getParam($name) {
+        return $this->params[$name];
+    }
+    
+    /**
+     * getParams
+     * 
+     * @return array
+     */
+    public function getParams() {
+        return $this->params;
+    }
+    
+    /**
+     * setParam
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function setParam($name, $value) {
+        $this->params[$name] = $value;
+        return $this;
+    }
+    
+    /**
      * render
      * 
      */
@@ -85,7 +125,7 @@ class view implements interfaces\view{
      * @return string
      */
     public function __toString() {
-        return (string) $this->getContent();
+        return $this->content;
     } 
     
 }
