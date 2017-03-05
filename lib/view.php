@@ -32,7 +32,7 @@ class view implements interfaces\view{
     public function setFilename($filename) {
         $this->filename = $filename;
         if (!file_exists($filename)) {
-            throw new Exception(self::VIEW_ERROR_MISSING . $filename);
+            throw new \Exception(self::VIEW_ERROR_MISSING . $filename);
         }
         return $this;
     }
@@ -61,12 +61,31 @@ class view implements interfaces\view{
     }
     
     /**
+     * getContent
+     * 
+     * @return string
+     */
+    public function getContent() {
+        return $this->content;
+    }
+    
+    /**
+     * setContent
+     * 
+     * @return type
+     */
+    public function setContent($content) {
+        $this->content = $content;
+        return $this;
+    }
+
+    /**
      * __toString
      * 
      * @return string
      */
     public function __toString() {
-        return (string) $this->content;
+        return (string) $this->getContent();
     } 
     
 }

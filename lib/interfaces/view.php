@@ -20,6 +20,10 @@ interface view {
     public function setParams();
 
     public function render();
+    
+    public function getContent();
+    
+    public function setContent($content);
 
     public function __toString();
 }
