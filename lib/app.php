@@ -15,11 +15,16 @@ use lib\http\response;
 use lib\view;
 use lib\controller;
 use lib\config;
+use lib\storage;
+
 
 
 class app implements interfaces\app{
     
-    public $config;
+    public $hash;
+    private static $instance = null;
+    public $storage = null;
+    public $config = null;
     public $routes = null;
     public $router = null;
     public $controller = null;
@@ -47,7 +52,19 @@ class app implements interfaces\app{
         $classPrefix = $this->getConfig()->getSettings('classes')['prefix'];
         $this->controller = new controller($this);
         $this->controller->setClassPrefix($classPrefix);
+        $this->hash = spl_object_hash($this);
+        $this->storage = new storage();
+        self::$instance = $this;
         return $this;
+    }
+    
+    /**
+     * getInstance
+     * 
+     * @return \lib\app
+     */
+    public static function getInstance() {
+        return (self::$instance instanceof \lib\app) ? self::$instance : false;
     }
     
     /**

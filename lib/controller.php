@@ -179,6 +179,15 @@ class controller implements interfaces\controller{
     }
     
     /**
+     * getParams
+     * 
+     * @return array
+     */
+    public function getParams($key = '') {
+        return ($key) ? $this->params[$key] : $this->params;
+    }
+    
+    /**
      * setError
      * 
      * @param int $errorCode

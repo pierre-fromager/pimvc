@@ -106,7 +106,7 @@ class config implements \lib\interfaces\config{
     public function load() {
         $filename = $this->getFilename();
         if (!$this->check($filename)) {
-            throw new Exception(self::CONFIG_ERROR_MISSING . $this->env);
+            throw new \Exception(self::CONFIG_ERROR_MISSING . $this->env);
         }
         $this->settings = require $this->getFilename();
         return $this;
