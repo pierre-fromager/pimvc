@@ -41,7 +41,43 @@ return [
     'html' => [
         'layout' => [
             'title' => 'sample app',
-            'description' => 'sample app'
+            'doctype' => '<!DOCTYPE html>',
+            'serverName' => '',
+            'description' => 'sample app description',
+            'publisher' => '',
+            'revisitafter' => '1 days',
+            'robots' => 'all',
+            'copyright' => '',
+            'organization' => 'Pier-Infor',
+            'author' => 'Pierre Fromager',
+            'keywords' => 'pimvc',
+            'country' => 'France',
+            'pocode' => '93300',
+            'email' => 'info@pier-infor.fr',
+            'street' => '34 bld anatole france',
+            'city' => 'Aubervilliers',
+            'twitter_link' => '',
+            'github_link' => '',
+            'linkedin_link' => '',
+        ],
+        'nav' => [
+            'title' => [
+                'text' => 'PimVc',
+                'icon' => 'fa fa-heart-o',
+                'link' => ''
+            ],
+            'items' => [
+                [
+                    'title' => '1st title'
+                    , 'icon' => 'fa fa-cutlery'
+                    , 'link' => '#'
+                ],
+                [
+                    'title' => '2nd title'
+                    , 'icon' => 'fa fa-smile'
+                    , 'link' => '#'
+                ]
+            ]
         ]
     ]
 ];

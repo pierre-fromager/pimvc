@@ -8,112 +8,83 @@
 
 namespace app1\views\helpers\layouts;
 
-class responsive extends \lib\view implements \lib\interfaces\view {
-
-    const LAYOUT_PATH = '/public/layout_responsive/';
-    const LAYOUT_EXT = '.html';
+class responsive extends \lib\layout {
 
     protected $path;
     protected $layoutParams = [];
     protected $app;
+    protected $name;
+    protected $config;
 
     /**
      * __construct
      * 
+     * @param string $name
      * @return $this
      */
     public function __construct() {
-        $this->path = APP_PATH . self::LAYOUT_PATH;
-        $this->app = \app1\app::getInstance();
-        $this->htmlParts = $this->getHtmlParts();
         parent::__construct();
         return $this;
     }
     
     /**
-     * setLayoutParams
+     * setApp
      * 
-     * @param array $params
+     * @param type $app
      * @return $this
      */
-    public function setLayoutParams($params = []) {
-       $this->layoutParams = $params;
-       return $this;
+    public function setApp(\lib\app $app) {
+        $this->app = $app;
+        $this->path = $this->app->getPath() . self::LAYOUT_PATH . DIRECTORY_SEPARATOR;
+        $this->layoutConfig = $this->app->getConfig()->getSettings('html')['layout'];
+        $this->htmlParts = $this->getHtmlParts();
+        return $this;
     }
-    
+
     /**
      * getLayoutParams
      * 
      * @return array
      */
-    private function getLayoutParams() {
+    public function getLayoutParams() {
         return [
             'header' => [
-                'doctype' => '', //(string) new Helper_Doctype($config->application->site->doctype),
-                'serverName' => '', //SERVER_NAME . BASE_URI,
-                'rssMeta' => '', //$rssMeta,
-                'description' => '', //$config->application->site->description,
-                'publisher' => '', //$config->application->site->publisher,
-                'revisitafter' => '', //$config->application->site->revisitafter,
-                'copyright' => '', //$copyright,
-                'author' => '', //$config->application->site->author,
-                'organization' => '', //$config->application->site->organization,
-                'keywords' => '', //$keywords,
+                'doctype' => $this->layoutConfig['doctype'],
+                'description' => $this->layoutConfig['description'], 
+                'publisher' => $this->layoutConfig['publisher'],
+                'revisitafter' => $this->layoutConfig['revisitafter'],
+                'copyright' => $this->layoutConfig['copyright'],
+                'author' => $this->layoutConfig['author'],
+                'organization' => $this->layoutConfig['organization'],
+                'keywords' => $this->layoutConfig['keywords'],
                 'root_url' => '', //BASE_URI,
-                'baseurl' => $this->app->getRequest()->getBaseUrl() . '/app1/', //Tools_Session::get('baseurl'),
-                'title' => '', //$config->application->site->title,
-                'jqChartScript' => '', //Tools_Chart_Jqplot::loadPlugins($nline = true)
+                'baseurl' => $this->app->getRequest()->getBaseUrl() . '/app1/',
+                'title' => $this->layoutConfig['title'], 
             ], 'body' => [
-                'request' => '', //$request,
+                'request' => $this->app->getRequest(),
                 'breadcrumb' => '', //Helper_Breadcrumb::get(),
                 'langSelector' => '', //(string) new Helper_Lang(),
                 'content' => (isset($this->layoutParams['content'])) 
                     ? (string) $this->layoutParams['content'] 
                     : '',
-                'baseurl' => '', //$request->getBaseUrl(),                    
+                'baseurl' => $this->app->getRequest()->getBaseUrl(), 
                 'searchValue' => '', //$request->getParam('searchmotif'),
                 'serviceMenu' => '', //(string) new Helper_Slicknavmenu(),
                 'needPresence' => '', //($controllerName !== 'ulto'),
                 'cloud' => '', //isset($frontValues['cloud']) ? $frontValues['cloud'] : '',
             ],
             'footer' => [
-                'baseurl' => '', //Tools_Session::getBaseUrl()
-                'copyright' => '', //$copyright
-                'organization' => '', //$config->application->site->organization
-                'street' => '', //$config->application->site->street
-                'pocode' => '', //$config->application->site->pocode
-                'city' => '', //$config->application->site->city
-                'country' => '', //$config->application->site->country
-                'email' => '', //$config->application->site->email
+                'baseurl' => $this->app->getRequest()->getBaseUrl(),
+                'copyright' => $this->layoutConfig['copyright'],
+                'organization' => $this->layoutConfig['organization'],
+                'street' => $this->layoutConfig['street'],
+                'pocode' => $this->layoutConfig['pocode'],
+                'city' => $this->layoutConfig['city'],
+                'country' => $this->layoutConfig['country'],
+                'email' => $this->layoutConfig['email'],
                 'date' => date('d M Y H:i:s'),
                 'ellapse' => '', //profiling::getEllpase('stop','start')
             ]
         ];
     }
-
-    /**
-     * build
-     * 
-     */
-    public function build() {
-        $content = '';
-        foreach ($this->htmlParts as $part) {
-            $filename = $this->path . $part . self::LAYOUT_EXT;
-            $this->setParams($this->getLayoutParams()[$part]);
-            $this->setFilename($filename);
-            $this->render();
-            $content .= $this->getContent();
-        }
-        $this->setContent($content);
-    }
-
-    /**
-     * getHtmlParts
-     * 
-     * @return type
-     */
-    private function getHtmlParts() {
-        return array_keys($this->getLayoutParams());
-    }
-
 }

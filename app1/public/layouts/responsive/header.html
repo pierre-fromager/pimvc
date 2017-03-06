@@ -1,7 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<?=$doctype;?>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
@@ -13,16 +13,13 @@
         <meta name="revisit-after" content="<?=$revisitafter ?>" />
         <meta name="author" content="<?=$author . ', ' . $publisher ?>" />
         <meta name="keywords" content="<?=$keywords;?>" />
-        <?=$rssMeta ?>
         <link rel="icon" type="image/ico" href="<?=$baseurl ?>favicon.ico" />
         <link href="<?=$baseurl ?>public/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="<?=$baseurl ?>public/css/awesome/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
-
         <link href="<?=$baseurl ?>public/css/main.css" media="screen" rel="stylesheet" type="text/css" />
         <?=app1\views\helpers\collection\css::render();?>       
         <script type="text/javascript" src="<?=$baseurl ?>public/js/vendor/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="<?=$baseurl ?>public/js/vendor/bootstrap.min.js"></script>
-        <!--<script type="text/javascript" src="<?=$baseurl ?>public/js/jquery.browser.min.js"></script>-->
         <script type="text/javascript">var $j=jQuery.noConflict();</script>
         <script type="text/javascript">var ROOT_URL = '<?=$baseurl ?>';</script>
         <?=app1\views\helpers\collection\js::render();?>

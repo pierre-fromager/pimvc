@@ -11,5 +11,7 @@ class nav extends \lib\view{
     
     public function __construct() {
         $this->setFilename(__DIR__ . '/template/' . 'nav.php' );
+        parent::__construct();
+        return $this;
     }
 }

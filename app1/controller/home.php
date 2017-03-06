@@ -26,26 +26,21 @@ class home extends \lib\controller\basic{
         );
     }
     
+    /**
+     * layout
+     * 
+     * @return type
+     */
     public function layout() {
-        $nav = new \app1\views\helpers\bootstrap\nav();
-        $nav->setParams(['items' => [ 
-            [
-                'title' => '1st title'
-                , 'icon' => 'fa fa-cutlery'
-                , 'link' => 'http://www.google.com'
-            ],
-            [
-                'title' => '2nd title'
-                , 'icon' => 'fa fa-smile'
-                , 'link' => 'http://www.google.com'
-            ]
-        ]]);
-        $nav->render();
+        $nav = (new \app1\views\helpers\bootstrap\nav());
+        $nav->setParams(
+            $this->getApp()->getConfig()->getSettings('html')['nav']
+        )->render();
         $layout = (new \app1\views\helpers\layouts\responsive());
-        $layout->setLayoutParams(
+        $layout->setApp($this->getApp())->setName('responsive')->setLayoutParams(
             ['head' => '', 'content' => (string) $nav, 'footer' => '']
         )->build();
-        echo (string) $layout;
+        return (string) $layout;
     }
 
     /**

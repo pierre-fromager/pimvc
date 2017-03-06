@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -10,8 +9,8 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#top">
-                <span class="fa fa-github">&nbsp;</span>
-                Chatons
+                <span class="fa <?=$title['icon'];?>">&nbsp;</span>
+                <?=$title['text'];?>
             </a>
         </div>
         <div class="navbar-collapse collapse" id="navbarCollapse" aria-expanded="false" style="height: 1px;">
