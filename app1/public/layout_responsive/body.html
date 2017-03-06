@@ -1,0 +1,72 @@
+<?php
+$params = \app1\app::getInstance()->getController()->getParams();
+?>
+<body role="document">
+    <div class="container-fluid">
+        <div class="row col-xs-12 col-md-12 col-lg-12">
+            <?=$serviceMenu; ?>
+            <?php
+                $selected = (isset($params['cat'])) ? $params['cat'] : '';
+            ?>
+            <div id="linkCategories" tabindex="9" class="slicknav_btn">
+                <ul>
+                    <?php 
+                    //  $selected
+                      //$categories = new Helper_Category_Dropdown();
+                      //$categories->render();
+                      //->setMultiColumnType('')->setMenuItemClass('');
+                      //echo (string) $categories;
+                     ?>
+                </ul>
+            </div>
+        </div>
+        <div id="content" class="row-fluid col-xs-12 col-md-12 col-lg-12">
+            
+            <div class="col-sm-12">
+                <!--<?=($needPresence) ? Helper_Presence::get() : '';?>-->
+                <?php 
+                    // echo Tools_Flash::render();
+                ?>
+            </div>
+            <div id="searchWrapper" class="row searchOff col-sm-offset-8 col-sm-4">
+                <form id="articleSearch" class="form-inline" action="<?=$baseurl;?>article/list" method="post">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="search-addon">
+                                <?php
+                                // echo Helper_Glyph::get('search');
+                                ?>
+                            </span>
+                            <input 
+                                id="searchMotif" 
+                                class="searchMotif form-control" 
+                                name="searchmotif" 
+                                value="<?=$searchValue;?>" 
+                                type="text"
+                                placeholder="search text here..."
+                                aria-describedby="search-addon"
+                                >
+                    </div>
+                </form>
+            </div>
+            <div class="row col-sm-12">
+                <div id="breadcrumb" class="col-sm-4">
+                    <?=$breadcrumb; ?>
+                </div>
+                <div id="langWrapper" class="col-sm-4">
+                    <div id="lang">
+                        <?=$langSelector;?>
+                    </div>             
+                </div>
+            </div>
+            <div class="row col-xs-12 col-md-12 col-lg-12">
+                <?=$content; ?>
+            </div>
+            <?php if (!empty($cloud)) : ?>
+            <div id="word-cloud" class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <?=$cloud;?>
+            </div>
+            <?php endif;?>
+        </div> <!-- #content -->
+        <br style="clear:both"/>
+        <div class="push"></div>
+    </div> <!-- #container -->

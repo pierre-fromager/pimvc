@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Description of nav
+ *
+ * @author pierrefromager
+ */
+namespace app1\views\helpers\bootstrap;
+
+class nav extends \lib\view{
+    
+    public function __construct() {
+        $this->setFilename(__DIR__ . '/template/' . 'nav.php' );
+    }
+}

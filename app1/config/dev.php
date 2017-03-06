@@ -1,7 +1,11 @@
 <?php
 
-return array(
+return [
+    'router' => [
+        'unroutable' => '!\.(ico|xml|txt|avi|htm|zip|js|ico|gif|jpg|JPG|png|css|swf|flv|m4v|mp3|mp4|ogv|webm|woff)$'
+    ],
     'routes' => [
+        '/!\.(ico|xml|txt|avi|htm|zip|js|ico|gif|jpg|JPG|png|css|swf|flv|m4v|mp3|mp4|ogv|webm|woff)$/',
         '/^(home)$/', // 1st group match controller with default action
         '/^(home)\/(.*?)(\?.*)/', // 3rd group match ?a=1&b=2
         '/^(home)\/(.*?)(\/.*)/', // 3rd group match /a/1/b/2
@@ -33,5 +37,11 @@ return array(
             'password' => 'pierre'
         ]
     ],
-    'classes' => ['prefix' => 'app1']
-);
+    'classes' => ['prefix' => 'app1'],
+    'html' => [
+        'layout' => [
+            'title' => 'sample app',
+            'description' => 'sample app'
+        ]
+    ]
+];

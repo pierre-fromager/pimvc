@@ -16,7 +16,7 @@ $appPath = $fwkPath . '/app1';
 $autoloader = new \lib\autoloader;
 $autoloader->setAppPath($appPath)->register($fwkPath)->setCache();
 
-$app1 = (new app1\app(
+(new app1\app(
     (new \lib\config())->setPath($appPath . '/config/')
         ->setEnv(\lib\config::ENV_DEV)
         ->load()
