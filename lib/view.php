@@ -98,6 +98,7 @@ class view implements interfaces\view{
         include($this->filename);
         $this->content = ob_get_contents();
         ob_end_clean();
+        return $this;
     }
     
     /**
@@ -126,6 +127,5 @@ class view implements interfaces\view{
      */
     public function __toString() {
         return $this->content;
-    } 
-    
+    }
 }

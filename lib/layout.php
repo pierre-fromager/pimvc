@@ -1,88 +1,99 @@
 <?php
 
 /**
- * class Layout
- * is a layout manager
- * 
- * @author Pierre Fromager <pf@pier-infor.fr>
+ * Description of lib\views\layout
+ *
+ * @author pierrefromager
  */
+
 namespace lib;
 
-class layout {
+use \lib\interfaces\view as viewInterface;
+use \lib\interfaces\layout as layoutInterface;
 
-    const PUBLIC_PATH = '/../public';
-    const layoutPath = 'layout/';
-    const LAYOUT_EXTENSION = '.html';
+class layout extends \lib\view implements viewInterface, layoutInterface {
 
-    protected $layoutContent = null;
-    protected $layoutPath;
-    protected $layoutName;
-    protected $params;
+    protected $path;
+    protected $layoutParams = [];
+    protected $app;
+    protected $name;
 
     /**
      * __construct
      * 
      * @param string $name
-     * @param array $params 
+     * @return $this
      */
-    public function __construct($name, $params) {
-        $this->layoutName = $name;
-        $this->layoutPath = self::PUBLIC_PATH . DIRECTORY_SEPARATOR 
-            . $this->layoutName . DIRECTORY_SEPARATOR;
-        $this->params = $params;
-        $this->render();
+    public function __construct() {
+        parent::__construct();
+        return $this;
     }
     
     /**
-     * render
+     * setName
+     * 
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name) {
+        $this->name = ($name) ? $name : self::LAYOUT_DEFAULT_NAME;
+        $this->path = $this->app->getPath() . self::LAYOUT_PATH 
+            .  $this->name . DIRECTORY_SEPARATOR;
+        return $this;
+    }
+    
+    /**
+     * setLayoutParams
+     * 
+     * @param array $params
+     * @return $this
+     */
+    public function setLayoutParams($params = []) {
+       $this->layoutParams = $params;
+       return $this;
+    }
+    
+    /**
+     * getLayoutParams
+     * 
+     * @return array
+     */
+    public function getLayoutParams() {
+        return [];
+    }
+
+    /**
+     * build
      * 
      */
-    public function render() {
-        foreach ($this->params as $layoutName => $layoutValues) {
-            $layoutFilename = $layoutName . self::LAYOUT_EXTENSION;
-            if ($this->exist($layoutFilename)) {
-                $this->layoutContent .= new Helper_Partial(
-                    $layoutValues
-                    , $layoutFilename
-                    , $this->layoutPath
-                );
-            } else {
-                echo '<p style="color:ref;font-weight:bolder">'
-                    . 'Missing layout file ' 
-                    . $layoutFilename 
-                    . '</p>';
-                die;
-            }
+    public function build() {
+        $content = '';
+        foreach ($this->htmlParts as $part) {
+            $content .= $this->getRenderedPart($part);
         }
-    }
-
-    /**
-     * exist
-     * 
-     * @param string $layoutFilename
-     * @return boolean 
-     */
-    private function exist($layoutFilename) {
-        $realLayoutFilepath = $this->getRealPath() . $layoutFilename;
-        return (stream_resolve_include_path($realLayoutFilepath) !== false);
+        $this->setContent($content);
     }
     
     /**
-     * getRealPath
+     * getRenderedPart
      * 
-     * @return string 
+     * @param string $part
+     * @return type
      */
-    private function getRealPath() {
-        return APP_PATH . '/public/' . $this->layoutName . DIRECTORY_SEPARATOR;
+    private function getRenderedPart($part) {
+        return $this->setParams($this->getLayoutParams()[$part])
+            ->setFilename($this->path . $part . self::LAYOUT_EXT)
+            ->render()
+            ->getContent();
     }
 
     /**
-     * @see __toString
+     * getHtmlParts
      * 
-     * @return string 
+     * @return type
      */
-    function __toString() {
-        return (string) $this->layoutContent;
+    protected function getHtmlParts() {
+        return array_keys($this->getLayoutParams());
     }
 
 }

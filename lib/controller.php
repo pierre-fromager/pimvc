@@ -176,6 +176,9 @@ class controller implements interfaces\controller{
                     break;
             }
         }
+        if (is_string($this->result)) {
+            echo $this->result;
+        }
     }
     
     /**
