@@ -78,6 +78,26 @@ return [
                     , 'link' => '#'
                 ]
             ]
+        ],
+        'carousel' => [
+            'interval' => 3000,
+            'items' => [
+                [
+                    'title' => '1st title'
+                    , 'description' => '1st description'
+                    , 'image' => 'http://2.bp.blogspot.com/-qngGKFQdxn0/TkPHwQbBrgI/AAAAAAAAEIk/zHBcHDX_qak/s1600/Peugeot907SuperCar.jpg'
+                ],
+                [
+                    'title' => '2nd title'
+                    , 'description' => '2nd description'
+                    , 'image' => 'http://4.bp.blogspot.com/-EXIcSS-_E5o/Txg98fUagNI/AAAAAAAAAmw/wvXGwKKua6s/s400/super_cars_wallpaper+11.jpg'
+                ],
+                [
+                    'title' => '2nd title'
+                    , 'description' => '2nd description'
+                    , 'image' => 'http://loadinform.com/wp-content/uploads/2010/06/new-jaguar-supercar.jpeg'
+                ],
+            ]
         ]
     ]
 ];

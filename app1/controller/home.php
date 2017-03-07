@@ -10,6 +10,10 @@ namespace app1\controller;
 
 class home extends \lib\controller\basic{
     
+    const PARAM_HTML = 'html';
+    const PARAM_NAV = 'nav';
+    const PARAM_CAROUSEL = 'carousel';
+
     /**
      * index
      * 
@@ -32,13 +36,18 @@ class home extends \lib\controller\basic{
      * @return type
      */
     public function layout() {
+        $htmlConfig = $this->getApp()->getConfig()->getSettings(self::PARAM_HTML);
         $nav = (new \app1\views\helpers\bootstrap\nav());
-        $nav->setParams(
-            $this->getApp()->getConfig()->getSettings('html')['nav']
-        )->render();
+        $nav->setParams($htmlConfig[self::PARAM_NAV])->render();
+        $carousel = (new \app1\views\helpers\bootstrap\carousel());
+        $carousel->setParams($htmlConfig[self::PARAM_CAROUSEL])->render();
         $layout = (new \app1\views\helpers\layouts\responsive());
         $layout->setApp($this->getApp())->setName('responsive')->setLayoutParams(
-            ['head' => '', 'content' => (string) $nav, 'footer' => '']
+            [
+                'head' => ''
+                , 'content' => (string) $nav . (string) $carousel
+                , 'footer' => ''
+            ]
         )->build();
         return (string) $layout;
     }
