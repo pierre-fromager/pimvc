@@ -1,0 +1,12 @@
+{
+    "name": "pierrefromager",
+    "require": {
+        "vendor/pimvc": "master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "ssh://git@gogs.pier-infor.fr:2222/pf.pier-infor.fr/pimvc.git"
+        }
+    ]
+}
