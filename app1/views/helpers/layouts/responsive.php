@@ -8,7 +8,7 @@
 
 namespace app1\views\helpers\layouts;
 
-class responsive extends \lib\layout {
+class responsive extends \pimvc\layout {
 
     protected $path;
     protected $layoutParams = [];
@@ -33,7 +33,7 @@ class responsive extends \lib\layout {
      * @param type $app
      * @return $this
      */
-    public function setApp(\lib\app $app) {
+    public function setApp(\pimvc\app $app) {
         $this->app = $app;
         $this->path = $this->app->getPath() . self::LAYOUT_PATH . DIRECTORY_SEPARATOR;
         $this->layoutConfig = $this->app->getConfig()->getSettings('html')['layout'];

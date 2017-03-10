@@ -8,7 +8,7 @@
 
 namespace app1\views\helpers\bootstrap;
 
-class carousel extends \lib\view{
+class carousel extends \pimvc\view{
     
     public function __construct() {
         $this->setFilename(__DIR__ . '/template/' . 'carousel.php' );

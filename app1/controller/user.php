@@ -8,10 +8,10 @@
 
 namespace app1\controller;
 
-use \lib\input\filter as inputFilter;
-use \lib\input\custom\filters\range as inputRange;
+use \pimvc\input\filter as inputFilter;
+use \pimvc\input\custom\filters\range as inputRange;
 
-class user extends \lib\controller\basic{
+class user extends \pimvc\controller\basic{
     
     const PARAM_ID = 'id';
     const PARAM_EMAIL = 'email';
@@ -36,7 +36,7 @@ class user extends \lib\controller\basic{
     /**
      * user
      * 
-     * @return \lib\http\response
+     * @return \pimvc\http\response
      */
     public function index() {
         $input = $this->getIndexInputFilter();
@@ -84,7 +84,7 @@ class user extends \lib\controller\basic{
         $request = $this->getApp()->getRequest();
         $postedData = $request->get()[$request::REQUEST_P_REQUEST];
         $inputLoginFilter = $this->getLoginInputFilter($postedData);
-        $form = (new \lib\form())
+        $form = (new \pimvc\form())
             ->setMethod($request::REQUEST_METHOD_POST)
             ->setAction($request->getUrl())
             ->setName('login-form')
@@ -136,7 +136,7 @@ class user extends \lib\controller\basic{
     public function register() {
         $request = $this->getApp()->getRequest();
         $postedData = $request->get()[$request::REQUEST_P_REQUEST];
-        $form = (new \lib\form())
+        $form = (new \pimvc\form())
             ->setMethod($request::REQUEST_METHOD_POST)
             ->setAction($request->getUrl())
             ->setName('register-form')
@@ -157,7 +157,7 @@ class user extends \lib\controller\basic{
     /**
      * po
      * 
-     * @return \lib\http\response
+     * @return \pimvc\http\response
      */
     public function po() {
         return $this->asJson($this->userModel->po());
@@ -167,12 +167,12 @@ class user extends \lib\controller\basic{
      * asJson
      * 
      * @param mixed $content
-     * @return \lib\http\response
+     * @return \pimvc\http\response
      */
     private function asJson($content) {
         return $this->getApp()->getResponse()
             ->setContent($content)
-            ->setType(\lib\http\response::TYPE_JSON)
+            ->setType(\pimvc\http\response::TYPE_JSON)
             ->setHttpCode(200);
     }
     
@@ -181,13 +181,13 @@ class user extends \lib\controller\basic{
      * 
      * @param array $params
      * @param string $filename
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     private function getUserView($params, $filename) {
         $view = $this->getApp()->getView();
         $view->setParams($params)->setFilename($filename)->render();
         return $this->getApp()->getResponse()->setContent($view)
-            ->setType(\lib\http\response::TYPE_HTML)
+            ->setType(\pimvc\http\response::TYPE_HTML)
             ->setHttpCode(200)
             ->withCookie('lastVisitView' . md5($filename), time());
     }

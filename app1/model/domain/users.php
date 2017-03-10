@@ -8,7 +8,7 @@
 
 namespace app1\model\domain;
 
-class users extends \lib\db\model\domain {
+class users extends \pimvc\db\model\domain {
 
     /**
     * @var int $id desc

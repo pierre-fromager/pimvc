@@ -8,7 +8,7 @@
 
 namespace app1\model;
 
-class users extends \lib\db\model\orm{
+class users extends \pimvc\db\model\orm{
     
     const USERS_STATUS_VALID = 'valid';
     const USERS_STATUS_WAITING = 'waiting';

@@ -8,7 +8,7 @@
 
 namespace app1\controller;
 
-class home extends \lib\controller\basic{
+class home extends \pimvc\controller\basic{
     
     const PARAM_HTML = 'html';
     const PARAM_NAV = 'nav';
@@ -17,7 +17,7 @@ class home extends \lib\controller\basic{
     /**
      * index
      * 
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     public function index() {
         return $this->getHomeView(
@@ -50,7 +50,7 @@ class home extends \lib\controller\basic{
     /**
      * redir
      * 
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     public function redir() {
         return $this->redirect('http://www.google.com');
@@ -68,7 +68,7 @@ class home extends \lib\controller\basic{
     /**
      * json
      * 
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     public function json() {
         $content = [
@@ -84,12 +84,12 @@ class home extends \lib\controller\basic{
      * asJson
      * 
      * @param mixed $content
-     * @return \lib\http\response
+     * @return \pimvc\http\response
      */
     private function asJson($content) {
         return $this->getApp()->getResponse()
             ->setContent($content)
-            ->setType(\lib\http\response::TYPE_JSON)
+            ->setType(\pimvc\http\response::TYPE_JSON)
             ->setHttpCode(200);
     }
     
@@ -98,13 +98,13 @@ class home extends \lib\controller\basic{
      * 
      * @param array $params
      * @param string $filename
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     private function getHomeView($params, $filename) {
         $view = $this->getApp()->getView();
         $view->setParams($params)->setFilename($filename)->render();
         return $this->getApp()->getResponse()->setContent($view)
-            ->setType(\lib\http\response::TYPE_HTML)
+            ->setType(\pimvc\http\response::TYPE_HTML)
             ->setHttpCode(200)
             ->withCookie('lastVisitView' . md5($filename), time());
     }

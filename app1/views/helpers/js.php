@@ -8,7 +8,7 @@
 
 namespace app1\views\helpers;
 
-use \lib\html\element\decorator;
+use \pimvc\html\element\decorator;
 
 class js {
 

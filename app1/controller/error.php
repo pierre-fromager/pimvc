@@ -7,7 +7,7 @@
  */
 namespace app1\controller;
 
-class error extends \lib\controller\basic{
+class error extends \pimvc\controller\basic{
     
     const VIEW_FILE = '/views/error/index.php';
 
@@ -28,13 +28,13 @@ class error extends \lib\controller\basic{
      * 
      * @param array $params
      * @param string $filename
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     private function getErrorView($params, $filename) {
         $view = $this->getApp()->getView();
         $view->setParams($params)->setFilename($filename)->render();
         return $this->getApp()->getResponse()->setContent($view)
-            ->setType(\lib\http\response::TYPE_HTML)
+            ->setType(\pimvc\http\response::TYPE_HTML)
             ->setHttpCode(200);
     }
     
