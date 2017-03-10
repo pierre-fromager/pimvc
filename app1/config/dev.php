@@ -80,7 +80,7 @@ return [
             ]
         ],
         'carousel' => [
-            'interval' => 3000,
+            'interval' => 6000,
             'items' => [
                 [
                     'title' => '1st title'

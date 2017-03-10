@@ -42,13 +42,8 @@ class home extends \lib\controller\basic{
         $carousel = (new \app1\views\helpers\bootstrap\carousel());
         $carousel->setParams($htmlConfig[self::PARAM_CAROUSEL])->render();
         $layout = (new \app1\views\helpers\layouts\responsive());
-        $layout->setApp($this->getApp())->setName('responsive')->setLayoutParams(
-            [
-                'head' => ''
-                , 'content' => (string) $nav . (string) $carousel
-                , 'footer' => ''
-            ]
-        )->build();
+        $layoutParams = ['content' => (string) $nav . (string) $carousel];
+        $layout->setApp($this->getApp())->setName('responsive')->setLayoutParams($layoutParams)->build();
         return (string) $layout;
     }
 

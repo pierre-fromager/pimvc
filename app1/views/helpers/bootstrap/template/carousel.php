@@ -1,5 +1,5 @@
 <div id="fullcarousel-example" data-interval="<?=$interval;?>" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner" style="">
+    <div class="carousel-inner" style="margin-left: auto;margin-right: auto;width: 100%">
         <?php
         $itemCount = 0;
         foreach ($items as $item) {
