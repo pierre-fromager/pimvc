@@ -1,12 +1,12 @@
 <?php
 
 /**
- * lib\storage
+ * pimvc\storage
  * 
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib;
+namespace pimvc;
 
 class storage {
 

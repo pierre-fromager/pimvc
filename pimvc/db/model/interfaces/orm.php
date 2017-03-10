@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\db\model\interfaces;
+namespace pimvc\db\model\interfaces;
 
 interface orm {
         
@@ -127,7 +127,7 @@ interface orm {
 
     public function saveDiff($domainObject, $forceAsNew = false);
 
-    public function getDiffDomainObject(\lib\db\model\domain $d1, \lib\db\model\domain $d2);
+    public function getDiffDomainObject(\pimvc\db\model\domain $d1, \pimvc\db\model\domain $d2);
 
     public function setOr($params);
 

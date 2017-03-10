@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\interfaces\view
+ * Description of pimvc\interfaces\view
  *
  * @author pierrefromager
  */
 
-namespace lib\interfaces;
+namespace pimvc\interfaces;
 
 interface view {
 

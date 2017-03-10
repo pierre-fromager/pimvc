@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Description of lib\cache\adapter\file
+ * Description of pimvc\cache\adapter\file
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-namespace lib\cache\adapter;
+namespace pimvc\cache\adapter;
 
-use lib\cache\adapter\interfaces\adapter as cacheInterface;
+use pimvc\cache\adapter\interfaces\adapter as cacheInterface;
 
 class file implements cacheInterface {
 

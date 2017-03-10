@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Description of lib\views\layout
+ * Description of pimvc\views\layout
  *
  * @author pierrefromager
  */
 
-namespace lib;
+namespace pimvc;
 
-use \lib\interfaces\view as viewInterface;
-use \lib\interfaces\layout as layoutInterface;
+use \pimvc\interfaces\view as viewInterface;
+use \pimvc\interfaces\layout as layoutInterface;
 
-class layout extends \lib\view implements viewInterface, layoutInterface {
+class layout extends \pimvc\view implements viewInterface, layoutInterface {
 
     protected $path;
     protected $layoutParams = [];

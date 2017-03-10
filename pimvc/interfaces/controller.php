@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\interfaces\controller
+ * Description of pimvc\interfaces\controller
  *
  * @author pierrefromager
  */
 
-namespace lib\interfaces;
+namespace pimvc\interfaces;
 
 interface controller {
 
@@ -20,7 +20,7 @@ interface controller {
     const message = 'message';
     const questionMark = '?';
 
-    public function __construct(\lib\app $app = null);
+    public function __construct(\pimvc\app $app = null);
 
     public function setClassPrefix($prefix);
 

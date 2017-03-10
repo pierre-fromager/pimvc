@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\db\model\interfaces;
+namespace pimvc\db\model\interfaces;
 
 interface domain {
 

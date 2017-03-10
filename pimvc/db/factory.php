@@ -8,11 +8,11 @@
  * 
  */
 
-namespace lib\db;
+namespace pimvc\db;
 
 class factory {
 
-    const ADAPTER_CLASS_PREFIX = '\lib\db\adapter\\';
+    const ADAPTER_CLASS_PREFIX = '\pimvc\db\adapter\\';
     const FACTORY_ADAPTER = 'adapter';
     const FACTORY_NAME = 'name';
     const FACTORY_SEP = '-';

@@ -5,7 +5,7 @@
  *
  * @author pierrefromager
  */
-namespace lib\db\model\exceptions;
+namespace pimvc\db\model\exceptions;
 
 class orm extends \Exception{
     

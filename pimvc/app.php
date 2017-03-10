@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Description of lib\app
+ * Description of pimvc\app
  * 
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib;
+namespace pimvc;
 
-use lib\http\routes;
-use lib\http\router;
-use lib\http\request;
-use lib\http\response;
-use lib\view;
-use lib\controller;
-use lib\config;
-use lib\storage;
+use pimvc\http\routes;
+use pimvc\http\router;
+use pimvc\http\request;
+use pimvc\http\response;
+use pimvc\view;
+use pimvc\controller;
+use pimvc\config;
+use pimvc\storage;
 
 
 
@@ -41,7 +41,7 @@ class app implements interfaces\app{
      * @return $this
      * @throws \Exception
      */
-    public function __construct(config $config) {
+    public function __construct(\pimvc\config $config) {
         $this->setConfig($config);
         $this->request = new request();
         $this->request->startSession();
@@ -61,10 +61,10 @@ class app implements interfaces\app{
     /**
      * getInstance
      * 
-     * @return \lib\app
+     * @return \pimvc\app
      */
     public static function getInstance() {
-        return (self::$instance instanceof \lib\app) ? self::$instance : false;
+        return (self::$instance instanceof \pimvc\app) ? self::$instance : false;
     }
     
     /**
@@ -122,7 +122,7 @@ class app implements interfaces\app{
     /**
      * getResponse
      * 
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     public function getResponse() {
         return $this->response;
@@ -131,7 +131,7 @@ class app implements interfaces\app{
     /**
      * getView
      * 
-     * @return lib\view
+     * @return pimvc\view
      */
     public function getView() {
         return $this->view;
@@ -149,7 +149,7 @@ class app implements interfaces\app{
     /**
      * getController
      * 
-     * @return lib\controller
+     * @return pimvc\controller
      */
     public function getController(){
         return $this->controller;
@@ -158,7 +158,7 @@ class app implements interfaces\app{
     /**
      * getConfig
      * 
-     * @return lib\config
+     * @return pimvc\config
      */
     public function getConfig() {
         return $this->config;

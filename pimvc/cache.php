@@ -9,7 +9,7 @@
  * @uses class logger
  */
 
-namespace lib;
+namespace pimvc;
 
 class cache {
 
@@ -17,7 +17,7 @@ class cache {
     const DEFAULT_CACHE_PATH = '/cache/';
     const DEFAULT_CACHE_EXT = '.tmp';
     const DEBUG = false;
-    const DEFAULT_ADPATER = \lib\cache\adapter\file::class;
+    const DEFAULT_ADPATER = \pimvc\cache\adapter\file::class;
 
     private $adapter = '';
     private $name = '';

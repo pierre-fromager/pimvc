@@ -6,7 +6,7 @@
  * Class management to build dsn for a given adapter or slot
  */
 
-namespace lib\db;
+namespace pimvc\db;
 
 class dsn {
 

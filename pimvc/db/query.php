@@ -6,7 +6,7 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  * 
  */
-namespace lib\db;
+namespace pimvc\db;
 
 class query {
 

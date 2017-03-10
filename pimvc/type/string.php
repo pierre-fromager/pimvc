@@ -1,6 +1,6 @@
 <?php
 
-namespace lib\type;
+namespace pimvc\type;
 
 /**
  * Description of string

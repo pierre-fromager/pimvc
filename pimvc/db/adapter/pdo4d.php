@@ -9,7 +9,7 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\db\adapter;
+namespace pimvc\db\adapter;
 
 class pdo4d
 {

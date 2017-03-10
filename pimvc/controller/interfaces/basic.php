@@ -6,16 +6,16 @@
  * @author Pierre Fromager
  */
 
-namespace lib\controller\interfaces;
+namespace pimvc\controller\interfaces;
 
-use lib\app;
+use pimvc\app;
 
 interface basic {
 
     /**
      * __construct
      * 
-     * @param \lib\app $app
+     * @param \pimvc\app $app
      * @param array $params
      */
     public function __construct(app $app, $params);

@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Description of lib\db\model\orm
+ * Description of pimvc\db\model\orm
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\db\model;
+namespace pimvc\db\model;
 
-use lib\db\model\exceptions\orm as ormException;
-use lib\db\model\interfaces\orm as ormInterface;
+use pimvc\db\model\exceptions\orm as ormException;
+use pimvc\db\model\interfaces\orm as ormInterface;
 
 abstract class orm implements ormInterface{
 
@@ -73,17 +73,17 @@ abstract class orm implements ormInterface{
             throw new ormException(ormException::ORM_EXC_MISSING_ADAPTER);
         
         $this->_adapter = strtolower($this->_config[$this->_slot]['adapter']);
-        $this->_logger = \lib\logger::getFileInstance(
+        $this->_logger = \pimvc\logger::getFileInstance(
             APP_PATH . '/log/'
-            , \lib\logger::DEBUG 
-            , \lib\logger::LOG_ADAPTER_FILE
+            , \pimvc\logger::DEBUG 
+            , \pimvc\logger::LOG_ADAPTER_FILE
         );
         $this->_useCache = (isset($config['useCache']) && $config['useCache'] == false) 
             ? false
             : self::MODEL_USE_CACHE;
         $this->_restMode = (isset($config['restMode']) && $config['restMode'] == true);
         $this->_schema = $config[$this->_slot]['name'];
-        $this->_db = \lib\db\factory::getConnection($config[$this->_slot]);
+        $this->_db = \pimvc\db\factory::getConnection($config[$this->_slot]);
         $this->_domainClass = $this->getDomainName();
         $this->_domainInstance = new $this->_domainClass;
         $is4dOrPg = in_array($this->_adapter, [self::MODEL_ADAPTER_4D, self::MODEL_ADAPTER_PGSQL]);
@@ -350,7 +350,7 @@ abstract class orm implements ormInterface{
     public function describeTable($name = '') {
         $realName = (empty($name)) ? $this->_name : $name;
         $cacheName = $this->_adapter . '_' . $realName;
-        $cacheDescribe = new \lib\cache($cacheName, 400);
+        $cacheDescribe = new \pimvc\cache($cacheName, 400);
         $cacheDescribe->setPath(APP_PATH . '/cache/Db/Metas/');
 
         if ($cacheDescribe->expired()) {
@@ -693,8 +693,8 @@ abstract class orm implements ormInterface{
      * @param Lib_Db_Model_Domain_Abstract $o2 
      */
     public function getDiffDomainObject(
-        \lib\db\model\domain $o1
-        , \lib\db\model\domain $o2
+        \pimvc\db\model\domain $o1
+        , \pimvc\db\model\domain $o2
     ) {
         //var_dump($o1,$o2);
         return Tools_Array::recursive_array_diff((array) $o1, (array) $o2);

@@ -5,7 +5,7 @@
  *
  * @author pierrefromager
  */
-namespace lib\html\element;
+namespace pimvc\html\element;
 
 
 class decorator {

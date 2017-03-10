@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Description of lib\cache\adapter\memcache
+ * Description of pimvc\cache\adapter\memcache
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\cache\adapter;
+namespace pimvc\cache\adapter;
 
-use lib\cache\adapter\interfaces\adapter as cacheInterface;
+use pimvc\cache\adapter\interfaces\adapter as cacheInterface;
 
 class memcache implements cacheInterface {
     

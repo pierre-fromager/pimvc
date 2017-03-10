@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\http\request
+ * Description of pimvc\http\request
  *
  * @author Pierre Fromager
  */
 
-namespace lib\http;
+namespace pimvc\http;
 
 class request implements interfaces\request{
 

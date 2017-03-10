@@ -1,12 +1,12 @@
 <?php
 
 /**
- *  Description of lib\cache\adapter\factory
+ *  Description of pimvc\cache\adapter\factory
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\cache\adapter;
+namespace pimvc\cache\adapter;
 
 class factory {
     

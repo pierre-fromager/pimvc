@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\interfaces\form
+ * Description of pimvc\interfaces\form
  *
  * @author pierrefromager
  */
 
-namespace lib\interfaces;
+namespace pimvc\interfaces;
 
 
 interface form {
@@ -39,7 +39,7 @@ interface form {
 
     public function setDatas($datas);
 
-    public function setRequest(\lib\http\request $request);
+    public function setRequest(\pimvc\http\request $request);
 
     public function setFields($fields);
 

@@ -6,7 +6,7 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\cache\adapter\interfaces;
+namespace pimvc\cache\adapter\interfaces;
 
 interface adapter {
 

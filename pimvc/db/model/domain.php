@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Description of lib\db\model\domain
+ * Description of pimvc\db\model\domain
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib\db\model;
+namespace pimvc\db\model;
 
-use \lib\db\model\interfaces\domain as domainInterface;
+use \pimvc\db\model\interfaces\domain as domainInterface;
 
 abstract class domain implements domainInterface{
 

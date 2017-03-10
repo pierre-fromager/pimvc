@@ -6,14 +6,14 @@
  * @author pierrefromager
  */
 
-namespace lib\http\interfaces;
+namespace pimvc\http\interfaces;
 
 interface router {
 
     const URI_SEPARATOR = '/';
     const REQUEST_URI = 'REQUEST_URI';
 
-    public function __construct(\lib\http\routes $routes);
+    public function __construct(\pimvc\http\routes $routes);
 
     public function getUri();
 

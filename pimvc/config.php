@@ -1,14 +1,15 @@
 <?php
 
-namespace lib;
+namespace pimvc;
 
+use \pimvc\interfaces\config as configInterface;
 /**
  * Description of config
  *
  * @author pierrefromager
  */
 
-class config implements \lib\interfaces\config{
+class config implements configInterface{
 
     protected $path;
     protected $env;

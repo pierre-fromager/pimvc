@@ -5,9 +5,9 @@
  *
  * @author pierrefromager
  */
-namespace lib\input\custom\filters\abstracts;
+namespace pimvc\input\custom\filters\abstracts;
 
-abstract class filters implements \lib\input\custom\filters\interfaces{
+abstract class filters implements \pimvc\input\custom\filters\interfaces{
     
     protected $options;
 

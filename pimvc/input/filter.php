@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\input;
+namespace pimvc\input;
 
 class filter {
 

@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\input\custom\filters;
+namespace pimvc\input\custom\filters;
 
 class enum extends abstracts\filters{
     

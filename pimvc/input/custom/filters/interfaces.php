@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\input\custom\filters\interfaces
+ * Description of pimvc\input\custom\filters\interfaces
  *
  * @author pierrefromager
  */
 
-namespace lib\input\custom\filters;
+namespace pimvc\input\custom\filters;
 
 interface interfaces {
 

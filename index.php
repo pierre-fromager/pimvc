@@ -8,16 +8,15 @@ ini_set('register_globals', 0);
 
 // Framework path
 $fwkPath = __DIR__;
-require_once $fwkPath . '/lib/autoloader.php';
+require_once $fwkPath . '/pimvc/autoloader.php';
 
-// App path
 $appPath = $fwkPath . '/app1';
-
-$autoloader = new \lib\autoloader;
+$autoloader = new \pimvc\autoloader;
 $autoloader->setAppPath($appPath)->register($fwkPath)->setCache();
 
 (new app1\app(
-    (new \lib\config())->setPath($appPath . '/config/')
-        ->setEnv(\lib\config::ENV_DEV)
+    (new \pimvc\config())->setPath($appPath . '/config/')
+        ->setEnv(\pimvc\config::ENV_DEV)
         ->load()
 ))->setPath($appPath)->run();
+

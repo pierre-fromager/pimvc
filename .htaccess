@@ -1,5 +1,7 @@
 #php56 1
 
+SetEnv APP_ENV dev
+
 <Files ".ht*">
 Order allow,deny
 Deny from all

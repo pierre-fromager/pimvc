@@ -7,9 +7,9 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace lib;
+namespace pimvc;
 
-use lib\html\element\decorator;
+use pimvc\html\element\decorator;
 
 class form implements interfaces\form{
    
@@ -125,7 +125,7 @@ class form implements interfaces\form{
     /**
      * setRequest
      * 
-     * @param \lib\http\request $request
+     * @param \pimvc\http\request $request
      */
     public function setRequest(http\request $request) {
         $this->request = $request;

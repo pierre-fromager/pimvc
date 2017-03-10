@@ -6,9 +6,9 @@
  * @author Pierre Fromager
  */
 
-namespace lib\controller;
+namespace pimvc\controller;
 
-use lib\app;
+use pimvc\app;
 
 abstract class basic implements interfaces\basic{
     
@@ -55,13 +55,13 @@ abstract class basic implements interfaces\basic{
      * redirect
      * 
      * @param string $url
-     * @return lib\http\response
+     * @return pimvc\http\response
      */
     public function redirect($url) {
         return $this->getApp()
             ->getResponse()
             ->setContent('')
-            ->setType(\lib\http\response::TYPE_HTML)
+            ->setType(\pimvc\http\response::TYPE_HTML)
             ->setHttpCode(302)
             ->redirect($url);
     }

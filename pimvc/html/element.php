@@ -5,7 +5,7 @@
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-namespace lib\html;
+namespace pimvc\html;
 
 class element
 

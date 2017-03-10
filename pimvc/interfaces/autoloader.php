@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\interfaces\autoloader
+ * Description of pimvc\interfaces\autoloader
  *
  * @author pierrefromager
  */
 
-namespace lib\interfaces;
+namespace pimvc\interfaces;
 
 interface autoloader {
 

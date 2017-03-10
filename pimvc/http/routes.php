@@ -7,7 +7,7 @@
  */
 
 
-namespace lib\http;
+namespace pimvc\http;
 
 class routes implements interfaces\routes{
     

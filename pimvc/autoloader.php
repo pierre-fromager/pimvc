@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Description of lib\autoloader
+ * Description of pimvc\autoloader
  *
  * @author pierrefromager
  */
 
-namespace lib;
+namespace pimvc;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'interfaces/autoloader.php';
 

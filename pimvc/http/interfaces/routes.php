@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\http\interfaces;
+namespace pimvc\http\interfaces;
 
 interface routes {
 

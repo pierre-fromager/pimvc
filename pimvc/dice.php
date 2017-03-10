@@ -6,7 +6,7 @@
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
  * @version 2.0 */
 
-namespace lib;
+namespace pimvc;
 
 class dice {
     

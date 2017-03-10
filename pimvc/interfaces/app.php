@@ -6,12 +6,12 @@
  * @author pierrefromager
  */
 
-namespace lib\interfaces;
+namespace pimvc\interfaces;
 
 
 interface app {
 
-    public function __construct(\lib\config $config);
+    public function __construct(\pimvc\config $config);
     
     public function setPath($path);
 

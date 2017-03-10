@@ -6,7 +6,7 @@
  * @author pierrefromager
  */
 
-namespace lib\http;
+namespace pimvc\http;
 
 class router implements interfaces\router{
 
