@@ -1,8 +1,5 @@
 {
     "name": "pierrefromager",
-    "require": {
-        "vendor/pimvc": "dev-master"
-    },
     "repositories": [
         {
             "type": "package",
