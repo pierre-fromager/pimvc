@@ -1,5 +1,31 @@
 {
-    "name": "pierrefromager",
+    "name": "pier-infor/pimvc",
+    "description": "Pier-Infor mvc.",
+    "keywords": ["php", "mvc", "app"],
+    "license": "GNU3",
+    "type": "project",
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+    },
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
     "repositories": [
         {
             "type": "package",
@@ -7,9 +33,9 @@
                 "name": "pier-infor/pimvc",
                 "version": "dev-master",
                 "source": {
-                    "url": "ssh://git@gogs.pier-infor.fr:2222/pf.pier-infor.fr/pimvc.git",
+                    "url": "http://gogs.pier-infor.fr/pf.pier-infor.fr/pimvc.git",
                     "type": "git",
-                    "reference": "master"
+                    "reference": "origin/master"
                 },
                 "autoload": {
                     "psr-0": {
