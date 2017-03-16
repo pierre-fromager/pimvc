@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Description of pimvc\file\scanner
+ * Description of pimvc\file\system\scanner
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-namespace pimvc\file;
+namespace pimvc\file\system;
 
 class scanner {
 

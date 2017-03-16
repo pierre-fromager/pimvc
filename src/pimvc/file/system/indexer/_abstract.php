@@ -5,7 +5,12 @@
  *
  * @author pierrefromager
  */
-class Lib_File_System_Indexer_Abstract {
+
+namespace pimvc\file\system\indexer;
+
+use pimvc\file\system\indexer\filter as indexerFilter;
+
+class _abstract {
     
     const INDEXER_PROCESSOR = 'egrep';
     const INDEXER_OPTIONS = ' -E ';
@@ -27,7 +32,7 @@ class Lib_File_System_Indexer_Abstract {
         $this->search = '';
         $this->results = array();
         $this->countResults = 0;
-        $this->filter = new Lib_File_System_Indexer_Filter();
+        $this->filter = new indexerFilter();
     }
 
     /**
