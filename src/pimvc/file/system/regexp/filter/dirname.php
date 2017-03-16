@@ -1,15 +1,23 @@
 <?php
 /**
- * Lib_File_System_Regexp_Filter_Dirname
+ * Description of pimvc\file\system\regexp\filter\dirname;
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-class Lib_File_System_Regexp_Filter_Dirname extends Lib_File_System_Regexp_Filter {
-    // Filter directories against the regex
+namespace pimvc\file\system\regexp\filter;
+
+use pimvc\file\system\regexp\filter as fsFilter;
+
+class dirname extends fsFilter {
     
+    /**
+     * accept
+     * 
+     * @return boolean
+     */
     public function accept() {
-        return ( ! $this->isDir() || preg_match($this->regexp, $this->getFilename()));
+        return (!$this->isDir() || preg_match($this->regexp, $this->getFilename()));
     } 
 }
 

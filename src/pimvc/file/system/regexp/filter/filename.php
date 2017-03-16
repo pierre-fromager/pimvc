@@ -5,9 +5,17 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-class Lib_File_System_Regexp_Filter_Filename extends Lib_File_System_Regexp_Filter {
+namespace pimvc\file\system\regexp\filter;
 
-    // Filter files against the regex
+use pimvc\file\system\regexp\filter as fsFilter;
+
+class filename extends fsFilter {
+
+    /**
+     * accept
+     * 
+     * @return boolean
+     */
     public function accept() {
         return (!$this->isFile() || preg_match($this->regexp, $this->getFilename()));
     }
