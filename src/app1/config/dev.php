@@ -14,6 +14,10 @@ return [
         '/^(user)\/(.*?)(\?.*)/', // 3rd group match ?a=1&b=2
         '/^(user)\/(.*?)(\/.*)/', // 3rd group match /a/1/b/2
         '/^(user)\/(.*)$/', // 1st group match controller 2nd match action
+        '/^(file)$/', // 1st group match controller with default action
+        '/^(file)\/(.*?)(\?.*)/', // 3rd group match ?a=1&b=2
+        '/^(file)\/(.*?)(\/.*)/', // 3rd group match /a/1/b/2
+        '/^(file)\/(.*)$/', // 1st group match controller 2nd match action
         '/^(stat)$/',
         '/^(stat)\/([a-zA-Z0-9_]{1,10})/',
         '/^api\/v1\/([a-zA-Z0-9_]{1,10})/',

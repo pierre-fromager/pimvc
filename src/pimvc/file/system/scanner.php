@@ -7,6 +7,9 @@
  */
 namespace pimvc\file\system;
 
+use pimvc\file\system\regexp\filter\filename as filterFilename;
+use pimvc\file\system\regexp\filter\dirname as filterDirname;
+
 class scanner {
 
     const FILE_REGEXP_BEGIN = '/\.(?:';
@@ -62,11 +65,11 @@ class scanner {
         );
 
         $result = (!empty($this->dirsRexep)) 
-            ? new Lib_File_System_Regexp_Filter_Dirname($result, $this->dirsRexep) 
+            ? new filterDirname($result, $this->dirsRexep) 
             : $result;
 
         $result = (!empty($this->filesRexep)) 
-            ? new Lib_File_System_Regexp_Filter_Filename($result, $this->filesRexep) 
+            ? new filterFilename($result, $this->filesRexep) 
             : $result;
 
         $options = ($this->showDir) 
