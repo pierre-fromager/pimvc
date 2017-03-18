@@ -61,7 +61,11 @@ class file extends \pimvc\controller\basic {
     private function process() {
         foreach ($this->transfo as $key => $value) {
             $oldFile = $value[self::_FILES][self::_OLD];
-            $newFile = str_replace('src', 'src2', $value[self::_FILES][self::_NEW]);
+            $newFile = str_replace(
+                'src', 
+                'src2', 
+                $value[self::_FILES][self::_NEW]
+            );
             $path = dirname($newFile);
             if (!is_dir($path)) {
                 $mkres = mkdir($path, 0777, true);
@@ -70,27 +74,33 @@ class file extends \pimvc\controller\basic {
                 }
             } else {
                 $rescop = copy($oldFile, $newFile);
-                $filecontent = file_get_contents($newFile);
-                $filecontent = str_replace(
-                    $value[self::_NAMESPACES][self::_OLD], 
-                    $value[self::_NAMESPACES][self::_NEW], 
-                    $filecontent
+                file_put_contents(
+                    $newFile, 
+                    $this->processReplacer(file_get_contents($newFile), $value)
                 );
-                $filecontent = str_replace(
-                    $value[self::_CLASSES][self::_OLD], 
-                    $value[self::_CLASSES][self::_NEW], 
-                    $filecontent
-                );
-                $filecontent = str_replace(
-                    $this->getInstances(self::_OLD), 
-                    $this->getInstances(self::_NEW), 
-                    $filecontent
-                );
-                file_put_contents($newFile,$filecontent);
             }
         }
     }
-    
+
+    /**
+     * processReplacer
+     * 
+     * @param string $filecontent
+     * @return string
+     */
+    private function processReplacer($filecontent, $value) {
+        $filecontent = str_replace(
+            $value[self::_NAMESPACES][self::_OLD], $value[self::_NAMESPACES][self::_NEW], $filecontent
+        );
+        $filecontent = str_replace(
+            $value[self::_CLASSES][self::_OLD], $value[self::_CLASSES][self::_NEW], $filecontent
+        );
+        $filecontent = str_replace(
+            $this->getInstances(self::_OLD), $this->getInstances(self::_NEW), $filecontent
+        );
+        return $filecontent;
+    }
+
     /**
      * getInstances
      * 
@@ -213,5 +223,4 @@ class file extends \pimvc\controller\basic {
             ->setType(\pimvc\http\response::TYPE_JSON)
             ->setHttpCode(200);
     }
-
 }
