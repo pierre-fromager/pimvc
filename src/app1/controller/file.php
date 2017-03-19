@@ -28,6 +28,8 @@ class file extends \pimvc\controller\basic {
     const _NAMESPACES = 'namespaces';
     const _CLASSES = 'classes';
     const _INSTANCES = 'instances';
+    const _INTERFACES = 'interfaces';
+
     const _CONFIG = 'config';
     const _PHP = 'php';
     const PARAM_UPPER = 'ucfirst';
@@ -51,7 +53,7 @@ class file extends \pimvc\controller\basic {
      * @return \pimvc\http\response
      */
     public function index() {
-        $this->setScannedFiles()->setTransfo()->process();
+        $this->setScannedFiles()->setTransfo();//->process();
         return $this->asJson($this->transfo);
     }
     
@@ -89,16 +91,29 @@ class file extends \pimvc\controller\basic {
      * @return string
      */
     private function processReplacer($filecontent, $value) {
+        $filecontent = $this->substitute($filecontent, $value, self::_NAMESPACES);
+        $filecontent = $this->substitute($filecontent, $value, self::_INTERFACES);
+        $filecontent = $this->substitute($filecontent, $value, self::_CLASSES);
         $filecontent = str_replace(
-            $value[self::_NAMESPACES][self::_OLD], $value[self::_NAMESPACES][self::_NEW], $filecontent
-        );
-        $filecontent = str_replace(
-            $value[self::_CLASSES][self::_OLD], $value[self::_CLASSES][self::_NEW], $filecontent
-        );
-        $filecontent = str_replace(
-            $this->getInstances(self::_OLD), $this->getInstances(self::_NEW), $filecontent
+            $this->getInstances(self::_OLD), 
+            $this->getInstances(self::_NEW), 
+            $filecontent
         );
         return $filecontent;
+    }
+    
+    /**
+     * substitute
+     * 
+     * @param string $content
+     * @param array $value
+     * @param string $key
+     * @return string
+     */
+    private function substitute($content, $value, $key) {
+        return str_replace(
+            $value[$key][self::_OLD], $value[$key][self::_NEW], $content
+        );
     }
 
     /**
@@ -151,6 +166,10 @@ class file extends \pimvc\controller\basic {
                     self::_NAMESPACES => [
                         self::_OLD => $this->getTransItem($value, null, self::PARAM_NAMESPACE, '')
                         , self::_NEW => $this->getTransItem($value, self::PARAM_UPPER, self::PARAM_NAMESPACE, '')
+                    ],
+                    self::_INTERFACES => [
+                        self::_OLD => $this->getTransItem($value, null, 'interface ', '')
+                        , self::_NEW => $this->getTransItem($value, self::PARAM_UPPER, 'interface ', '')
                     ],
                     self::_CLASSES => [
                         self::_OLD => $this->getTransItem($value, null, 'class ', '', true)
