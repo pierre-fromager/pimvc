@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Description of Pimvc\App
  * 
@@ -16,8 +15,6 @@ use Pimvc\View;
 use Pimvc\Controller;
 use Pimvc\Config;
 use Pimvc\Storage;
-
-
 
 class App implements Interfaces\App{
     

@@ -21,7 +21,7 @@ abstract class Basic implements Interfaces\Basic{
      * @param app $app
      * @param array $params
      */
-    public function __construct(app $app, $params) {
+    public function __construct(App $app, $params) {
         $this->app = $app;
         $this->params = $params;
         $this->init();

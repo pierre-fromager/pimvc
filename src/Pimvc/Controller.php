@@ -34,7 +34,7 @@ class Controller implements Interfaces\Controller{
      * @param type $name
      * @param type $action
      */
-    public function __construct(app $app = null) {
+    public function __construct(App $app = null) {
         $this->app = $app;
         $this->errors = [];
         return $this;
