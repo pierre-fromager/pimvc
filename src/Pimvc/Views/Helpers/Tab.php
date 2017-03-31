@@ -192,12 +192,12 @@ class Tab {
         $hashSelected = md5($this->selected);
         $selected = ((empty($this->selected))) 
             ? ''
-            : 'var indexTab = $j(\'#' . $this->id 
+            : 'var indexTab = $(\'#' . $this->id 
                 . ' a[href="#'.$hashSelected.'"]\').parent().index();'
-                . '$j("#'.$this->id.'").tabs("select", indexTab);'  ;
+                . '$("#'.$this->id.'").tabs("select", indexTab);'  ;
         $script = '<script type="text/javascript">'
-            .' $j(function() {'
-                . '$j("#'.$this->id.'").tabs();'
+            .' $(function() {'
+                . '$("#'.$this->id.'").tabs();'
                 . $selected
             . '});'
             . '</script>';
