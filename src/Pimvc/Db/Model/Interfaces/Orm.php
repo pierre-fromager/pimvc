@@ -58,7 +58,7 @@ interface Orm {
     const MODEL_PARENTH_O = '(';
     const MODEL_PARENTH_C = ')';
     const MODEL_CACHE_SUFFIX = 'Db/Queries/';
-    const MODEL_USE_CACHE = true;
+    const MODEL_USE_CACHE = false;
     const MODEL_INDEX_FIELD = 'field';
     const MODEL_OPERATOR_TRIGGER = '[]%_';
     const MODEL_BETWEEN = ' BETWEEN ';

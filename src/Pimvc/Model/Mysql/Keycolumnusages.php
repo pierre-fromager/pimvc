@@ -15,6 +15,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
     protected $_domainSuffix = 'Mysql_';
+    protected $_slot = 'db0';
 
     /**
      * @see __construct

@@ -107,6 +107,17 @@ abstract class Orm implements ormInterface{
     }
     
     /**
+     * setSchema
+     * 
+     * @param string $schema
+     * @return $this
+     */
+    public function setSchema($schema) {
+        $this->_schema = $schema;
+        return $this;
+    }
+    
+    /**
      * setCast
      * 
      * force a cast on a field (pgsql only)
@@ -274,8 +285,6 @@ abstract class Orm implements ormInterface{
                 break;
         }
         $columns = $this->getMetasInfo($key);
-        //var_dump($this->_slot,$columns);die;
-
         $callback = array(__CLASS__, 'arrayToLower');
         $columns = array_map($callback, $columns);
         return $columns;
@@ -660,7 +669,6 @@ abstract class Orm implements ormInterface{
                 if (property_exists($domainObject, 'counter')){
                     unset($domainObject->counter);
                 }
-                //echo 'insert query.';die;
                 $this->insert((array) $domainObject);
             } else {           
                 $this->cleanRowset();
@@ -672,12 +680,8 @@ abstract class Orm implements ormInterface{
                     $lastObject
                     , $initialObject
                 );
-                //var_dump($updatedDatas);die;
                 if ($updatedDatas) {
-                    //$this->setWhere($where);
-                    //$this->bindWhere();
                     $updatedDatas[$pk] = $domainObject->$pk;
-                    //var_dump($updatedDatas);die;
                     $this->update($updatedDatas);
                 }
             }

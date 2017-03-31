@@ -33,7 +33,8 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @param array $config 
      */
     public function __construct($config = array()) {
-        parent::__construct($config);   
+        parent::__construct($config);
+        return $this;
     }
     
     /**

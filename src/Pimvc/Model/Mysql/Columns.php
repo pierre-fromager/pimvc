@@ -9,9 +9,9 @@ namespace Pimvc\Model\Mysql;
 
 class Columns extends \Pimvc\Db\Model\Orm {
 
-    protected $_schema = 'INFORMATION_SCHEMA';
-    protected $_name = 'COLUMNS';
-    protected $_primary = 'COLUMN_NAME';
+    protected $_schema = 'information_schema';
+    protected $_name = 'columns';
+    protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
     protected $_domainSuffix = 'Mysql_';
 
