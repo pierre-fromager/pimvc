@@ -18,7 +18,7 @@ abstract class Basic implements Interfaces\Basic{
     /**
      * __construct
      * 
-     * @param app $app
+     * @param App $app
      * @param array $params
      */
     public function __construct(App $app, $params) {
@@ -36,7 +36,7 @@ abstract class Basic implements Interfaces\Basic{
     /**
      * getApp
      * 
-     * @return app
+     * @return App
      */
     public function getApp() {
         return $this->app;
@@ -82,6 +82,16 @@ abstract class Basic implements Interfaces\Basic{
                 , $params
             ) 
             : null;
+    }
+    
+    /**
+     * hasValue
+     * 
+     * @param string $param
+     * @return mixed
+     */
+    public function hasValue($param) {
+        return isset($this->params[$param]);
     }
 
 }

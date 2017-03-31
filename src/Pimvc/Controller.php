@@ -198,6 +198,15 @@ class Controller implements Interfaces\Controller{
     }
     
     /**
+     * getAction
+     * 
+     * @return string
+     */
+    public function getAction() {
+        return $this->action;
+    }
+    
+    /**
      * setError
      * 
      * @param int $errorCode
