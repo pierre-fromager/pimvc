@@ -5,7 +5,11 @@
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-class Model_Domain_Mysql_Columns extends Lib_Db_Model_Domain_Abstract {
+
+namespace Pimvc\Model\Domain\Mysql;
+
+
+class Columns extends \Pimvc\Db\Model\Domain {
 
     /**
      * @var string $table_catalog .

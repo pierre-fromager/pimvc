@@ -5,7 +5,10 @@
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-class Model_Domain_Mysql_Constraints extends Lib_Db_Model_Domain_Abstract {
+
+namespace Pimvc\Model\Domain\Mysql;
+
+class Constraints extends \Pimvc\Db\Model\Domain {
 
     /**
      * @var string $constraint_catalog .

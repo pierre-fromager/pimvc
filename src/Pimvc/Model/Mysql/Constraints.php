@@ -8,7 +8,7 @@
 
 namespace Pimvc\Model\Mysql;
 
-class Model_Mysql_Constraints extends \Pimvc\Db\Model\Orm {
+class Constraints extends \Pimvc\Db\Model\Orm {
     
     protected $_schema = 'information_schema';
     protected $_name = 'table_constraints';

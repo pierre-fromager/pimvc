@@ -8,7 +8,7 @@
 
 namespace Pimvc\Model\Mysql;
 
-class Model_Mysql_Keycolumnusages extends \Pimvc\Db\Model\Orm {
+class Keycolumnusages extends \Pimvc\Db\Model\Orm {
 
     protected $_schema = 'information_schema';
     protected $_name = 'key_column_usage';

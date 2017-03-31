@@ -16,7 +16,7 @@ abstract class Orm implements ormInterface{
     protected $_config = null;
     protected $_dsn = null;
     protected $_db = null;
-    protected $_slot = null;
+    protected $_slot = 'db1';
     protected $_statement = null;
     protected $_schema = '';
     protected $_defaultSchema = '';
