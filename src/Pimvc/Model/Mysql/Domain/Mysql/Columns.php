@@ -6,8 +6,7 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace Pimvc\Model\Domain\Mysql;
-
+namespace Pimvc\Model\Mysql\Domain;
 
 class Columns extends \Pimvc\Db\Model\Domain {
 

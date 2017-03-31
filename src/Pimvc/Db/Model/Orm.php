@@ -204,7 +204,8 @@ abstract class Orm implements ormInterface{
         $getCalledClassNameSpliter = explode(self::BACKSLASH, get_called_class());
         $entity = array_pop($getCalledClassNameSpliter);
         array_push($getCalledClassNameSpliter, self::MODEL_DOMAIN, $entity);
-        return implode(self::BACKSLASH, $getCalledClassNameSpliter);
+        $domainName =  implode(self::BACKSLASH, $getCalledClassNameSpliter);
+        return $domainName;
     }
     
     /**
