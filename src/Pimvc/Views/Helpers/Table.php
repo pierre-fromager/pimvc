@@ -57,6 +57,7 @@ class Table {
         $this->setData($data);
         $this->post();
         $this->render();
+        return $this;
     }
 
     /**
@@ -80,6 +81,7 @@ class Table {
      */
     public function setTitle($title) {
         $this->title = $title;
+        return $this;
     }
     
     /**
@@ -89,6 +91,7 @@ class Table {
      */
     public function setId($id) {
         $this->tableOptions['id'] = $id;
+        return $this;
     }
 
     /**
@@ -98,6 +101,7 @@ class Table {
      */
     public function setClass($class) {
         $this->tableOptions['class'] = $class;
+        return $this;
     }
     
     /**
@@ -107,6 +111,7 @@ class Table {
      */
     public function setTableOptions($options) {
         $this->tableOptions = $options;
+        return $this;
     }
 
     /**
@@ -116,6 +121,7 @@ class Table {
      */
     public function setTitleOptions($options) {
         $this->titleOptions = $options;
+        return $this;
     }
 
     /**
@@ -125,6 +131,7 @@ class Table {
      */
     public function setHeader($header) {
         $this->header = $header;
+        return $this;
     }
 
     /**
@@ -134,6 +141,7 @@ class Table {
      */
     public function setData($data) {
         $this->data = $data;
+        return $this;
     }
     
     /**
