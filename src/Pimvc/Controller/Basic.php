@@ -23,7 +23,10 @@ abstract class Basic implements Interfaces\Basic{
      */
     public function __construct(App $app, $params) {
         $this->app = $app;
-        $this->params = $params;
+        $this->params = array_merge(
+            $params
+            , $app->getRequest()->get()['request']
+        );
         $this->init();
     }
     
