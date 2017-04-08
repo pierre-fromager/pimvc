@@ -98,5 +98,35 @@ abstract class Basic implements Interfaces\Basic{
     public function hasValue($param) {
         return isset($this->params[$param]);
     }
+    
+    /**
+     * getView
+     * 
+     * @param array $params
+     * @param string $viewPath
+     * @return View
+     */
+    public function getView($params, $viewPath) {
+        $filename = $this->getApp()->getPath() . $viewPath;
+        return $this->getApp()->getView()->setParams($params)->setFilename($filename)->render();
+    }
+    
+    /**
+     * getHtmlResponse
+     * 
+     * @param type $view
+     * @param type $cookieName
+     * @param type $cookieValue
+     * @return type
+     */
+    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '') {
+        $response = $this->getApp()->getResponse()->setContent($view)
+            ->setType(\Pimvc\Http\Response::TYPE_HTML)
+            ->setHttpCode(200);
+        if ($cookieName && $cookieValue) {
+            $response->withCookie($cookieName, $cookieValue);
+        }
+        return $response;
+    }
 
 }

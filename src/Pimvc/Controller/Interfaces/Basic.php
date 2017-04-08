@@ -12,6 +12,8 @@ use Pimvc\App;
 
 interface Basic {
 
+    const VIEW_PATH = '/Views/';
+
     /**
      * __construct
      * 
@@ -33,4 +35,35 @@ interface Basic {
      * @return array
      */
     public function getParams($key = '');
+
+    /**
+     * redirect
+     * 
+     * @param string $url
+     */
+    public function redirect($url);
+
+    /**
+     * forward
+     * 
+     * @param string $controller
+     * @param string $action
+     * @param array $params
+     */
+    public function forward($controller = '', $action = '', $params = []);
+
+    /**
+     * hasValue
+     * 
+     * @param string $param
+     */
+    public function hasValue($param);
+    
+    /**
+     * getView
+     * 
+     * @param array $params
+     * @param string $viewPath
+     */
+    public function getView($params, $viewPath);
 }
