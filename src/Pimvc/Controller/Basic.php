@@ -72,18 +72,18 @@ abstract class Basic implements Interfaces\Basic{
     }
     
     /**
-     * call
+     * forward
      * 
+     * @param string $controller
      * @param string $action
      * @param array $params
-     * 
      * @return mixed
      */
     public function forward($controller = '', $action = '', $params = []) {
-        $controller = ($controller) ? new $controller() : $this;
-        return ($action && method_exists($controller, $action)) 
+        $runningController = ($controller) ? new $controller() : $this;
+        return ($action && method_exists($runningController, $action)) 
             ? call_user_func_array(
-                array($controller, $action)
+                [$runningController, $action]
                 , $params
             ) 
             : null;
@@ -108,7 +108,11 @@ abstract class Basic implements Interfaces\Basic{
      */
     public function getView($params, $viewPath) {
         $filename = $this->getApp()->getPath() . $viewPath;
-        return $this->getApp()->getView()->setParams($params)->setFilename($filename)->render();
+        return $this->getApp()
+            ->getView()
+            ->setParams($params)
+            ->setFilename($filename)
+            ->render();
     }
     
     /**
@@ -127,6 +131,19 @@ abstract class Basic implements Interfaces\Basic{
             $response->withCookie($cookieName, $cookieValue);
         }
         return $response;
+    }
+    
+    /**
+     * getJsonReponse
+     * 
+     * @param mixed $content
+     * @return \Pimvc\Http\Response
+     */
+    public function getJsonReponse($content) {
+        return $this->getApp()->getResponse()
+            ->setContent($content)
+            ->setType(\Pimvc\Http\Response::TYPE_JSON)
+            ->setHttpCode(200);
     }
 
 }

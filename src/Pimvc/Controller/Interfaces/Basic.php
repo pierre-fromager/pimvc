@@ -66,4 +66,20 @@ interface Basic {
      * @param string $viewPath
      */
     public function getView($params, $viewPath);
+    
+    /**
+     * getHtmlResponse
+     * 
+     * @param Pimv\View $view
+     * @param string $cookieName
+     * @param string $cookieValue
+     */
+    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '');
+
+    /**
+     * getJsonReponse
+     * 
+     * @param mixed $content
+     */
+    public function getJsonReponse($content);
 }
