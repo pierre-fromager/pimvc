@@ -123,7 +123,7 @@ abstract class Basic implements Interfaces\Basic{
      * @param type $view
      * @param type $cookieName
      * @param type $cookieValue
-     * @return type
+     * @return \Pimvc\Http\Response
      */
     public function getHtmlResponse($view, $cookieName = '', $cookieValue = '') {
         $response = $this->getApp()->getResponse()->setContent($view)

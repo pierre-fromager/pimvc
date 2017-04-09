@@ -94,7 +94,7 @@ class Request implements Interfaces\Request{
      * @param string $param
      * @return array
      */
-    public function getServer($param) {
+    public function getServer($param = '') {
         return ($param) ? $this->server[$param] : $this->server;
     }
     
