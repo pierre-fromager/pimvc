@@ -21,7 +21,7 @@ abstract class Basic implements Interfaces\Basic{
      * @param App $app
      * @param array $params
      */
-    public function __construct(App $app, $params) {
+    public function __construct(App $app, $params = []) {
         $this->app = $app;
         $this->params = array_merge(
             $params
@@ -80,7 +80,9 @@ abstract class Basic implements Interfaces\Basic{
      * @return mixed
      */
     public function forward($controller = '', $action = '', $params = []) {
-        $runningController = ($controller) ? new $controller() : $this;
+        $runningController = ($controller) 
+            ? new $controller($this->getApp(), $params) 
+            : $this;
         return ($action && method_exists($runningController, $action)) 
             ? call_user_func_array(
                 [$runningController, $action]

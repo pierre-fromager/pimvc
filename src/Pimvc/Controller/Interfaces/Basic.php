@@ -20,7 +20,7 @@ interface Basic {
      * @param \Pimvc\App $app
      * @param array $params
      */
-    public function __construct(App $app, $params);
+    public function __construct(App $app, $params = []);
 
     /**
      * getApp
