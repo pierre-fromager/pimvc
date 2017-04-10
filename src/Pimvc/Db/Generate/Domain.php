@@ -19,7 +19,7 @@ class Domain {
     const GENERATE_MODEL_PREFIX = '';
     const GENERATE_EXTENDS = 'extends';
     const GENERATE_MODEL_NAMESPACE = 'namespace App1\Model\Domain;';
-    const GENERATE_MODEL_SUFFIX = '\Pimvc\Db\Model\Orm';
+    const GENERATE_MODEL_SUFFIX = '\Pimvc\Db\Model\Domain';
     const GENERATE_O_BRACKET = '{';
     const GENERATE_C_BRACKET = '}';
     const GENERATE_COMA = ';';

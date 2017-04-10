@@ -15,9 +15,10 @@ class Model {
     const DEFAULT_ADAPTER = self::MYSQL_ADAPTER;
     const TYPE_PROPRETY_PUBLIC = 'public';
     const TYPE_CLASS = 'class';
-    const GENERATE_MODEL_PREFIX = 'Model_';
+    const GENERATE_MODEL_PREFIX = '';
     const GENERATE_EXTENDS = 'extends';
-    const GENERATE_MODEL_SUFFIX = 'Lib_Db_Model_Abstract';
+    const GENERATE_MODEL_NAMESPACE = 'namespace App1\Model\Domain;';
+    const GENERATE_MODEL_SUFFIX = '\Pimvc\Db\Model\Orm';
     const GENERATE_O_BRACKET = '{';
     const GENERATE_C_BRACKET = '}';
     const GENERATE_COMA = ';';
@@ -72,7 +73,7 @@ class Model {
      * @return string
      */
     private static function getClassLine($tableName) {
-        return self::TYPE_CLASS . ' ' . self::$modelSuffix
+        return self::GENERATE_MODEL_NAMESPACE . "\n" . self::TYPE_CLASS . ' ' . self::$modelSuffix
             . ucfirst(str_replace('_', '', strtolower($tableName))) . self::GENERATE_PLURAL
             . ' ' . self::GENERATE_EXTENDS . ' ' . self::GENERATE_MODEL_SUFFIX
             . ' '. self::GENERATE_O_BRACKET . PHP_EOL;
