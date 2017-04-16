@@ -30,6 +30,9 @@ class App implements Interfaces\App{
     public $response = null;
     public $view = null;
     public $db = null;
+    public $locale = null;
+    public $translator = null;
+
 
     /**
      * __construct
@@ -51,7 +54,30 @@ class App implements Interfaces\App{
         $this->controller->setClassPrefix($classPrefix);
         $this->hash = spl_object_hash($this);
         $this->storage = new Storage();
+        $this->setLocale($this->getConfig()->getSettings('app')['defaultLocale']);
         self::$instance = $this;
+        return $this;
+    }
+    
+    /**
+     * setTranslator
+     * 
+     * @return $this
+     */
+    public function setTranslator() {
+        $this->translator = Tools\Lang::getData($this->locale);
+        return $this;
+    }
+    
+    /**
+     * setLocale
+     * 
+     * @param string $locale
+     * @return $this
+     */
+    public function setLocale($locale){
+        $this->locale = ($locale) ? $locale : locale_get_default();
+        ini_set('intl.default_locale', $locale);
         return $this;
     }
     
