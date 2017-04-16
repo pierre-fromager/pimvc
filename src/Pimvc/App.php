@@ -65,7 +65,9 @@ class App implements Interfaces\App{
      * @return $this
      */
     public function setTranslator() {
-        $this->translator = Tools\Lang::getData($this->locale);
+        $this->translator = new Tools\Translator(
+            new Tools\Translate\Adapter\Csv($this->locale)
+        );
         return $this;
     }
     

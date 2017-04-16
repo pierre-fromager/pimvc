@@ -10,15 +10,16 @@ namespace Pimvc\Tools;
 
 class Translator {
  
+    private $_adapter = null;
     private $_data = array();
     private $_locale = null;
 
     /**
-     * translator
+     * __construct
      * 
-     * @param \Pimvc\Tools\Pimvc\Tools\Translate\Adapter\Csv $adapter
+     * @param Object $adapter
      */
-    public function translator(Pimvc\Tools\Translate\Adapter\Csv $adapter) {
+    public function __construct($adapter) {
         $this->_adapter = $adapter;
         $this->_data = $this->_adapter->getTranslationData();
         $this->_locale = $this->_adapter->getLocale();
