@@ -72,6 +72,15 @@ class App implements Interfaces\App{
     }
     
     /**
+     * getTranslator
+     * 
+     * @return Tools\Translator
+     */
+    public function getTranslator() {
+        return $this->translator;
+    }
+    
+    /**
      * setLocale
      * 
      * @param string $locale
@@ -83,6 +92,16 @@ class App implements Interfaces\App{
         return $this;
     }
     
+    /**
+     * getLocale
+     * 
+     * @return string
+     */
+    public function getLocale() {
+        return $this->locale;
+    }
+
+
     /**
      * getInstance
      * 

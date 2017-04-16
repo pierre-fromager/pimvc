@@ -14,9 +14,15 @@ interface App {
 
     public function setTranslator();
 
+    public function getTranslator();
+
     public function setLocale($locale);
 
+    public function getLocale();
+
     public function setPath($path);
+    
+    public function getPath();
 
     public function getRouter();
 
@@ -27,8 +33,6 @@ interface App {
     public function getResponse();
 
     public function getView();
-
-    public function getPath();
 
     public function getController();
 
