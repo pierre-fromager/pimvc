@@ -8,11 +8,14 @@
 
 namespace Pimvc\Interfaces;
 
-
 interface App {
 
     public function __construct(\Pimvc\Config $config);
-    
+
+    public function setTranslator();
+
+    public function setLocale($locale);
+
     public function setPath($path);
 
     public function getRouter();
@@ -28,7 +31,7 @@ interface App {
     public function getPath();
 
     public function getController();
-    
+
     public function getConfig();
 
     public function run();
