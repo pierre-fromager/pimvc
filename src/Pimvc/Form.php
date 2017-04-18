@@ -11,7 +11,7 @@ namespace Pimvc;
 
 use Pimvc\Html\Element\Decorator;
 
-class Form implements interfaces\form{
+class Form implements Interfaces\Form{
    
     protected $baseUrl = '';
     protected $fieldList = array();
