@@ -32,7 +32,6 @@ class Translator {
      * @return string 
      */
     public function translate($msg) {
-        $msg = (string) $msg;
         if (!isset($this->_data[$msg])) {
             $this->_adapter->addTranslationItem($msg);
             $this->_data[$msg] = '';

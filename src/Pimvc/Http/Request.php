@@ -230,9 +230,9 @@ class Request implements Interfaces\Request{
      */
     public function getSession($name, $key = '') {
         if (!$key) {
-            return (self::has($name)) ? $_SESSION[$name] : '';
+            return ($this->hasSession($name)) ? $_SESSION[$name] : '';
         }
-        return (self::has($name, $key)) ? $_SESSION[$name][$key] : '';
+        return ($this->hasSession($name, $key)) ? $_SESSION[$name][$key] : '';
     }
 
     /**
