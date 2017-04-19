@@ -207,15 +207,13 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function userExists($login) {
         $this->cleanRowset();
         $this->find(
-            array('id')
-            , array('login' => $login)
-            , array('id' => 'desc')
-            , array()
+            ['id']
+            , ['login' => $login]
+            , ['id' => 'desc']
+            , []
             , 'login'
         );
-        $result = $this->getRowset();
-        $exist = !(empty($result));
-        return $exist;
+        return (count($this->getRowset()) > 0);
     }
     
     /**
@@ -521,7 +519,8 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function updateIp() {
         $this->cleanRowset();
-        $id = Tools_Session::getUid();
+        $id =  \Pimvc\App::getInstance()->getRequest()->getSession('id');
+        //$id = Tools_Session::getUid();
         $user = $this->getById($id);
         $user->ip = $_SERVER['REMOTE_ADDR'];
         $this->save($user);
