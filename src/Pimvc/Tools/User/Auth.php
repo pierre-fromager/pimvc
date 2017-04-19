@@ -7,6 +7,8 @@
  */
 namespace Pimvc\Tools\User;
 
+use \Pimvc\Model\Users as authModel;
+
 class Auth {
 
     const AUTH_UNKNOW_USER = 'Utilisateur inconnu ou mot de passe incorrect.';
@@ -30,6 +32,7 @@ class Auth {
     public $isAllowed = false;
     private $app;
     private $modelConfig;
+    private $authModel;
 
     /**
      * @see __construct
@@ -40,6 +43,7 @@ class Auth {
     public function __construct($login, $password, $token = '') {
         $this->app = \Pimvc\App::getInstance();
         $this->modelConfig = $this->app->getConfig()->getSettings('dbPool');
+        $this->authModel = new authModel($this->modelConfig);
         $this->token = $token;
         $this->message = '';
         $this->login = $login;
@@ -77,14 +81,13 @@ class Auth {
      * 
      */
     protected function process() {
-        $userModel = new \Pimvc\Model\Users($this->modelConfig);
-        $result = $userModel->getAuth($this->login, $this->password);
+        $result = $this->authModel->getAuth($this->login, $this->password);
         if (!$result) {
             $this->setAllowed(false);
             $this->message = self::AUTH_UNKNOW_USER;
         } else {
             $this->setAllowed(true);
-            $userModel->updateIp();
+            $this->authModel->updateIp();
             $this->id = $result[0]['id'];
             $this->profil = $result[0]['profil'];
             $userInfo = new \stdClass();
@@ -93,15 +96,25 @@ class Auth {
             $userInfo->name = $result[0]['name'];
             $userInfo->email = $result[0]['email'];
             $userInfo->token = $result[0]['token'];
-            $this->app->getRequest()->setSession('id', $this->id);
-            $this->app->getRequest()->setSession('profil', $this->profil);
-            $this->app->getRequest()->setSession('userinfo', $userInfo);
+            $this->setSessionProfile($this->id, $this->profil, $userInfo);
             $this->message = 'Utilisateur '
                 . $this->userLink()
                 . ', profil ' . $this->profil
                 . ' connecté (php v' . PHP_VERSION . ').';
         }
-        unset($userModel);
+    }
+    
+    /**
+     * setSessionProfile
+     * 
+     * @param int $id
+     * @param string $profil
+     * @param object $userInfo
+     */
+    private function setSessionProfile($id, $profil, $userInfo) {
+        $this->app->getRequest()->setSession('id', $id);
+        $this->app->getRequest()->setSession('profil', $profil);
+        $this->app->getRequest()->setSession('userinfo', $userInfo);
     }
 
     /**
@@ -109,8 +122,7 @@ class Auth {
      * 
      */
     private function processToken() {
-        $userModel = new \Pimvc\Model\Users($this->modelConfig);
-        $result = $userModel->getAuthByToken($this->token);
+        $result = $this->authModel->getAuthByToken($this->token);
         if (!$result) {
             $this->setAllowed(false);
             $this->message = self::AUTH_UNKNOW_USER;
@@ -123,9 +135,7 @@ class Auth {
             $userInfo->status = $result[0]['status'];
             $userInfo->name = $result[0]['name'];
             $userInfo->email = $result[0]['email'];
-            $this->app->getRequest()->setSession('id', $this->id);
-            $this->app->getRequest()->setSession('profil', $this->profil);
-            $this->app->getRequest()->setSession('userinfo', $userInfo);
+            $this->setSessionProfile($this->id, $this->profil, $userInfo);
             $this->message = '';
         }
     }
