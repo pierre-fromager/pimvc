@@ -29,7 +29,7 @@ interface Form {
     const PARAM_ID = 'id';
     const PARAM_FIELD = 'Field';
     
-    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExlude = []);
+    //public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExlude = []);
 
     public function setFieldsExclude($fieldExlude);
 

@@ -52,7 +52,7 @@ abstract class Basic implements Interfaces\Basic{
      */
     public function getParams($key = '') {
         return ($key) 
-            ? isset($this->params[$key]) ? $this->params[$key] : []
+            ? isset($this->params[$key]) ? $this->params[$key] : ''
             : $this->params;
     }
     

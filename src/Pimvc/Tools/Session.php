@@ -15,7 +15,6 @@ class Session {
     const SESSION_ADMIN = 'admin';
     const SESSION_MANAGER = 'manager';
     const SESSION_ANONYMOUS = 'anonymous';
-    const SESSION_BASE_URL = 'baseurl';
     const SESSION_ID = 'id';
     const SESSION_PROFIL = 'profil';
     const SESSION_USER_INFO = 'userinfo';
@@ -27,8 +26,8 @@ class Session {
      * 
      */
     public static function start() {
-        $baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
-        session_name(md5($baseUrl));
+        self::$baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
+        session_name(md5(self::$baseUrl));
         session_start();
     }
 
@@ -93,7 +92,7 @@ class Session {
      * @return string 
      */
     public static function getBaseUrl() {
-        return $_SESSION[self::SESSION_BASE_URL];
+        return self::$baseUrl;
     }
 
     /**
@@ -178,14 +177,14 @@ class Session {
         unset($_SESSION[self::SESSION_USER_INFO]);
     }
 
+    /*
     public static function __callStatic($name, $arguments) {
-        var_dump($name, $arguments);
-        /*
+        //var_dump($name, $arguments);
           if (self::$instance === null) {
           self::$instance = new self();
           }
 
-          self::$instance->callStaticMethod($name, $arguments); */
-    }
+          self::$instance->callStaticMethod($name, $arguments); 
+    }*/
 
 }
