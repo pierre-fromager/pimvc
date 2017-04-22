@@ -29,8 +29,6 @@ interface Form {
     const PARAM_ID = 'id';
     const PARAM_FIELD = 'Field';
     
-    //public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExlude = []);
-
     public function setFieldsExclude($fieldExlude);
 
     public function setName($name);
@@ -39,7 +37,7 @@ interface Form {
 
     public function setDatas($datas);
 
-    public function setRequest(\Pimvc\Http\Request $request);
+    public function setRequest();
 
     public function setFields($fields);
 

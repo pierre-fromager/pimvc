@@ -94,7 +94,7 @@ class Session {
     public static function getSearch($name, $request, $reset = false, $key = '') {
         $directDatas = $isPost = false;
         if ($request instanceof \Pimvc\Http\Request) {
-            $params = $request->get();
+            $params = $request->get()['request'];
             $isPost = $request->getMethod() === 'POST';
         } else {
             $params = $request;

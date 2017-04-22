@@ -72,6 +72,7 @@ class Form implements Interfaces\Form{
         $this->setName($name);
         $this->setAction($action);
         $this->setMethod($method);
+        $this->setRequest();
         $this->validLabelButton = self::SUBMIT_LABEL;
         $this->enableResetButton = false;
         return $this;
@@ -127,13 +128,13 @@ class Form implements Interfaces\Form{
      * 
      * @param \Pimvc\Http\Request $request
      */
-    public function setRequest(http\request $request) {
-        $this->request = $request;
+    public function setRequest() {
+        $this->request = App::getInstance()->getRequest();
         $this->baseUrl = $this->request->getBaseUrl();
         $this->rootUrl = $this->request->getUrl();
         $this->isPost = ($this->request->getMethod() === 'POST');
         if ($this->isPost) {
-            $this->posted = $request->get()[$request::REQUEST_P_REQUEST];
+            $this->posted = $this->request->get()[Http\Request::REQUEST_P_REQUEST];
         }
         return $this;
     }
