@@ -93,14 +93,16 @@ class View implements Interfaces\View{
      * 
      */
     public function render() {
-        ob_start();
-        extract($this->params, EXTR_PREFIX_SAME, self::deserializer);
-        include($this->filename);
-        $this->content = ob_get_contents();
-        ob_end_clean();
+        if (is_array($this->params)) {
+            ob_start();
+            extract($this->params, EXTR_PREFIX_SAME, self::deserializer);
+            include($this->filename);
+            $this->content = ob_get_contents();
+            ob_end_clean();
+        }
         return $this;
     }
-    
+
     /**
      * getContent
      * 

@@ -21,7 +21,7 @@
                     $j(c).show();
                 }
             };
-
+            console.log(tableSelector);
             var numCols = $j(tableSelector).find('tr')[0].cells.length;
             var visibleCols = 5;
             var currentIndex = 0;

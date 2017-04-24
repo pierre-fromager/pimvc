@@ -15,7 +15,7 @@ class Liste {
     const DEFAULT_DELETE_ACION = '/delete';
     const DEFAULT_EDIT_ACION = '/edit';
     const LISTE_DEFAULT_PAGESIZE = 50;
-    const LIST_SCRIPT_PARTIAL = 'listsearchscript.html';
+    const LIST_SCRIPT_PARTIAL = 'listsearchscript.php';
     const LIST_SEARCH_ORDER = 'asc';
     const CLASS_ACTION = 'table-action';
     const PARAM_PAGESIZE = 'pagesize';
@@ -115,7 +115,7 @@ class Liste {
         $this->order = (isset($options['order'])) 
             ? $options['order'] 
             : self::LIST_SEARCH_ORDER;
-        $this->keyOrder = (isset($options['keyOrder'])) 
+        $this->keyOrder = (isset($options['keyOrder']))
             ? $options['keyOrder'] 
             : '';
         $this->casts = (isset($options['casts'])) 
@@ -428,7 +428,7 @@ class Liste {
             , 'col-sm-12'
         );
         $tableOptions = array(
-            'id' => $this->modelName
+            'id' => 'table_' . md5($this->modelName)
             , 'class' => implode(' ', $defaultClasses)
         );
         $table = (string) new Html\Element\Decorator(
@@ -575,9 +575,14 @@ class Liste {
      * 
      */
     protected function getScript() {
-        $templatePath = __DIR__ . '/Views/Template/' . self::LIST_SCRIPT_PARTIAL;
-        $view = new View(array(), $templatePath);
-        $view->render();
+        $templatePath = __DIR__ . '/Views/Helpers/Template/' 
+            . self::LIST_SCRIPT_PARTIAL;
+        if (!file_exists($templatePath)) {
+            echo 'Missing file : ' . $templatePath;
+            die;
+        }
+        $view = new View();
+        $view->setParams([])->setFilename($templatePath)->render();
         return (string) $view;
     }
 
