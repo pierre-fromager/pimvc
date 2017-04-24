@@ -73,7 +73,7 @@ class Paginator {
      */
     private function getNavItem($label, $pageNumber, $link, $class) {
         return '<span class=" ' . $class . '">'
-            . '<a class="paginatorItemLink" href="' . $this->baseUrl
+            . '<a class="paginatorItemLink" href="' . $this->baseUrl . DIRECTORY_SEPARATOR
             . $link . $pageNumber . '">'
             . $label . '</a></span>';
     }

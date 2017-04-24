@@ -14,7 +14,7 @@
                 listTargetID: 'targetall'
                 , onClass: 'tableColOn'
                 , offClass: 'tableColOff'
-                , hide: function(c){ 
+                ,hide: function(c){ 
                     $j(c).hide();
                 }
                 ,show: function(c){
@@ -154,8 +154,10 @@
             }else{
                 $j('#toogle-filtrer').addClass('open');
                 $j('#filtrer').addClass('open');
-                setTimeout(function(){ $j('#filtrer').addClass('overflow'); }, 100);
-            }    
+                setTimeout(function(){
+                    $j('#filtrer').addClass('overflow'); 
+                }, 100);
+            } 
         });
         
         function updateChosen(){
