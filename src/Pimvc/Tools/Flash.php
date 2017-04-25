@@ -65,7 +65,7 @@ class Flash {
      * 
      * @return string 
      */
-    public static function render($helperName = 'Helper_Bootstrap_Flash') {
+    public static function render($helperName = '\Pimvc\Views\Helpers\Bootstrap\Flash') {
         $flashes = self::get();
         $helperRender = '';
         if ($flashes) {
