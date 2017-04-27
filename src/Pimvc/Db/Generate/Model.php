@@ -33,8 +33,8 @@ class Model {
     const GENERATE_PLURAL = 's';
     const ADAPTER_4D = 'Pdo4d';
     
-    protected static $indexes = array();
-    protected static $relations = array();
+    protected static $indexes = [];
+    protected static $relations = [];
     protected static $dependentModels = '';
     protected static $tableName = '';
     protected static $adapter = '';
@@ -46,7 +46,7 @@ class Model {
      * @param string $tableName
      * @param array $colomns
      */
-    public static function get($adapter = '', $tableName, $indexes, $relations = array()) {
+    public static function get($adapter = '', $tableName, $indexes, $relations = []) {
         self::$adapter = (empty($adapter)) 
             ? self::DEFAULT_ADAPTER 
             : $adapter;
@@ -54,8 +54,8 @@ class Model {
             ? self::GENERATE_MODEL_PREFIX . 'Proscope_' 
             : self::GENERATE_MODEL_PREFIX;
         self::$tableName = $tableName;
-        self::$indexes = array();
-        self::$relations = array();
+        self::$indexes = [];
+        self::$relations = [];
         $formatedClass = self::TYPE_PHP_START . PHP_EOL 
             . self::getClassLine($tableName) 
             . self::getVars($indexes, $relations) 
@@ -148,7 +148,7 @@ class Model {
      * @return array 
      */
     private static function getFts() {
-        $fts = array();
+        $fts = [];
         foreach (self::$relations as $k => $v) {
             $fts[] = self::getFt($k) . self::GENERATE_PLURAL;
         }
@@ -212,7 +212,7 @@ class Model {
      * @return string 
      */
     private static function getRefmap() {
-        $refmap = array();
+        $refmap = [];
         foreach (self::$relations as $key => $value) {
             $local = $key;
             $foreign = $value['column_name'];
@@ -309,7 +309,7 @@ class Model {
      */
     private static function getContructor() {
         $name = self::GENERATE_CONSTRUCT;
-        $params = '$config = array()';
+        $params = '$config = []';
         $lines = 'parent::__construct($config);';
         $type = self::GENERATE_PUBLIC;
         return self::getDeclarationFunction($type, $name, $params, $lines);

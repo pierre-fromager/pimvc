@@ -31,7 +31,7 @@ class Decorator {
      * @param array $options
      * @param boolean $render
      */
-    public function __construct($element, $text, $options = array(), $render = true) {
+    public function __construct($element, $text, $options = [], $render = true) {
         $this->content = '';
         $this->setElement($element);
         $this->setText($text);
@@ -84,7 +84,7 @@ class Decorator {
      * @param array $options 
      */
     public function setOptions($options) {
-        $this->options = (is_array($options)) ? $options : array();
+        $this->options = (is_array($options)) ? $options : [];
     }
     
     /**
@@ -166,7 +166,7 @@ class Decorator {
      * @param array $options
      * @return string 
      */
-    private function getOptions($options = array()) {
+    private function getOptions($options = []) {
         $formatedOptions = self::EMPTY_VAL;
         if (!empty($options)) {
             array_walk(

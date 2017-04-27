@@ -11,7 +11,7 @@ namespace Pimvc\Tools;
 class Translator {
  
     private $_adapter = null;
-    private $_data = array();
+    private $_data = [];
     private $_locale = null;
 
     /**

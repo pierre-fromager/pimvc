@@ -16,10 +16,10 @@ class Query {
     protected $db;
     protected $error = null;
 
-    protected function doQuery($sql, $bindParams = array()) {
+    protected function doQuery($sql, $bindParams = []) {
         $dsn = new Dsn();
         $db = Lib_db_connect::getConnection($dsn->dsn);
-        $results = array();
+        $results = [];
         try {
             $sth = $db->prepare($sql);
             if ($db instanceof PDO) {

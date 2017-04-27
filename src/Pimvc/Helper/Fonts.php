@@ -29,7 +29,7 @@ class Fonts {
      * @param string $tag
      * @return string 
      */
-    public static function get($glyph, $params = array(), $tag = self::GLYPH_TAG) {
+    public static function get($glyph, $params = [], $tag = self::GLYPH_TAG) {
         $defaultAttribs = array(
             self::PARAM_CLASS => self::getFontClass() . $glyph
         );
@@ -53,7 +53,7 @@ class Fonts {
      * @param array $options
      * @return string 
      */
-    public static function getLinked($glyph, $url, $options = array()) {
+    public static function getLinked($glyph, $url, $options = []) {
         $defaultAttribs = array(          
             self::PARAM_CLASS => self::DEFAULT_LINKED_CLASS
             , self::PARAM_HREF => $url

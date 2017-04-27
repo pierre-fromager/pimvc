@@ -99,7 +99,7 @@ class Urlselector {
      * @return boolean 
      */
     private static function getTupple($options) {
-        $tupple = array();
+        $tupple = [];
         if (!self::isAssoc($options)) {
             foreach ($options as $value) {
                 $tupple[$value] = $value;

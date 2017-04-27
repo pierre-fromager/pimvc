@@ -41,9 +41,9 @@ interface Form {
 
     public function setFields($fields);
 
-    public function addButton($name, $label, $options = array());
+    public function addButton($name, $label, $options = []);
 
-    public function addSection($startField, $stopField, $param = array());
+    public function addSection($startField, $stopField, $param = []);
 
     public function getSection($fieldName, $mode = 'start');
 
@@ -103,7 +103,7 @@ interface Form {
 
     public function setClass($name, $class);
 
-    public function setExtra($field, $extras, $options = array());
+    public function setExtra($field, $extras, $options = []);
 
     public function setExtras($extras);
 

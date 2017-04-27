@@ -38,10 +38,10 @@ class Widget {
         $this->content = '';
         $this->setTitle($title);
         $this->setBody($body);
-        $this->setSectionOptions(array());
+        $this->setSectionOptions([]);
         $this->setTitleDecorator(self::TITLE_DECORATOR);
-        $this->setTitleOptions(array());
-        $this->setBodyOptions(array());
+        $this->setTitleOptions([]);
+        $this->setBodyOptions([]);
         $this->render();
     }
     

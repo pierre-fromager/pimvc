@@ -17,7 +17,7 @@ class Factory {
     const FACTORY_NAME = 'name';
     const FACTORY_SEP = '-';
 
-    protected static $_connections = array();
+    protected static $_connections = [];
 
     private function __construct() {}
     private function __clone() {}

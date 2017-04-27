@@ -14,46 +14,46 @@ use Pimvc\Html\Element\Decorator;
 class Form implements Interfaces\Form{
    
     protected $baseUrl = '';
-    protected $fieldList = array();
-    protected $fieldExlude = array();
-    protected $errors = array();
-    protected $validators = array();
-    protected $data = array();
-    protected $size = array();
+    protected $fieldList = [];
+    protected $fieldExlude = [];
+    protected $errors = [];
+    protected $validators = [];
+    protected $data = [];
+    protected $size = [];
     protected $name = null;
     protected $method = null;
     protected $action =null;
     protected $form = null;
     protected $encType = '';
-    protected $groups = array();
-    protected $classes = array();
+    protected $groups = [];
+    protected $classes = [];
     protected $request = null;
-    protected $posted = array();
-    protected $labels = array();
-    protected $types = array();
+    protected $posted = [];
+    protected $labels = [];
+    protected $types = [];
     protected $mode = self::FORM_DEFAULT_MODE;
-    protected $options = array();
+    protected $options = [];
     protected $width = 0;
     protected $sectionSize = self::FORM_SIMPLE_SECTION_SIZE;
     protected $fieldsAlign = 'left';
-    protected $extras = array();
+    protected $extras = [];
     protected $extras_class;
     protected $rootUrl;
-    protected $elementsOptions = array();
+    protected $elementsOptions = [];
     protected $enableButtons = true;
     protected $formClass = '';
     protected $formId = '';
     protected $formTarget = '';
     protected $formWrapperId = '';
     protected $enableTranslate = false;
-    protected $operators = array();
+    protected $operators = [];
     protected $disableLabel = false;
-    protected $wrapperClasses = array();
+    protected $wrapperClasses = [];
     protected $validLabelButton;
     protected $enableResetButton;
     protected $isSearch = false;
-    protected $buttons = array();
-    protected $sections = array();
+    protected $buttons = [];
+    protected $sections = [];
     protected $isPost = false;
 
     /**
@@ -200,7 +200,7 @@ class Form implements Interfaces\Form{
      * @param string $name
      * @param array $options 
      */
-    public function addButton($name, $label ,$options = array()) {
+    public function addButton($name, $label ,$options = []) {
         $options[self::PARAM_ID] = (!isset($options[self::PARAM_ID])) 
             ? 'button_' . strtolower($name) 
             : $options[self::PARAM_ID];
@@ -216,7 +216,7 @@ class Form implements Interfaces\Form{
         $this->buttons[$name] = $options;
     }
     
-    public function addSection($startField, $stopField, $param = array()) {
+    public function addSection($startField, $stopField, $param = []) {
         $name = 'section_' . $startField . '___' . $stopField . '_';
         $this->sections[$name] = array(
             'name' => $name
@@ -555,7 +555,7 @@ class Form implements Interfaces\Form{
      * @param string $name
      * @param string $value
      */
-    protected function input($label, $type, $name, $value, $options = array()) {
+    protected function input($label, $type, $name, $value, $options = []) {
         $input = '';
         $class = (isset($this->classes[$name])) 
             ? $this->classes[$name] 
@@ -649,7 +649,7 @@ class Form implements Interfaces\Form{
      * @param array $options
      * @return string 
      */
-    protected function elementWrapper($content = '', $options = array()) {
+    protected function elementWrapper($content = '', $options = []) {
         $class = (isset($options['class'])) 
             ? $options['class'] 
             : 'form-element-wrapper ';
@@ -876,7 +876,7 @@ class Form implements Interfaces\Form{
     public function get() {
         $form = null;
         $input = null;
-        $options = array();
+        $options = [];
         $counterSection = 0;
         $formId = (!empty($this->formId)) ? $this->formId : 'form' . ucfirst($this->name);
         $maxSection = $this->sectionSize;
@@ -1361,7 +1361,7 @@ class Form implements Interfaces\Form{
      */
     public function isValid() {
         foreach ($this->validators as $key => $value) {
-            $validatorParams = array();
+            $validatorParams = [];
             $hasValidatorData = isset($this->posted[$key]);
             $validate = false;
             if ($hasValidatorData) {
@@ -1480,7 +1480,7 @@ class Form implements Interfaces\Form{
      * @param string $after
      * @param string $extras 
      */
-    public function setExtra($field, $extras, $options = array()) {
+    public function setExtra($field, $extras, $options = []) {
         $this->extras[$field] = $extras;
         if (isset($options['class'])) {
             $this->extras_class[$field] = $options['class'];
@@ -1527,7 +1527,7 @@ class Form implements Interfaces\Form{
      * @param string $field
      * @return string 
      */
-    private function getExtra($field, $options = array()) {
+    private function getExtra($field, $options = []) {
         $extra = '';
         if ($this->hasExtra($field)) {
             $extra = $this->extras[$field];
@@ -1656,7 +1656,7 @@ class Form implements Interfaces\Form{
     public function getElementOptions($fieldName) {
         return ($this->hasElementOptions($fieldName)) 
             ? $this->elementsOptions[$fieldName] 
-            : array();
+            : [];
     }
     
     /**

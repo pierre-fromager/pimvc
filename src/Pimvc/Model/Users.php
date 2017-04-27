@@ -32,7 +32,7 @@ class Users extends \Pimvc\Db\Model\Orm {
      * 
      * @param array $config 
      */
-    public function __construct($config = array()) {
+    public function __construct($config = []) {
         parent::__construct($config);
         return $this;
     }
@@ -230,7 +230,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         );
         $this->find($what, $where);
         $result = $this->getCurrent();
-        $result = (isset($result->email)) ? $result : array();
+        $result = (isset($result->email)) ? $result : [];
         return $result;
     }
 
@@ -277,7 +277,7 @@ class Users extends \Pimvc\Db\Model\Orm {
             array('email')
             , array('profil' => $profil)
             , array('id' => 'desc')
-            , array()
+            , []
             , 'email'
         );
         $result = $this->getRowsetAsArray();
@@ -291,7 +291,7 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getEmailsByProfil($profil = 'pros') {
-        $results = array();
+        $results = [];
         $result = $this->countEmailsByProfil($profil);
         foreach ($result as $item) {
             if (!empty($item['email'])) {
@@ -329,7 +329,7 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function countExpirationDays($uid) {
         $this->cleanRowset();
-        $what = array();
+        $what = [];
         $where = array('id' => $uid);
         $this->find($what, $where);
         $dateToday = new \DateTime(date('Y-m-d H:i:s'));
@@ -361,7 +361,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         if (!empty($uid)) {
             $criterias = array('id' => $uid);
             $this->cleanRowset();
-            $this->find(array(), $criterias);
+            $this->find([], $criterias);
             $domainObject = $this->getCurrent();
             $domainObject->dateexp = $this->getExpirationDate($offer);
             $this->save($domainObject);
@@ -505,7 +505,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         $this->cleanRowset();
         $this->find(
             array('country')
-            , array()
+            , []
             , array('id' => 'desc')
             , array(15)
             , 'country'
@@ -536,7 +536,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         $what = array('ip');
         $where = array('ip#!=' => ' ');
         $order = array('id' => 'desc');
-        $limit = array();
+        $limit = [];
         $groupBy = 'ip';
         $this->find(
             $what
@@ -554,7 +554,7 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @param array $in
      * @return array 
      */
-    public function getListFromIdsIn($in = array()) {
+    public function getListFromIdsIn($in = []) {
         $this->cleanRowset();
         $what = array('id', 'name');
         $inCriteria = "('" . implode("','", $in) . "')";

@@ -475,7 +475,7 @@ class Validator {
      * @return boolean 
      */
     public static function validxcsrf($posted) {
-        $data = array();
+        $data = [];
         $data[Form::FORM_XCSRF] = $posted;
         Lib_Form_Csrf::enableOriginCheck();
         $validxcsrf = Lib_Form_Csrf::check(

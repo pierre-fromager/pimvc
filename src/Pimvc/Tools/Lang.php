@@ -46,7 +46,7 @@ class Lang {
 
         $csv = new csvParser();
         if ($this->isValidParsing($csv, $filenameOrData)) {
-            $data = $csv->unparse($csv->data, array(), null, null, ',');
+            $data = $csv->unparse($csv->data, [], null, null, ',');
             if ($unlinkafter) {
                 unlink($filenameOrData);
             }

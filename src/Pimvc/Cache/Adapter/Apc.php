@@ -153,7 +153,7 @@ class Apc implements cacheInterface {
             $lifetime = $tmp[2];
             return array(
                 'expire' => $mtime + $lifetime,
-                'tags' => array(),
+                'tags' => [],
                 'mtime' => $mtime
             );
         }

@@ -19,19 +19,19 @@ class Scanner {
     const DIR_REGEXP_END = ')/';
 
     protected $path = '';
-    protected $dirsExclude = array();
-    protected $filesAllowed = array();
+    protected $dirsExclude = [];
+    protected $filesAllowed = [];
     protected $showDir = true;
     
     private $dirsRexep = '';
     private $filesRexep = '';
     
-    public $filesScanned = array();
+    public $filesScanned = [];
 
     public function __construct(
             $path
-            , $dirsExclude = array()
-            , $filesAllowed = array()
+            , $dirsExclude = []
+            , $filesAllowed = []
             , $dirInclude = false
             , $showDir = true) {
         $this->path = $path;

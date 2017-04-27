@@ -27,7 +27,7 @@ class Filter {
      * 
      */
     public function __construct() {
-        $this->filters = array();
+        $this->filters = [];
         $this->regex = '';
     }
     

@@ -94,7 +94,7 @@ class Flash {
      */
     private static function clean() {
         if (self::has()) {
-            sessionTools::set(self::FLASH_SESSION_KEY, array());
+            sessionTools::set(self::FLASH_SESSION_KEY, []);
         }
     }
 
@@ -115,7 +115,7 @@ class Flash {
     private static function get() {
         return (self::has()) 
             ? sessionTools::get(self::FLASH_SESSION_KEY) 
-            : array();
+            : [];
     }
     
     /**

@@ -17,8 +17,8 @@ class Tab {
     const TAB_CLASS = 'tabs';
     const TAB_ITEM_CLASS = 'tabs-item';
     
-    protected $headers = array();
-    protected $content = array();   
+    protected $headers = [];
+    protected $content = [];   
     private  $data = null;
     protected $id = '';
     protected $html = '';

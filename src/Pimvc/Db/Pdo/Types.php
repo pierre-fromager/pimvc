@@ -102,7 +102,7 @@ class Types {
      * @return array 
      */
     public static function get($tableName) {
-        $output = array();
+        $output = [];
         $typeModel = new Model_4d_Columns();
         $typeResults = $typeModel->getByTableName($tableName);
         foreach ($typeResults as $result) {

@@ -44,8 +44,8 @@ class Table {
      * @param array $header
      * @param array $data 
      */
-    public function __construct($title = '', $header = array(), $data = array()) {
-        $this->titleOptions = array();
+    public function __construct($title = '', $header = [], $data = []) {
+        $this->titleOptions = [];
         $this->tableOptions = array(
             'id' => ''
             , 'class' => 'managetable table table-hover table-stripped col-sm-12'
@@ -209,7 +209,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTr($text, $options = array()) {
+    private function _getTr($text, $options = []) {
         return $this->_getTag(self::HELPER_TR_TAG, $text, $options);
     }
     
@@ -220,7 +220,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTh($text, $options = array()) {
+    private function _getTh($text, $options = []) {
         return $this->_getTag(self::HELPER_TH_TAG, $text, $options);
     }
     
@@ -231,7 +231,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTd($text, $options = array()) {
+    private function _getTd($text, $options = []) {
         return $this->_getTag(self::HELPER_TD_TAG, $text, $options);
     }
     
@@ -242,7 +242,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTbody($text, $options = array()) {
+    private function _getTbody($text, $options = []) {
         return $this->_getTag(self::HELPER_BODY_TAG, $text, $options);
     }
     
@@ -253,7 +253,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getThead($text, $options = array()) {
+    private function _getThead($text, $options = []) {
         return $this->_getTag(self::HELPER_HEAD_TAG, $text, $options);
     }
     
@@ -264,7 +264,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTable($text, $options = array()) {
+    private function _getTable($text, $options = []) {
         return $this->_getTag(self::HELPER_TABLE_TAG, $text, $options);
     }
     
@@ -276,7 +276,7 @@ class Table {
      * @param array $options
      * @return string 
      */
-    private function _getTag($tag, $text, $options = array()) {
+    private function _getTag($tag, $text, $options = []) {
         return (string) new \Pimvc\Html\Element\Decorator(
             $tag
             , $text

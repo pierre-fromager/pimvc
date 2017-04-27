@@ -71,7 +71,7 @@ class Flash {
         $flashMessage = (string) new \Pimvc\Html\Element\Decorator(
             self::PARAM_P
             , $text
-            , array()
+            , []
         );
         return (string) new \Pimvc\Html\Element\Decorator(
             self::PARAM_DIV

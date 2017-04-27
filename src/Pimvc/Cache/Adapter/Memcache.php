@@ -141,7 +141,7 @@ class Memcache implements cacheInterface {
      * @return array 
      */
     private function getExpirations($key = '') {
-        $list = array();
+        $list = [];
         $allSlabs = self::$_memobj->getExtendedStats('slabs');
         $serverDsn = self::CACHE_ADAPTER_HOST . ':' . self::CACHE_ADAPTER_PORT;
         foreach ($allSlabs as $server => $slabs) {

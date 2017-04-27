@@ -45,9 +45,9 @@ class Scanner {
      */
     public function __construct($name, $where, $type = self::SCANNER_TYPE_OPTION_FILE) {
         $this->name = $name;
-        $this->inames = array();
+        $this->inames = [];
         $this->where = $where;
-        $this->excludes = array();
+        $this->excludes = [];
         $this->setType($type);
     }
     
@@ -157,7 +157,7 @@ class Scanner {
                 array($this, 'getIname')
                 , array_values($this->inames)
              ) 
-            : array();
+            : [];
         $render =  self::SCANNER_BRACE_O 
             . implode(self::SCANNER_OR, $inames) 
             . self::SCANNER_BRACE_C;

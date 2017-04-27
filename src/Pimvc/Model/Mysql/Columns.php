@@ -20,7 +20,7 @@ class Columns extends \Pimvc\Db\Model\Orm {
      * 
      * @param type $config 
      */
-    public function __construct($config = array()) {
+    public function __construct($config = []) {
         parent::__construct($config);
     }
 
@@ -34,7 +34,7 @@ class Columns extends \Pimvc\Db\Model\Orm {
         $what = array('*');
         $where = array('table_name' => $tableName);
         $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
     
     /**
@@ -47,7 +47,7 @@ class Columns extends \Pimvc\Db\Model\Orm {
         $what = array('*');
         $where = array('table_id' => $tableId);
         $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
     
 }

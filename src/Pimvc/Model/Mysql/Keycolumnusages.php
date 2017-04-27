@@ -22,7 +22,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
      * 
      * @param type $config 
      */
-    public function __construct($config = array()) {
+    public function __construct($config = []) {
         parent::__construct($config);
     }
 
@@ -41,7 +41,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
             , 'table_schema' => $defaultSchema         
         );
         $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
     
     /**
@@ -51,7 +51,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getBySchema($schema) {
-        $what = array();
+        $what = [];
         $where = array(
             'constraint_schema' => $schema
             , 'table_schema' => $schema
@@ -59,7 +59,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
         );
         $order = array('table_name' => 'ASC');
         $this->find($what, $where, $order);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
     
 }

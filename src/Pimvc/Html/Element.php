@@ -118,7 +118,7 @@ class Element
         return self::tag(__FUNCTION__, $content);
     }
 
-    public static function link($param,$option = array())
+    public static function link($param,$option = [])
     {
         $id = '';
         $class = '';

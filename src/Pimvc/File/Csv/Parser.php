@@ -95,7 +95,7 @@ class Parser {
 	var $heading = true;
 	
 	# override field names
-	var $fields = array();
+	var $fields = [];
 	
 	# sort entries by this field
 	var $sort_by = null;
@@ -166,13 +166,13 @@ class Parser {
 	var $error = 0;
 	
 	# detailed error info
-	var $error_info = array();
+	var $error_info = [];
 	
 	# array of field values in data parsed
-	var $titles = array();
+	var $titles = [];
 	
 	# two dimentional array of CSV data
-	var $data = array();
+	var $data = [];
 	
 	
 	/**
@@ -222,7 +222,7 @@ class Parser {
 	 * @param   fields   field names
 	 * @return  true or false
 	 */
-	function save ($file = null, $data = array(), $append = false, $fields = array()) {
+	function save ($file = null, $data = [], $append = false, $fields = []) {
 		if ( empty($file) ) $file = &$this->file;
 		$mode = ( $append ) ? 'at' : 'wt' ;
 		$is_php = ( preg_match('/\.php$/i', $file) ) ? true : false ;
@@ -250,7 +250,7 @@ class Parser {
 	 * @param   delimiter   delimiter used to separate data
 	 * @return  CSV data using delimiter of choice, or default
 	 */
-	function output($filename = null, $data = array(), $fields = array(), $delimiter = null) {
+	function output($filename = null, $data = [], $fields = [], $delimiter = null) {
         $filename = (empty($filename)) ? $this->output_filename : $filename;
         $delimiter = ($delimiter === null) ? $this->output_delimiter : $delimiter;
         $data = $this->unparse($data, $fields, null, null, $delimiter);
@@ -301,7 +301,7 @@ class Parser {
 			$data = &$this->file_data;
 		}
 		
-		$chars = array();
+		$chars = [];
 		$strlen = strlen($data);
 		$enclosed = false;
 		$n = 1;
@@ -344,7 +344,7 @@ class Parser {
 		
 		// filtering
 		$depth = ( $to_end ) ? $n-1 : $n ;
-		$filtered = array();
+		$filtered = [];
 		foreach( $chars as $char => $value ) {
 			if ( $match = $this->_check_count($char, $value, $depth, $preferred) ) {
 				$filtered[$match] = $char;
@@ -392,11 +392,11 @@ class Parser {
 		
 		$white_spaces = str_replace($this->delimiter, '', " \t\x0B\0");
 		
-		$rows = array();
-		$row = array();
+		$rows = [];
+		$row = [];
 		$row_count = 0;
 		$current = '';
-		$head = ( !empty($this->fields) ) ? $this->fields : array() ;
+		$head = ( !empty($this->fields) ) ? $this->fields : [] ;
 		$col = 0;
 		$enclosed = false;
 		$was_enclosed = false;
@@ -486,7 +486,7 @@ class Parser {
 							} else $rows[] = $row;
 						}
 					}
-					$row = array();
+					$row = [];
 					$col = 0;
 					$row_count++;
 					if ( $this->sort_by === null && $this->limit !== null && count($rows) == $this->limit ) {
@@ -529,13 +529,13 @@ class Parser {
 	 * @param   delimiter   field delimiter to use
 	 * @return  CSV data (text string)
 	 */
-	function unparse ( $data = array(), $fields = array(), $append = false , $is_php = false, $delimiter = null) {
+	function unparse ( $data = [], $fields = [], $append = false , $is_php = false, $delimiter = null) {
 		if ( !is_array($data) || empty($data) ) $data = &$this->data;
 		if ( !is_array($fields) || empty($fields) ) $fields = &$this->titles;
 		if ( $delimiter === null ) $delimiter = $this->delimiter;
 		
 		$string = ( $is_php ) ? "<?php header('Status: 403'); die(' '); ?>".$this->linefeed : '' ;
-		$entry = array();
+		$entry = [];
 		
 		// create heading
 		if ( $this->heading && !$append && !empty($fields) ) {
@@ -543,7 +543,7 @@ class Parser {
 				$entry[] = $this->_enclose_value($value);
 			}
 			$string .= implode($delimiter, $entry).$this->linefeed;
-			$entry = array();
+			$entry = [];
 		}
 		
 		// create data
@@ -552,7 +552,7 @@ class Parser {
 				$entry[] = $this->_enclose_value($value);
 			}
 			$string .= implode($delimiter, $entry).$this->linefeed;
-			$entry = array();
+			$entry = [];
 		}
 		
 		return $string;
@@ -597,7 +597,7 @@ class Parser {
 	 * @param   conditions   specified conditions that the row must match 
 	 * @return  true of false
 	 */
-	function _validate_row_conditions ($row = array(), $conditions = null) {
+	function _validate_row_conditions ($row = [], $conditions = null) {
 		if ( !empty($row) ) {
 			if ( !empty($conditions) ) {
 				$conditions = (strpos($conditions, ' OR ') !== false) ? explode(' OR ', $conditions) : array($conditions) ;
@@ -638,7 +638,7 @@ class Parser {
 			'contains',
 			'does not contain',
 		);
-		$operators_regex = array();
+		$operators_regex = [];
 		foreach( $operators as $value ) {
 			$operators_regex[] = preg_quote($value, '/');
 		}

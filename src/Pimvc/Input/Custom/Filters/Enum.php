@@ -21,7 +21,7 @@ class Enum extends Abstracts\Filters{
     
     public function getDefault($param) {
         return [
-            self::VALUES => array(),
+            self::VALUES => [],
             self::STRICT => false, // Value to return on fail
             self::_DEFAULT => null, // Check value for correct type
             self::CAST => false  // Cast the value in a certain type

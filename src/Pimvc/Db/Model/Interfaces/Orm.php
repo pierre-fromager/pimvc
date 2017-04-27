@@ -65,7 +65,7 @@ interface Orm {
     const MODEL_DOMAIN = 'Domain';
     const BACKSLASH = '\\';
 
-    public function __construct($config = array());
+    public function __construct($config = []);
 
     public function setCast($fieldName, $typeCast);
 
@@ -163,7 +163,7 @@ interface Orm {
 
     public function add($mapperInstance);
 
-    public function update($params = array());
+    public function update($params = []);
 
     public function directsql($sql, $params);
 
@@ -171,15 +171,15 @@ interface Orm {
 
     public function multidelete();
 
-    public function insert($params = array(), $forgetPrimary = true);
+    public function insert($params = [], $forgetPrimary = true);
 
-    public function getSum($column, $criterias = array(), $precision = 2);
+    public function getSum($column, $criterias = [], $precision = 2);
 
-    public function getAvg($column, $criterias = array(), $precision = 2);
+    public function getAvg($column, $criterias = [], $precision = 2);
 
-    public function getMathFn($fn, $column, $criterias = array(), $precision = 2, $precisionFn = 'round');
+    public function getMathFn($fn, $column, $criterias = [], $precision = 2, $precisionFn = 'round');
 
-    public function run($sql, $bindParams = array(), $bindTypes = array());
+    public function run($sql, $bindParams = [], $bindTypes = []);
 
     public function getLastInsertId();
 

@@ -25,40 +25,40 @@ class Liste {
     protected $_modelAdapter = '';
 
     protected $columns = null;
-    protected $data = array();
+    protected $data = [];
     protected $controler = null;
     
     private $headers = '';
-    private $labels = array();
+    private $labels = [];
     private $body = '';
     
     private $_model = null;
     private $_modelMapper = null;
     
-    private $exclude = array();
-    private $excludeAction = array();
+    private $exclude = [];
+    private $excludeAction = [];
     private $curentPage = false;
-    private $filter = array();
-    private $mandatory = array();
+    private $filter = [];
+    private $mandatory = [];
     
     protected $sql = '';
     
-    private $booleanList = array();
+    private $booleanList = [];
     
     private $needAction = false;
     private $order = null;
     private $keyOrder = '';
-    private $or = array();
-    private $parenthesis = array();
-    private $actionCondition = array();
+    private $or = [];
+    private $parenthesis = [];
+    private $actionCondition = [];
     private $content;
     
-    private $formaters = array();
+    private $formaters = [];
     private $isFormated = false;
 
     private $usePaging = true;
     private $showSql = false;
-    private $casts = array();
+    private $casts = [];
     
     private $actionPrefix;
     private $actionSuffix;
@@ -76,12 +76,12 @@ class Liste {
     public function __construct(
         $modelName
         , $controler = 'user'
-        , $exclude = array()
-        , $excludeAction = array()
+        , $exclude = []
+        , $excludeAction = []
         , $curentPage = 0
-        , $filter = array()
-        , $mandatory = array()
-        , $options = array()
+        , $filter = []
+        , $mandatory = []
+        , $options = []
     )
     {
         $this->content = '';
@@ -120,7 +120,7 @@ class Liste {
             : '';
         $this->casts = (isset($options['casts'])) 
             ? $options['casts'] 
-            : array();
+            : [];
         $this->_model->setCasts($this->casts);
         $this->setData();
     }
@@ -177,7 +177,7 @@ class Liste {
         } else {
             $this->columns = $this->mandatory;
         }
-        $where = count($this->filter) ? $this->filter : array();
+        $where = count($this->filter) ? $this->filter : [];
         $keyOrder = (empty($this->keyOrder)) 
             ? $this->_model->getPrimary() 
             : $this->keyOrder;
@@ -405,7 +405,7 @@ class Liste {
      * @param array $options
      * @return string 
      */
-    private function getBody($options = array()) {
+    private function getBody($options = []) {
         return (string) new Html\Element\Decorator(
             'tbody'
             , $this->body
@@ -489,7 +489,7 @@ class Liste {
         $jsonList->liste->columns = $this->columns;
         $jsonList->liste->pagesize = $this->getPageSize();
         $rowset = $this->_model->getRowset();
-        $reducedDatas = array();
+        $reducedDatas = [];
         if ($rowset) {
             foreach ($rowset as $set) {
                 $reducedDatas[] = array_intersect_key(

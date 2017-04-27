@@ -29,8 +29,8 @@ class Domain {
     const GENERATE_DOCBLOCK_C = '*/';
     const GENERATE_PLURAL = 's';
     
-    protected static $indexes = array();
-    protected static $relations = array();
+    protected static $indexes = [];
+    protected static $relations = [];
 
     /**
      * getClassLine
@@ -177,8 +177,8 @@ class Domain {
      * @param array $colomns
      */
     public static function get($tableName, $columns, $indexes, $relations) {
-        self::$indexes = array();
-        self::$relations = array();
+        self::$indexes = [];
+        self::$relations = [];
         $result = '<font size="1">' . str_replace('style="color: "', '' , highlight_string(self::TYPE_PHP_START . PHP_EOL
             . self::getClassLine($tableName) . self::getVars($columns, $indexes, $relations)
             . self::GENERATE_C_BRACKET, true)) . '</font>';

@@ -30,7 +30,7 @@ class _abstract {
     public function __construct($filename) {
         $this->filename = $filename;
         $this->search = '';
-        $this->results = array();
+        $this->results = [];
         $this->countResults = 0;
         $this->filter = new indexerFilter();
     }

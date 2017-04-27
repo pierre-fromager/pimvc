@@ -102,7 +102,7 @@ abstract class Domain implements domainInterface{
         if (($key = array_search('counter', $propertiesList)) !== false) {
             unset($propertiesList[$key]);
         }
-        $propList = array();
+        $propList = [];
         $className = get_called_class();
         $cacheManager = Lib_Db_Model_Domain_Cache_Manager::getInstance();
         if ($cacheManager->has($className) && !self::DEBUG_MODE) {
@@ -131,7 +131,7 @@ abstract class Domain implements domainInterface{
      */
     public function getPks() {
         $props = $this->getProperties();
-        $pks = array();
+        $pks = [];
         foreach ($props as $prop) {
             $name = (isset($prop[self::KEY_NAME])) 
                 ? $prop[self::KEY_NAME] 
@@ -164,7 +164,7 @@ abstract class Domain implements domainInterface{
      */
     public function getBooleans() {
         $pdos = $this->getPdos();
-        $booleans = array();
+        $booleans = [];
         foreach ($pdos as $pdoName => $pdoValue) {
             if ($pdoValue == 5) {
                 $booleans[] = $pdoName;
@@ -191,7 +191,7 @@ abstract class Domain implements domainInterface{
      */
     public function getIndexes() {
         $props = $this->getProperties();
-        $indexes = array();
+        $indexes = [];
         foreach ($props as $prop) {
             $name = (isset($prop[self::KEY_NAME])) 
                 ? $prop[self::KEY_NAME] 
@@ -211,7 +211,7 @@ abstract class Domain implements domainInterface{
      */
     public function getAllIndexes() {
         $props = $this->getProperties();
-        $indexes = array();
+        $indexes = [];
         foreach ($props as $prop) {
             $name = (isset($prop[self::KEY_NAME])) 
                 ? $prop[self::KEY_NAME] 
@@ -231,7 +231,7 @@ abstract class Domain implements domainInterface{
      */
     public function getLengths() {
         $props = $this->getProperties();
-        $lengths = array();
+        $lengths = [];
         foreach ($props as $prop) {
             $name = (isset($prop[self::KEY_NAME])) 
                 ? $prop[self::KEY_NAME] 
@@ -291,7 +291,7 @@ abstract class Domain implements domainInterface{
      */
     public function getPdos() {
         $props = $this->getProperties();
-        $pdos = array();
+        $pdos = [];
         foreach ($props as $prop) {
             $name = (isset($prop[self::KEY_NAME])) 
                 ? $prop[self::KEY_NAME] 
@@ -342,7 +342,7 @@ abstract class Domain implements domainInterface{
      */
     public function getProperty($propertyName) {
         $o = new \ReflectionObject($this);
-        $props = array();
+        $props = [];
         try {
             $p = $o->getProperty($propertyName);
             $dc = $p->getDocComment();

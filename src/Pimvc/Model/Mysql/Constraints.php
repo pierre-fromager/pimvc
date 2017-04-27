@@ -21,7 +21,7 @@ class Constraints extends \Pimvc\Db\Model\Orm {
      * 
      * @param type $config 
      */
-    public function __construct($config = array()) {
+    public function __construct($config = []) {
         parent::__construct($config);
     }
 
@@ -32,10 +32,10 @@ class Constraints extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getByTableName($tableName) {
-        $what = array();
+        $what = [];
         $where = array($this->getPrimary() => $tableName);
         $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
     
     /**
@@ -45,10 +45,10 @@ class Constraints extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getBySchema($schema) {
-        $what = array();
+        $what = [];
         $where = array('table_schema' => $schema);
         $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->getRowsetAs[];
     }
 }
 
