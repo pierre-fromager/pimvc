@@ -520,7 +520,7 @@ class Liste {
             , $pageSize
             , $maxPage
         );
-        $urlCombo = Tools\Session::getBaseUrl() . $this->controler 
+        $urlCombo = Tools\Session::getBaseUrl() . '/' . $this->controler 
             . DIRECTORY_SEPARATOR . self::PARAM_PAGESIZE . DIRECTORY_SEPARATOR;
         $comboPage = Views\Helpers\Pagesize::getCombo($urlCombo, $pageSize);
         return $navPaging 
