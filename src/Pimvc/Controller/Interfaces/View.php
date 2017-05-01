@@ -8,7 +8,9 @@
 
 namespace Pimvc\Controller\Interfaces;
 
-interface Basic extends View{
+interface View extends Response {
+
+    const VIEW_PATH = '/Views/';
 
     /**
      * __construct
@@ -17,4 +19,12 @@ interface Basic extends View{
      * @param array $params
      */
     public function __construct(\Pimvc\App $app, $params = []);
+ 
+    /**
+     * getView
+     * 
+     * @param array $params
+     * @param string $viewPath
+     */
+    public function getView($params, $viewPath);
 }
