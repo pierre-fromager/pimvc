@@ -6,7 +6,9 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
-namespace Pimvc\Cache\adapter;
+namespace Pimvc\Cache;
+
+use \Pimvc\Cache\Adapter\File as fileAdapter;
 
 class Factory {
     
@@ -20,6 +22,7 @@ class Factory {
      * 
      * @param string $type
      * @param string $name
+     * @param int $ttl
      * 
      * @return mixed
      */
@@ -27,7 +30,7 @@ class Factory {
         $type = ucfirst($type);
         switch ($type) {
             case self::CACHE_ADAPTER_FILE:
-                return Lib_Cache_Adapter_File::getInstance($name, $ttl);
+                return fileAdapter::getInstance($name, $ttl);
             case self::CACHE_ADAPTER_APC:
                 return Lib_Cache_Adapter_Apc::getInstance($name, $ttl);
             case self::CACHE_ADAPTER_MEMCACHE:

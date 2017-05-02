@@ -7,7 +7,7 @@
  */
 namespace Pimvc\Cache\Adapter;
 
-use Pimvc\Cache\adapter\interfaces\adapter as cacheInterface;
+use Pimvc\Cache\Adapter\Interfaces\Adapter as cacheInterface;
 
 class File implements cacheInterface {
 
@@ -16,7 +16,7 @@ class File implements cacheInterface {
     const DEFAULT_CACHE_EXT = '.tmp';
     const DEBUG = false;
     
-    private static $_instance;
+    private static $_instance = null;
     private static $_name;
     private static $_path;
     private static $_error;
@@ -51,12 +51,11 @@ class File implements cacheInterface {
         self::$_path = APP_PATH . self::DEFAULT_CACHE_PATH;
         self::$_name = $name;
         self::$_ttl = $ttl;
-  
         if (self::DEBUG) {
             $this->logger = Logger::getInstance(APP_PATH . LOG_DIR, Logger::DEBUG);
         }
-        if (!(self::$_instance instanceof Lib_Cache_Adapter_File)){
-             self::$_instance = new Lib_Cache_Adapter_File($name, $ttl);
+        if (!self::$_instance){
+             self::$_instance = new self($name, $ttl);
         }
         return self::$_instance;
     }

@@ -13,13 +13,16 @@ use Pimvc\Http\Request;
 use Pimvc\Http\Response;
 use Pimvc\View;
 use Pimvc\Controller;
-use Pimvc\Config;
+use Pimvc\Config as appConfig;
 use Pimvc\Storage;
+use Pimvc\Tools\Translate\Adapter\Csv as translatorAdpater;
+use Pimvc\Tools\Translator as translate;
 
 class App implements Interfaces\App{
     
     public $hash;
     private static $instance = null;
+    public $logger = null;
     public $storage = null;
     public $config = null;
     public $routes = null;
@@ -33,7 +36,6 @@ class App implements Interfaces\App{
     public $locale = null;
     public $translator = null;
 
-
     /**
      * __construct
      * 
@@ -41,22 +43,22 @@ class App implements Interfaces\App{
      * @return $this
      * @throws \Exception
      */
-    public function __construct(\Pimvc\Config $config) {
+    public function __construct(appConfig $config) {
         $this->setConfig($config);
         $this->request = new Request();
         $this->request->startSession();
-        $this->routes = new Routes($this->getConfig()->getSettings('routes'));
+        $this->routes = new Routes($this->getConfig()->getSettings(self::APP_ROUTES));
         $this->router = new Router($this->routes);
         $this->response = new Response();
         $this->view = new View();
-        $classPrefix = $this->getConfig()->getSettings('classes')['prefix'];
+        $classPrefix = $this->getConfig()->getSettings(self::APP_CLASSES)[self::APP_PREFIX];
         $this->controller = new Controller($this);
         $this->controller->setClassPrefix($classPrefix);
         $this->hash = spl_object_hash($this);
         $this->storage = new Storage();
-        $this->setLocale($this->getConfig()->getSettings('app')['defaultLocale']);
+        $this->setLocale($this->getConfig()->getSettings(self::APP_APP)[self::APP_DEFAULT_LOCALE]);
         self::$instance = $this;
-        return $this;
+        return self::$instance;
     }
     
     /**
@@ -65,9 +67,7 @@ class App implements Interfaces\App{
      * @return $this
      */
     public function setTranslator() {
-        $this->translator = new Tools\Translator(
-            new Tools\Translate\Adapter\Csv($this->locale)
-        );
+        $this->translator = new translate(new translatorAdpater($this->locale));
         return $this;
     }
     

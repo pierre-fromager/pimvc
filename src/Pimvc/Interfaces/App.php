@@ -10,6 +10,12 @@ namespace Pimvc\Interfaces;
 
 interface App {
 
+    const APP_APP = 'app';
+    const APP_DEFAULT_LOCALE = 'defaultLocale';
+    const APP_ROUTES = 'routes';
+    const APP_CLASSES = 'classes';
+    const APP_PREFIX = 'prefix';
+
     public function __construct(\Pimvc\Config $config);
 
     public function setTranslator();
