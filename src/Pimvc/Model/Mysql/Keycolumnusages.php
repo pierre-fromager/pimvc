@@ -41,7 +41,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
             , 'table_schema' => $defaultSchema         
         );
         $this->find($what, $where);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
     
     /**
@@ -59,7 +59,7 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
         );
         $order = array('table_name' => 'ASC');
         $this->find($what, $where, $order);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
     
 }

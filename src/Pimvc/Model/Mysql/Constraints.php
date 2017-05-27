@@ -35,7 +35,7 @@ class Constraints extends \Pimvc\Db\Model\Orm {
         $what = [];
         $where = array($this->getPrimary() => $tableName);
         $this->find($what, $where);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
     
     /**
@@ -48,7 +48,7 @@ class Constraints extends \Pimvc\Db\Model\Orm {
         $what = [];
         $where = array('table_schema' => $schema);
         $this->find($what, $where);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
 }
 

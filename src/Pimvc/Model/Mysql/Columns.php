@@ -34,7 +34,7 @@ class Columns extends \Pimvc\Db\Model\Orm {
         $what = array('*');
         $where = array('table_name' => $tableName);
         $this->find($what, $where);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
     
     /**
@@ -47,7 +47,7 @@ class Columns extends \Pimvc\Db\Model\Orm {
         $what = array('*');
         $where = array('table_id' => $tableId);
         $this->find($what, $where);
-        return $this->getRowsetAs[];
+        return $this->getRowsetAsArray();
     }
     
 }
