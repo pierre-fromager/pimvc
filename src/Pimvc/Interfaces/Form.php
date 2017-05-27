@@ -15,7 +15,7 @@ interface Form {
     const CLEAN_LABEL = 'Effacer';
     const FORM_ELEMENT_ID_PREFIX = 'field_';
     const FORM_MANDATORY_FIELD_MENTIONS = '<small>(*) Champs obligatoires.</small>';
-    const FORM_VALIDATOR_CLASS = 'Lib_Validator_Abstract';
+    const FORM_VALIDATOR_CLASS = '\\Pimvc\Input\Validators';
     const FORM_SIMPLE_SECTION_SIZE = 3;
     const FORM_DEFAULT_MODE = '';
     const FORM_FIELD_SEPARATOR = '-';

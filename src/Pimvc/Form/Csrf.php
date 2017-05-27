@@ -47,7 +47,7 @@ class Csrf {
             return false;
         }
         
-        $hash = Tools_Session::get(self::PREFIX . $key);
+        $hash = \Pimvc\Tools\Session::get(self::PREFIX . $key);
         if (self::isExpired($hash, $timespan) === false) {
             self::addError(self::CSRF_ERROR_EXPIRED);
             return false;
