@@ -21,6 +21,11 @@ interface Request {
     const REQUEST_HOST = 'HTTP_HOST';
     const REQUEST_SCHEME = 'REQUEST_SCHEME';
     const SCHEME_SUFFIX = '://';
+    
+    const PARAM_APACHE_HEADERS = 'apache_request_headers';
+    const PARAM_X_FORWARD = 'X-Forwarded-For';
+    const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
+    const PARAM_SERVER_REMOTE_ADDR = 'REMOTE_ADDR';
 
     public function getMethod();
 
