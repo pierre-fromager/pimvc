@@ -15,7 +15,7 @@ class Form implements Interfaces\Form{
    
     protected $baseUrl = '';
     protected $fieldList = [];
-    protected $fieldExlude = [];
+    protected $fieldExclude = [];
     protected $errors = [];
     protected $validators = [];
     protected $data = [];
@@ -65,9 +65,10 @@ class Form implements Interfaces\Form{
      * @param string $method
      * @param array $data
      */
-    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExlude = []) {
+    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExclude = []) {
+        $this->fieldList = $fieldList;
+        $this->setFieldsExclude($fieldExclude);
         $this->setFields($fieldList);
-        $this->setFieldsExclude($fieldExlude);
         $this->setDatas($data);
         $this->setName($name);
         $this->setAction($action);
@@ -81,12 +82,17 @@ class Form implements Interfaces\Form{
     /**
      * setFieldsExclude
      * 
-     * @param array $fieldExlude
+     * @param array $fieldExclude
      */
-    public function setFieldsExclude($fieldExlude) {
-        $this->fieldExlude = $fieldExlude;
-        if ($this->fieldExlude){
-            $this->fieldList = array_values(array_diff($this->fieldList, $fieldExlude));
+    public function setFieldsExclude($fieldExclude) {
+        $this->fieldExclude = $fieldExclude;
+        if ($fieldExclude){
+            $this->fieldList = array_values(
+                array_diff(
+                    $this->fieldList, 
+                    $fieldExclude
+                )
+            );
         }
     }
     
@@ -894,7 +900,7 @@ class Form implements Interfaces\Form{
         foreach ($this->fieldList as $aField) {
             $fieldName = $aField[self::PARAM_FIELD];
             $input .= $this->getSection($fieldName,'start');
-            if (!in_array($fieldName, $this->fieldExlude)) {
+            if (!in_array($fieldName, $this->fieldExclude)) {
                 ++$counterSection;
                 $input .= ($needSection && $counterSection === $maxSection) 
                     ? $sectionStart 
@@ -1722,7 +1728,7 @@ class Form implements Interfaces\Form{
      * @param array $excludes 
      */
     public function setExcludes($excludes) {
-        $this->fieldExlude = $excludes;      
+        $this->fieldExclude = $excludes;      
     }
     
     /**
