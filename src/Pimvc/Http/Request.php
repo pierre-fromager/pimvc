@@ -10,6 +10,7 @@ namespace Pimvc\Http;
 
 class Request implements Interfaces\Request{
 
+
     private $request;
     private $method;
     private $cookie;
@@ -233,6 +234,30 @@ class Request implements Interfaces\Request{
             return ($this->hasSession($name)) ? $_SESSION[$name] : '';
         }
         return ($this->hasSession($name, $key)) ? $_SESSION[$name][$key] : '';
+    }
+    
+    /**
+     * getExtRemoteAddr
+     * 
+     * @return string 
+     */
+    public function getRemoteAddr() {
+        $headers = array();
+        if (function_exists(self::PARAM_APACHE_HEADERS)) {
+            $headers = apache_request_headers();
+        }
+        if ($headers) {
+            if (array_key_exists(self::PARAM_X_FORWARD, $headers)
+                && $this->isValidIpv4($headers[self::PARAM_X_FORWARD])
+            ) {
+                return $headers[self::PARAM_X_FORWARD];
+            } elseif (array_key_exists(self::PARAM_HTTP_X_FORWARD, $headers)
+                && $this->isValidIpv4($headers[self::PARAM_HTTP_X_FORWARD])
+            ) {
+                return $headers[self::PARAM_HTTP_X_FORWARD];
+            }
+        }
+        return $this->getServer(self::PARAM_SERVER_REMOTE_ADDR);
     }
 
     /**

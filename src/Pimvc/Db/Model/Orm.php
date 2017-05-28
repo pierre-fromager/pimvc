@@ -701,8 +701,10 @@ abstract class Orm implements ormInterface{
         \Pimvc\Db\Model\Domain $o1
         , \Pimvc\Db\Model\Domain $o2
     ) {
-        //var_dump($o1,$o2);
-        return Tools_Array::recursive_array_diff((array) $o1, (array) $o2);
+        return \Pimvc\Tools\Arrayproto::recursive_array_diff(
+            (array) $o1
+            , (array) $o2
+        );
     }
 
 
