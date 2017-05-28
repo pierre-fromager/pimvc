@@ -19,7 +19,7 @@ interface Form {
     const FORM_SIMPLE_SECTION_SIZE = 3;
     const FORM_DEFAULT_MODE = '';
     const FORM_FIELD_SEPARATOR = '-';
-    const FORM_ICON_PATH = 'public/images/toolbar/';
+    const FORM_ICON_PATH = 'public/img/toolbar/';
     const FORM_FIELD_VALID_ICON = 'valid.png';
     const FORM_FIELD_VALID_ICON_MESSAGE = 'Valid';
     const FORM_FIELD_FAILED_ICON = 'warning.png';

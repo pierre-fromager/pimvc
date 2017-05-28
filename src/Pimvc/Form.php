@@ -1198,7 +1198,7 @@ class Form implements Interfaces\Form{
      * @return string 
      */
     private function getIcon($filename, $title) {
-        $iconPath = $this->rootUrl . self::FORM_ICON_PATH;
+        $iconPath = $this->baseUrl . DIRECTORY_SEPARATOR .  self::FORM_ICON_PATH;
         return '<img'
             . ' title="' . $title . '"'
             . ' alt="' . $title . '"'

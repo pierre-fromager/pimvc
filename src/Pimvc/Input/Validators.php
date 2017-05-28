@@ -485,7 +485,7 @@ class Validators {
         );
         
         foreach (Form\Csrf::getErrors() as $error) {
-            Tools_Flash::addError($error);
+            \Pimvc\Tools\Flash::addError($error);
         }
         return $validxcsrf;
     }
