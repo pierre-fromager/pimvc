@@ -23,7 +23,7 @@ class Acl {
     const ACL_CONTROLLER_SUFFIX = 'Controller';
     const ACL_ACTION_SUFFIX = 'Action';
     const ACL_DIRECTORY = '/config/';
-    const ACL_FILE = 'ressources.php';
+    const ACL_FILE = 'acl.json';
     const ACL_FILE_ERROR = 'Erreur sur le fichier d\'acl.';
     const ACL_READ_ERROR = 'Erreur de lecture d\'acl.';
     const ACL_ROLE_ANONYMOUS = 'anonymous';
@@ -50,13 +50,14 @@ class Acl {
     protected $isPhp = false;
     
     protected $errors = [];
+    private $app;
 
     /**
      * @see __construct
      */
     public function __construct($reset = false, $xmlMode = false) {
-        $app = \Pimvc\App::getInstance();
-        $appPath = $app->getPath();
+        $this->app = \Pimvc\App::getInstance();
+        $appPath = $this->app->getPath();
         $this->controllerPath = $appPath . self::ACL_CONTROLLER_SUFFIX;
         $this->controllerFileList = $this->getControllerFileList();
         $this->aclFilename = $appPath . self::ACL_DIRECTORY . self::ACL_FILE;
@@ -114,10 +115,18 @@ class Acl {
      * @return string 
      */
     protected function getControlerClassname($controllerFilename) {
-        $baseClass = str_replace($this->controllerPath, self::PARAM_EMPTY, $controllerFilename);
-        $baseClass = str_replace(DIRECTORY_SEPARATOR, self::PARAM_UNDERSCORE, $baseClass);
-        $className = substr($baseClass, 0, self::ACL_CONTROLLER_SUFFIX_LEN);
+        $baseClass = $this->getNamespaceCtrlPrefix() . '\\' . basename($controllerFilename);
+         $className = substr($baseClass, 0, -4);
         return $className;
+    }
+    
+    /**
+     * getNamespaceCtrlPrefix
+     * 
+     * @return string
+     */
+    public function getNamespaceCtrlPrefix(){
+        return str_replace('\App', '\Controller', get_class($this->app));
     }
 
     /**
@@ -141,23 +150,15 @@ class Acl {
     }
 
     /**
-     * getActionList
+     * getPublicMethods
      * 
      * @param string $classname
      * @return array 
      */
-    protected function getActionList($classname) {
-        $methodList = get_class_methods($classname . self::ACL_CONTROLLER_SUFFIX);
-        var_dump($methodList);
-        $methodList = array_filter(
-            $methodList ,
-            [__CLASS__, self::ACL_ACTION_FILTER_CALLBACK]
-        );
-        $methodList = array_map(
-            [__CLASS__, self::ACL_ACTION_MAP_CALLBACK], 
-            $methodList
-        );
-        $methodList = array_flip($methodList);
+    protected function getPublicMethods($classname) {
+        $classReflex = new \ReflectionClass($classname);
+        $methodList = $classReflex->getMethods(\ReflectionMethod::IS_PUBLIC);
+        unset($classReflex);
         return $methodList;
     }
 
@@ -203,34 +204,55 @@ class Acl {
      */
     private function getScanRessources($reset = false) {
         $ressource = array();
+        /*
         $cacheRessources = cacheFactory::get(
             self::ACL_CACHE_ADAPTER
             , self::ACL_CACHE_KEY
             , self::ACL_CACHE_EXPIRATION
         );
-        if ($cacheRessources->expired() || toolsSession::isAdmin()) { 
+        $useCache = false;*/
+        //if ($cacheRessources->expired() || toolsSession::isAdmin() || !$useCache
+        //        ) {
             $roleList = array_flip($this->getRoles());
-            foreach ($this->getControllerList() as $controller) {
-                $actions = $this->getActionList($controller);
-                foreach ($actions as $action => $value) {
-                    foreach ($roleList as $role => $acl) {
-                        $isNew = $this->isNew($controller, $action, $role);
-                        $acl = ($isNew || $reset) 
-                            ? $this->getDefaultAcl($role) 
-                            : $this->get($controller, $action, $role);
-                        $roleList[$role] = $acl;
-                        $this->set($controller, $action, $role, $acl, $isNew);
+            $cttlList = $this->getControllerList();
+            foreach ($cttlList as $controller) {
+                $controllerNs = '\\' . $controller;
+                $actions = [];
+                $actionsList = $this->getActionReflex($controllerNs);
+                foreach ($actionsList as $action => $value) {
+                    //echo $action;die;
+                    if ($action !== '__construct') {
+                        foreach ($roleList as $role => $acl) {
+                              $isNew = $this->isNew($controller, $action, $role);
+                              $acl = ($isNew || $reset)
+                                ? $this->getDefaultAcl($role)
+                                : $this->get($controller, $action, $role);
+                              $roleList[$role] = $acl;
+                              $this->set($controller, $action, $role, $acl, $isNew);
+                        }
+                        $actions[$action] = $roleList;
                     }
-                    $actions[$action] = $roleList;
                 }
                 $ressource[$controller] = $actions;
             }
-           $cacheRessources->set(self::ACL_CACHE_KEY, $ressource);
-        } else {
+           //$cacheRessources->set(self::ACL_CACHE_KEY, $ressource);
+        /*} else {
             $ressource = $cacheRessources->get(self::ACL_CACHE_KEY);
-        }
+        }*/
         unset($cacheRessources);
         return $ressource;
+    }
+    
+    private function getActionReflex($controllerNs) {
+        $actions = array_diff(
+            $this->getPublicMethods($controllerNs), 
+            $this->getPublicMethods(get_parent_class($controllerNs))
+        );
+        $actionList = [];
+        foreach ($actions as $action) {
+            $actionList[] = $action->name;
+        }
+        return array_flip($actionList);
     }
 
     /**
@@ -259,12 +281,10 @@ class Acl {
     protected function load() {
         $result = self::ACL_FILE_ERROR;
         if (file_exists($this->aclFilename)) {
-            $this->ressourceList = require $this->aclFilename;
-            //$aclFileContent = file_get_contents($this->aclFilename);
-            /*
-            $this->ressourceList = ($this->isPhp)
-                ? Tools_Xml::xml2array($aclFileContent)
-                : unserialize($aclFileContent);*/
+            $this->ressourceList = json_decode(
+                file_get_contents($this->aclFilename), 
+                true
+            );
             $this->ressourceList = $this->getScanRessources($reset = false);
         } else {
             $this->errors[] = 'Missing config file.';
@@ -281,17 +301,22 @@ class Acl {
     protected function save() {
         $result = self::ACL_FILE_ERROR;
         if (file_exists($this->aclFilename)) {
-            $aclContent = ($this->isPhp)
-                ? Tools_Xml::getHeader(Tools_Xml::array2xml($this->ressourceList))
-                : serialize($this->ressourceList);
+            $aclContent = json_encode($this->ressourceList, JSON_PRETTY_PRINT);
+            $aclContent = str_replace($this->getNamespaceCtrlPrefix(), '', $aclContent);
             file_put_contents($this->aclFilename, $aclContent);
+            //$cacheRessources = new \Pimvc\Cache('acl_ressources', 20);
+            //$cacheRessources = cacheFactory::get(\Pimvc\Cache::DEFAULT_ADPATER,'acl_ressources', 20);
+            //$cacheRessources->set('acl_ressources',$aclContent);
+            /*
             $cacheRessources = Lib_Cache_Factory::get(
                 self::ACL_CACHE_ADAPTER
                 , 'acl_ressources'
                 , 20
             );
-            $cacheRessources->set('acl_ressources',$aclContent);
-            unset($cacheRessources);
+            $cacheRessources->set('acl_ressources',$aclContent);*/
+            //unset($cacheRessources);
+        } else {
+            throw new Exception('Misssing reference file ' . $this->aclFilename);
         }
         return $result;
     }
@@ -319,6 +344,7 @@ class Acl {
      * @param string $acl 
      */
     public function set($controller, $action, $role, $acl, $save = true) {
+        //var_dump($this->ressourceList);die;
         $this->ressourceList[$controller][$action][$role] = $acl;
         if ($save) $this->save();
     }
