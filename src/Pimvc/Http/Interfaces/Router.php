@@ -16,6 +16,8 @@ interface Router {
     public function __construct(\Pimvc\Http\Routes $routes);
 
     public function getUri();
+    
+    public function setUri($uri);
 
     public function getFragments();
 

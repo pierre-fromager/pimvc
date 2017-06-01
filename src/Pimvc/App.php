@@ -11,6 +11,7 @@ use Pimvc\Http\Routes;
 use Pimvc\Http\Router;
 use Pimvc\Http\Request;
 use Pimvc\Http\Response;
+use Pimvc\Http\Middleware;
 use Pimvc\View;
 use Pimvc\Controller;
 use Pimvc\Config as appConfig;
@@ -35,6 +36,9 @@ class App implements Interfaces\App{
     public $db = null;
     public $locale = null;
     public $translator = null;
+    public $middlewareItems = [];
+    public $middleware;
+
 
     /**
      * __construct
@@ -61,6 +65,27 @@ class App implements Interfaces\App{
         return self::$instance;
     }
     
+    /**
+     * setMiddleware
+     * 
+     * @return $this
+     */
+    public function setMiddleware() {
+        $object = new \stdClass(); // $object should be the controller
+        $middlwaresClasses = $this->getConfig()->getSettings(self::APP_MIDDLEWARE);
+        for ($c = 0; $c < count($middlwaresClasses); $c++) {
+            $this->middlewareItems[] = new $middlwaresClasses[$c];
+        }
+        $this->middleware = new Middleware();
+        $this->middleware->layer($this->middlewareItems)->peel(
+            $object,
+            function($object) {
+                return $object;
+            }
+        );
+        return $this;
+    }
+
     /**
      * setTranslator
      * 
@@ -148,7 +173,7 @@ class App implements Interfaces\App{
     /**
      * getRequest
      * 
-     * @return request
+     * @return Request
      */
     public function getRequest() {
         return $this->request;
@@ -214,7 +239,11 @@ class App implements Interfaces\App{
      * @return type
      */
     public function run() {
-        return $this->getController()->setDefault()->run()->dispatch();
+        return $this->setMiddleware()
+            ->getController()
+            ->setDefault()
+            ->run()
+            ->dispatch();
     }
 
 }

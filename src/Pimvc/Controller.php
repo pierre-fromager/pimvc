@@ -147,22 +147,23 @@ class Controller implements Interfaces\Controller{
                 : self::defaultAction;
             $this->action = ucfirst($this->action);
             $this->params = ($this->params) ? $this->params : [];
-            if (isset($this->params[0]) && $this->params[0] == self::questionMark) {
-                $this->params = $this->getApp()->getRequest()->getParsedQuery($this->params);
-            }
-            if (isset($this->params[0]) && $this->params[0] == '/') {
-                $this->params = $this->getApp()->getRequest()->getQueryTupple($this->params);
+            if (isset($this->params[0])) {
+                if ($this->params[0] === self::questionMark) {
+                    $this->params = $this->getApp()->getRequest()->getParsedQuery($this->params);
+                }
+                if ($this->params[0] === '/') {
+                    $this->params = $this->getApp()->getRequest()->getQueryTupple($this->params);
+                }
             }
         } else {
             $this->addError(6);
         }
-        $passed = $this->check($this->getNamespacedClass());
         if ($this->isError()) {
             $this->params = [
                 'errors' => $this->errors ,
                 'controller' => $this->name ,
                 'action' => $this->action ,
-                'request' => $this->app->request
+                'request' => $this->getApp()->getRequest()
             ];
             $this->setDefault();
         }

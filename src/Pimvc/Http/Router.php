@@ -18,11 +18,12 @@ class Router implements Interfaces\Router{
      * __construct
      * 
      */
-    public function __construct(routes $routes) {
+    public function __construct(Routes $routes) {
         $this->server = $this->getServer();
         $this->uri = $this->server[self::REQUEST_URI];
         $this->uri = substr($this->uri, 1);
         $this->routes = $routes;
+        return $this;
     }
     
     /**
@@ -31,8 +32,8 @@ class Router implements Interfaces\Router{
      * @param string $param
      * @return string || array
      */
-    private function getServer($param = null) {
-        return ($param) ? $_SERVER[$param] : $_SERVER;
+    private function getServer() {
+        return @$_SERVER;
     }
     
     /**
@@ -42,6 +43,15 @@ class Router implements Interfaces\Router{
      */
     public function getUri() {
         return $this->uri;
+    }
+    
+    /**
+     * setUri
+     * 
+     * @return string
+     */
+    public function setUri($uri) {
+        return $this->uri = $uri;
     }
     
     /**

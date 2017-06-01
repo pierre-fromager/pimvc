@@ -15,6 +15,7 @@ interface App {
     const APP_ROUTES = 'routes';
     const APP_CLASSES = 'classes';
     const APP_PREFIX = 'prefix';
+    const APP_MIDDLEWARE = 'middleware';
 
     public function __construct(\Pimvc\Config $config);
 

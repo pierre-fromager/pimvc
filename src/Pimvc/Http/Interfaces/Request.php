@@ -27,6 +27,8 @@ interface Request {
     const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
     const PARAM_SERVER_REMOTE_ADDR = 'REMOTE_ADDR';
 
+    public function __construct();
+
     public function getMethod();
 
     public function isHome();
