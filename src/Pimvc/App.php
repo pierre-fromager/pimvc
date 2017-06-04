@@ -39,7 +39,6 @@ class App implements Interfaces\App{
     public $middlewareItems = [];
     public $middleware;
 
-
     /**
      * __construct
      * 
@@ -73,9 +72,17 @@ class App implements Interfaces\App{
     public function setMiddleware() {
         $object = new \stdClass(); // $object should be the controller
         $middlwaresClasses = $this->getConfig()->getSettings(self::APP_MIDDLEWARE);
+        
+        /*
         for ($c = 0; $c < count($middlwaresClasses); $c++) {
             $this->middlewareItems[] = new $middlwaresClasses[$c];
+        }*/
+        
+        foreach ($middlwaresClasses as $name => $middleware) {
+            $this->middlewareItems[$name] = new $middlwaresClasses[$name];
+
         }
+        
         $this->middleware = new Middleware();
         $this->middleware->layer($this->middlewareItems)->peel(
             $object,

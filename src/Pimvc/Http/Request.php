@@ -10,7 +10,6 @@ namespace Pimvc\Http;
 
 class Request implements Interfaces\Request{
 
-
     private $request;
     private $method;
     private $cookie;
@@ -112,29 +111,18 @@ class Request implements Interfaces\Request{
     }
     
     /**
-     * getParsedQueryTupple
-     * 
-     * @param type $query
-     * @return type
-     */
-    public function getParsedQueryTupple($query){
-        parse_str(parse_url($query)[self::REQUEST_QUERY], $tupple);
-        return $tupple;
-    }
-    
-    /**
      * getQueryTupple
      * 
      * @param string $query
      * @return array
      */
-    public function getQueryTupple($query) {
-        $array = explode('/', $query);
+    public function getQueryTupple($query = '') {
+        $array = explode(self::REQUEST_SLASH, ($query) ? $query : $this->getUri());
         array_shift($array);
         $keys = $values = [];
         $aSize = count($array);
         if ($aSize & 1) {
-            array_push ($array,null);
+            array_push($array, null);
             $aSize = count($array);
         }
         for ($i = 0; $i < $aSize; $i++) {
@@ -167,6 +155,15 @@ class Request implements Interfaces\Request{
         ];
     }
     
+    /**
+     * getParams
+     * 
+     * @return array
+     */
+    public function getParams() {
+        return $this->get()[self::REQUEST_P_REQUEST];
+    }
+
     /**
      * startSession
      * 

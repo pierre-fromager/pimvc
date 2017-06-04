@@ -24,7 +24,7 @@ abstract class Request extends Base implements Interfaces\Request {
         parent::__construct($app);
         $this->params = array_merge(
             $params
-            , $app->getRequest()->get()['request']
+            , $app->getRequest()->getParams()
         );
         $this->init();
     }
