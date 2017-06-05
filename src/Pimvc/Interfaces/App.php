@@ -22,6 +22,12 @@ interface App {
     public function setTranslator();
 
     public function getTranslator();
+    
+    public function getLogger();
+    
+    public function setLogger();
+    
+    public function setMiddleware();
 
     public function setLocale($locale);
 
