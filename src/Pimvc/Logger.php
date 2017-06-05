@@ -379,7 +379,11 @@ class Logger {
             if (self::$adapter == self::LOG_ADAPTER_FILE) {           
                 $line = "$status $line";
                 if ($args !== self::NO_ARGUMENTS) {
-                    $line = $line . ';' . var_export($args, true);
+                    $line = $line . ';' . str_replace(
+                        ["\n", ' '], 
+                        '', 
+                        var_export($args, true)
+                    );
                 }
                 $this->writeFreeFormLine($line . PHP_EOL);
             } elseif (
