@@ -48,8 +48,7 @@ class App implements Interfaces\App{
      */
     public function __construct(appConfig $config) {
         $this->setConfig($config);
-        $this->request = new Request();
-        $this->request->startSession();
+        $this->request = (new Request())->startSession();
         $this->routes = new Routes($this->getConfig()->getSettings(self::APP_ROUTES));
         $this->router = new Router($this->routes);
         $this->response = new Response();
@@ -70,25 +69,14 @@ class App implements Interfaces\App{
      * @return $this
      */
     public function setMiddleware() {
-        $object = new \stdClass(); // $object should be the controller
         $middlwaresClasses = $this->getConfig()->getSettings(self::APP_MIDDLEWARE);
-        
-        /*
-        for ($c = 0; $c < count($middlwaresClasses); $c++) {
-            $this->middlewareItems[] = new $middlwaresClasses[$c];
-        }*/
-        
         foreach ($middlwaresClasses as $name => $middleware) {
-            $this->middlewareItems[$name] = new $middlwaresClasses[$name];
-
+            $this->middlewareItems[$name] = new $middleware;
         }
-        
         $this->middleware = new Middleware();
         $this->middleware->layer($this->middlewareItems)->peel(
-            $object,
-            function($object) {
-                return $object;
-            }
+            $this->controller,
+            function($object) {return $object;}
         );
         return $this;
     }
@@ -123,7 +111,30 @@ class App implements Interfaces\App{
         ini_set('intl.default_locale', $locale);
         return $this;
     }
+
+    /**
+     * getLogger
+     * 
+     * @return string
+     */
+    public function getLogger() {
+        return $this->logger;
+    }
     
+    /**
+     * setLogger
+     * 
+     * @return string
+     */
+    public function setLogger() {
+        $this->logger = Logger::getFileInstance(
+            $this->getPath() . Logger::LOG_ADAPTER_FILE_PATH, 
+            Logger::DEBUG, 
+            Logger::LOG_ADAPTER_FILE
+        );
+        return $this;
+    }
+
     /**
      * getLocale
      * 
@@ -132,7 +143,6 @@ class App implements Interfaces\App{
     public function getLocale() {
         return $this->locale;
     }
-
 
     /**
      * getInstance

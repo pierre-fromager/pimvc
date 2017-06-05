@@ -28,6 +28,7 @@ class Logger {
     
     //log adapter
     const LOG_ADAPTER_FILE = 'file';
+    const LOG_ADAPTER_FILE_PATH = 'cache/log/';
     const LOG_ADAPTER_DB = 'db';
     const LOG_ADAPTER_DB1 = 'db1';
     const LOG_ADAPTER_DB2 = 'db2';
@@ -139,7 +140,6 @@ class Logger {
         if ($severity === false) {
             $severity = self::$_defaultSeverity;
         }
-
         if ($logDirectory === false) {
             if (count(self::$fileInstances) > 0) {
                 return current(self::$fileInstances);
@@ -429,6 +429,7 @@ class Logger {
      * @return type 
      */
     private function isLan() {
+        return false;
         return (self::LOG_LAN_ANY) 
             ? false 
             : (strpos($_SERVER['REMOTE_ADDR'], self::LOG_LAN_PREFIX) !== false);
