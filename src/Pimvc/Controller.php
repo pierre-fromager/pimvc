@@ -20,7 +20,8 @@ class Controller implements Interfaces\Controller{
         'Missing method' ,
         'Bad router' ,
         'Bad routes' ,
-        'No routes match'
+        'No routes match' ,
+        'Forbidden'
     ];
     private $errorCode = 0;
     private $errorMessage = '';
@@ -77,6 +78,16 @@ class Controller implements Interfaces\Controller{
      */
     public function setAction($action) {
         $this->action = $action;
+        return $this;
+    }
+    
+    /**
+     * setForbidden
+     * 
+     * @return $this
+     */
+    public function setForbidden() {
+        $this->addError(7);
         return $this;
     }
     
