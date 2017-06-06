@@ -243,6 +243,12 @@ class Acl {
         return $ressource;
     }
     
+    /**
+     * getActionReflex
+     * 
+     * @param type $controllerNs
+     * @return type
+     */
     private function getActionReflex($controllerNs) {
         $actions = array_diff(
             $this->getPublicMethods($controllerNs), 
@@ -344,7 +350,6 @@ class Acl {
      * @param string $acl 
      */
     public function set($controller, $action, $role, $acl, $save = true) {
-        //var_dump($this->ressourceList);die;
         $this->ressourceList[$controller][$action][$role] = $acl;
         if ($save) $this->save();
     }

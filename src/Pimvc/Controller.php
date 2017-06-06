@@ -151,7 +151,7 @@ class Controller implements Interfaces\Controller{
                 if ($this->params[0] === self::questionMark) {
                     $this->params = $this->getApp()->getRequest()->getParsedQuery($this->params);
                 }
-                if ($this->params[0] === '/') {
+                if (isset($this->params[0]) && $this->params[0] === '/') {
                     $this->params = $this->getApp()->getRequest()->getQueryTupple($this->params);
                 }
             }
