@@ -41,7 +41,7 @@ class Memcache implements cacheInterface {
                 , self::CACHE_ADAPTER_PORT
             );
         } else {
-            throw new Exception;
+            throw new \Exception;
         }
     }
     

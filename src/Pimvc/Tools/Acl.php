@@ -322,7 +322,7 @@ class Acl {
             $cacheRessources->set('acl_ressources',$aclContent);*/
             //unset($cacheRessources);
         } else {
-            throw new Exception('Misssing reference file ' . $this->aclFilename);
+            throw new \Exception('Misssing reference file ' . $this->aclFilename);
         }
         return $result;
     }
