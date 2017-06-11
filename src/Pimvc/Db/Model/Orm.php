@@ -640,7 +640,7 @@ abstract class Orm implements ormInterface{
             }
         } else {
             $error = 'Current domain object ' . $this->_domainClass . ' failed';
-            throw new Exception($error);
+            throw new \Exception($error);
         }
     }
 

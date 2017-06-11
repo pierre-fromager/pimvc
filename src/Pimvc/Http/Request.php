@@ -160,8 +160,9 @@ class Request implements Interfaces\Request{
      * 
      * @return array
      */
-    public function getParams() {
-        return $this->get()[self::REQUEST_P_REQUEST];
+    public function getParams($key = '') {
+        $params = $this->get()[self::REQUEST_P_REQUEST];
+        return ($key && isset($params[$key])) ? $params[$key] : $params;
     }
 
     /**
@@ -255,6 +256,16 @@ class Request implements Interfaces\Request{
             }
         }
         return $this->getServer(self::PARAM_SERVER_REMOTE_ADDR);
+    }
+    
+    /**
+     * getCookie
+     * 
+     * @param string $name
+     * @return string
+     */
+    public function getCookie($name) {
+        return (isset($this->cookie[$name])) ? $this->cookie[$name] : '';
     }
 
     /**
