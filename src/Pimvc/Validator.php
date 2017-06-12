@@ -344,6 +344,7 @@ class Validator {
      * @return boolean 
      */
     public static function isEmail($value) {
+        if (!$value) return false;
         $atom = '[-a-z0-9!#$%&\'*+\\/=?^_`{|}~]';
         $domain = '([a-z0-9]([-a-z0-9]*[a-z0-9]+)?)';
         $regex = '/^' . $atom . '+' . '(\.' . $atom . '+)*' . '@' . '(' . $domain 
