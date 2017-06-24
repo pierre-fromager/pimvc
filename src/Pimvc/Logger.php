@@ -162,12 +162,15 @@ class Logger implements Interfaces\Logger{
                 . '.txt';
             $this->_severityThreshold = $severity;
             if (!file_exists($logDirectory)) {
-                mkdir($logDirectory, self::$_defaultPermissions, true);
+                $mkResult = @mkdir($logDirectory, self::$_defaultPermissions, true);
+                if (!$mkResult) {
+                    throw new \Exception('Logger can not make directory ' . $logDirectory);
+                }
             }
             if (file_exists($this->_logFilePath) && !is_writable($this->_logFilePath)) {
                 $this->_logStatus = self::STATUS_OPEN_FAILED;
                 $this->_messageQueue[] = $this->_messages['writefail'];
-                return;
+                throw new \Exception('Logger can not write file ' . $this->_logFilePath);
             }
             if (($this->_fileHandle = fopen($this->_logFilePath, 'a'))) {
                 $this->_logStatus = self::STATUS_LOG_OPEN;
