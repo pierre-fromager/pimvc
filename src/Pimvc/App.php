@@ -173,7 +173,9 @@ class App implements Interfaces\App{
      * @return $this
      */
     public function setPath($path) {
-        if (!defined(self::APP_APP)) define(self::APP_APP, $path);
+        if (!defined(self::APP_APP)) {
+            define(self::APP_APP, $path);
+        }
         $this->path = $path;
         return $this;
     }

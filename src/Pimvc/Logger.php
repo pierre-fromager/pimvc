@@ -147,7 +147,9 @@ class Logger implements Interfaces\Logger{
      * @return void
      */
     private function __construct($logDirectory = '', $severity, $adapter) {
-        self::$remoteAddr = $_SERVER['REMOTE_ADDR'];
+        self::$remoteAddr = (php_sapi_name() === 'cli') 
+            ? 'localhost' 
+            : $_SERVER['REMOTE_ADDR'];
         if ($severity === self::OFF) {
             return;
         }
