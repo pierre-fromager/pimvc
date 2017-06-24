@@ -20,11 +20,11 @@ class Router implements Interfaces\Router{
      * 
      */
     public function __construct(Routes $routes, Request $request) {
+        $this->routes = $routes;
         $this->request = $request;
         $this->server = $this->request->getServer();
         $this->uri = $this->request->getUri();
         $this->uri = substr($this->uri, 1);
-        $this->routes = $routes;
         return $this;
     }
     
