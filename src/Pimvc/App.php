@@ -48,7 +48,7 @@ class App implements Interfaces\App{
      */
     public function __construct(appConfig $config) {
         $this->setConfig($config);
-        $this->request = (new Request())->startSession();
+        $this->request = new Request();
         $this->routes = new Routes($this->getConfig()->getSettings(self::APP_ROUTES));
         $this->router = new Router($this->routes);
         $this->response = new Response();
@@ -159,7 +159,7 @@ class App implements Interfaces\App{
      * @param config $config
      * @throws \Exception
      */
-    private function setConfig(config $config) {
+    private function setConfig(Config $config) {
         if (!$config && !is_array($config)) {
             throw new \Exception('Config error');
         }

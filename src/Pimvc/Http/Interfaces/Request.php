@@ -10,6 +10,7 @@ namespace Pimvc\Http\Interfaces;
 
 interface Request {
 
+    const REQUEST_SAPI_CLI = 'cli';
     const REQUEST_METHOD = 'REQUEST_METHOD';
     const REQUEST_METHOD_GET = 'GET';
     const REQUEST_METHOD_POST = 'POST';
@@ -31,14 +32,20 @@ interface Request {
     public function __construct();
 
     public function getMethod();
+    
+    public function setMethod($method);
 
     public function isHome();
 
     public function getUri();
+    
+    public function setUri($uri);
 
     public function getHost();
 
     public function getUrl();
+    
+    public function getBaseUrl();
 
     public function getScheme();
 

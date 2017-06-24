@@ -10,10 +10,14 @@ namespace Pimvc\Http;
 
 class Request implements Interfaces\Request{
 
+    
     private $request;
+    private $url;
+    private $uri;
     private $method;
     private $cookie;
     private $server;
+    private $isSapi;
 
     /**
      * __construct
@@ -21,7 +25,7 @@ class Request implements Interfaces\Request{
      * @return $this
      */
     public function __construct() {
-        $this->assignServer()->assignMethod()->assignCookie();
+        $this->setSapi()->setServer()->setMethod()->setCookie()->startSession();
         return $this;
     }
     
@@ -51,6 +55,18 @@ class Request implements Interfaces\Request{
     public function getUri() {
         return $this->getServer(self::REQUEST_URI);
     }
+    
+    /**
+     * setUri
+     * 
+     * @param string $uri
+     * @return Request
+     */
+    public function setUri($uri) {
+        $this->uri = $uri;
+        return $this;
+    }
+    
     
     /**
      * getScheme
@@ -95,7 +111,12 @@ class Request implements Interfaces\Request{
      * @return array
      */
     public function getServer($param = '') {
-        return ($param) ? $this->server[$param] : $this->server;
+        if (!$param) {
+            return $this->server;
+        }
+        return (isset($this->server[$param])) 
+            ? $this->server[$param] 
+            : '';
     }
     
     /**
@@ -170,8 +191,11 @@ class Request implements Interfaces\Request{
      * 
      */
     public function startSession() {
-        session_name(sha1($this->getBaseUrl()));
-        session_start();
+        
+        if (!$this->isSapi) {
+            session_name(sha1($this->getBaseUrl()));
+            session_start();
+        }
         return $this;
     }
     
@@ -269,31 +293,44 @@ class Request implements Interfaces\Request{
     }
 
     /**
-     * assignServer
+     * setServer
      * 
      */
-    private function assignServer() {
-        $this->server = &$_SERVER;
+    public function setServer($server = []) {
+        $this->server = ($this->isSapi) ? $server : $_SERVER;
         return $this;
     }
     
     /**
      * assignMethod
      * 
+     * @param type $method
      * @return $this
      */
-    private function assignMethod() {
-        $this->method = $this->getServer(self::REQUEST_METHOD);
+    public function setMethod($method = 'GET') {
+        $this->method = ($this->isSapi) 
+            ? $method 
+            : $this->getServer(self::REQUEST_METHOD);
         return $this;
     }
     
+    /**
+     * isSapi
+     * 
+     * @return boolean
+     */
+    private function setSapi() {
+        $this->isSapi = (php_sapi_name() === self::REQUEST_SAPI_CLI);
+        return $this;
+    }
+
     /**
      * assignCookie
      * 
      * @return $this
      */
-    private function assignCookie() {
-        $this->cookie = $_COOKIE;
+    private function setCookie() {
+        $this->cookie = &$_COOKIE;
         return $this;
     }
 
