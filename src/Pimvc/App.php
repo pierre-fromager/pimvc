@@ -50,7 +50,7 @@ class App implements Interfaces\App{
         $this->setConfig($config);
         $this->request = new Request();
         $this->routes = new Routes($this->getConfig()->getSettings(self::APP_ROUTES));
-        $this->router = new Router($this->routes);
+        $this->router = new Router($this->routes, $this->request);
         $this->response = new Response();
         $this->view = new View();
         $classPrefix = $this->getConfig()->getSettings(self::APP_CLASSES)[self::APP_PREFIX];
