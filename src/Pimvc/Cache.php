@@ -38,12 +38,13 @@ class Cache {
             , $adapter = self::DEFAULT_ADPATER
         ) {
         $this->adapter = $adapter;
-        $this->setPath(APP_PATH . self::DEFAULT_CACHE_PATH);
+        $appPath = \Pimvc\App::getInstance()->getPath();
+        $this->setPath($appPath . self::DEFAULT_CACHE_PATH);
         $this->setName($name);        
         $this->expiration = $expiration;
         if (self::DEBUG) {
             $this->logger = Logger::getInstance(
-                APP_PATH . LOG_DIR, Logger::DEBUG
+                $appPath . LOG_DIR, Logger::DEBUG
             );
         }
     }

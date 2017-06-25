@@ -206,7 +206,7 @@ class Logger implements Interfaces\Logger{
      * @return string
      */
     public function getMessage() {
-        return array_pop($this->_messageQueue);
+        return array_pop($this->_messageQueue); 
     }
 
     /**

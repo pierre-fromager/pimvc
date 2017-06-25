@@ -59,6 +59,8 @@ abstract class Orm implements ormInterface{
     protected $_fetchMode = \PDO::FETCH_ASSOC;
     protected $_restMode;
     protected $_casts;
+    
+    private $_app;
 
     /**
      * __construct
@@ -66,15 +68,17 @@ abstract class Orm implements ormInterface{
      * @param type $config 
      */
     public function __construct($config = []) {
+        $this->_app = \Pimvc\App::getInstance();
         $this->_config = $config;
-        if (!isset($this->_slot))
+        if (!isset($this->_slot)) {
             throw new ormException(ormException::ORM_EXC_MISSING_SLOT);
-        if (!isset($this->_config[$this->_slot]['adapter']))
+        }
+        if (!isset($this->_config[$this->_slot]['adapter'])) {
             throw new ormException(ormException::ORM_EXC_MISSING_ADAPTER);
-        
+        }
         $this->_adapter = ucfirst(strtolower($this->_config[$this->_slot]['adapter']));
         $this->_logger = \Pimvc\Logger::getFileInstance(
-            APP_PATH . '/log/'
+            $this->_app->getPath() . '/log/'
             , \Pimvc\Logger::DEBUG 
             , \Pimvc\Logger::LOG_ADAPTER_FILE
         );
@@ -134,7 +138,7 @@ abstract class Orm implements ormInterface{
      * 
      * force casts on a fields array (pgsql only)
      * 
-     * @param array $fielName
+     * @param array $fieldsCast
      */
     public function setCasts($fieldsCast) {
         foreach ($fieldsCast as $fieldName => $typeCast) {
@@ -361,7 +365,7 @@ abstract class Orm implements ormInterface{
         $realName = (empty($name)) ? $this->_name : $name;
         $cacheName = $this->_adapter . '_' . $realName;
         $cacheDescribe = new \Pimvc\Cache($cacheName, 400);
-        $cacheDescribe->setPath(APP_PATH . '/cache/Db/Metas/');
+        $cacheDescribe->setPath($this->_app->getPath() . '/cache/Db/Metas/');
 
         if ($cacheDescribe->expired()) {
             $this->_name = (empty($name)) ? $this->_name : $name;
