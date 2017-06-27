@@ -199,6 +199,16 @@ class App implements Interfaces\App{
     }
     
     /**
+     * setRequest
+     * 
+     * @return this
+     */
+    public function setRequest(Request $request) {
+        $this->request = $request;
+        return $this;
+    }
+    
+    /**
      * getRoutes
      * 
      * @return routes

@@ -23,8 +23,7 @@ class Router implements Interfaces\Router{
         $this->routes = $routes;
         $this->request = $request;
         $this->server = $this->request->getServer();
-        $this->uri = $this->request->getUri();
-        $this->uri = substr($this->uri, 1);
+        $this->setUri();
         return $this;
     }
     
@@ -42,10 +41,11 @@ class Router implements Interfaces\Router{
      * 
      * @return string
      */
-    public function setUri($uri) {
-        return $this->uri = $uri;
+    public function setUri($uri = '') {
+        $this->uri = ($uri) ? $uri : substr($this->request->getUri(), 1);
+        return $this;
     }
-    
+
     /**
      * getFragments
      * 

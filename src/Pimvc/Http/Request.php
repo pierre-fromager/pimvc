@@ -8,7 +8,7 @@
 
 namespace Pimvc\Http;
 
-class Request implements Interfaces\Request{
+class Request implements Interfaces\Request, \SplSubject{
 
     
     private $request;
@@ -25,7 +25,12 @@ class Request implements Interfaces\Request{
      * @return $this
      */
     public function __construct() {
-        $this->setSapi()->setServer()->setMethod()->setCookie()->startSession();
+        $this->setSapi()
+            ->setServer()
+            ->setUri()
+            ->setMethod()
+            ->setCookie()
+            ->startSession();
         return $this;
     }
     
@@ -53,7 +58,7 @@ class Request implements Interfaces\Request{
      * @return string
      */
     public function getUri() {
-        return $this->getServer(self::REQUEST_URI);
+        return $this->uri;
     }
     
     /**
@@ -62,11 +67,10 @@ class Request implements Interfaces\Request{
      * @param string $uri
      * @return Request
      */
-    public function setUri($uri) {
-        $this->uri = $uri;
+    public function setUri($uri = '') {
+        $this->uri = ($uri) ? $uri : $this->getServer(self::REQUEST_URI);
         return $this;
     }
-    
     
     /**
      * getScheme
@@ -191,7 +195,6 @@ class Request implements Interfaces\Request{
      * 
      */
     public function startSession() {
-        
         if (!$this->isSapi) {
             session_name(sha1($this->getBaseUrl()));
             session_start();
@@ -332,6 +335,18 @@ class Request implements Interfaces\Request{
     private function setCookie() {
         $this->cookie = &$_COOKIE;
         return $this;
+    }
+
+    public function attach(\SplObserver $observer) {
+        
+    }
+
+    public function detach(\SplObserver $observer) {
+        
+    }
+
+    public function notify() {
+        
     }
 
 }
