@@ -273,11 +273,11 @@ class Request implements Interfaces\Request, \SplSubject{
         }
         if ($headers) {
             if (array_key_exists(self::PARAM_X_FORWARD, $headers)
-                && $this->isValidIpv4($headers[self::PARAM_X_FORWARD])
+                //&& $this->isValidIpv4($headers[self::PARAM_X_FORWARD])
             ) {
                 return $headers[self::PARAM_X_FORWARD];
             } elseif (array_key_exists(self::PARAM_HTTP_X_FORWARD, $headers)
-                && $this->isValidIpv4($headers[self::PARAM_HTTP_X_FORWARD])
+               // && $this->isValidIpv4($headers[self::PARAM_HTTP_X_FORWARD])
             ) {
                 return $headers[self::PARAM_HTTP_X_FORWARD];
             }
