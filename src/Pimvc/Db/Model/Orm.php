@@ -973,8 +973,8 @@ abstract class Orm implements ormInterface{
                 //$key = $this->getSbfHash($k, $v);           
                 $key = ':' . $k;
             } else {
-                if ($forcedTypes) {
-                    $type = $forcedTypes;
+                if (isset($forcedTypes[$k])) {
+                    $type = $forcedTypes[$k];
                 } else {
                     $type = (preg_match($motif, $k)) 
                         ? \PDO::PARAM_INT 
@@ -1591,7 +1591,7 @@ abstract class Orm implements ormInterface{
      * @param boolean $forgetPrimary
      * @return boolean 
      */
-    public function insert($params = [], $forgetPrimary = true) {
+    public function insert($params = [], $forgetPrimary = true, $bindTypes = []) {
         if ($forgetPrimary) {
             unset($params[$this->_primary]);
         }      
@@ -1606,7 +1606,7 @@ abstract class Orm implements ormInterface{
         $sqlValues = '(:' . implode(',:', $keys) . ')';
         $sql = self::MODEL_INSERT . $tableName . ' ' 
             . $sqlKeys . ' values ' . $sqlValues;
-        $returnCode = $this->run($sql, $params);
+        $returnCode = $this->run($sql, $params, $bindTypes);
         return $returnCode;
     }
     
