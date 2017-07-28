@@ -157,9 +157,19 @@ class Acl {
      */
     protected function getPublicMethods($classname) {
         $classReflex = new \ReflectionClass($classname);
-        $methodList = $classReflex->getMethods(\ReflectionMethod::IS_PUBLIC);
+        $methodList = $classReflex->getMethods(
+           \ReflectionMethod::IS_FINAL | \ReflectionMethod::IS_PUBLIC
+        );
         unset($classReflex);
-        return $methodList;
+        $classnameFilter = substr($classname, 1, strlen($classname));
+        $filteredList = [];
+        foreach ($methodList as $method) {
+            if ($method->class === $classnameFilter) {
+                $filteredList[] = $method;
+            }
+        }
+        unset($methodList);
+        return $filteredList;
     }
 
     /**
@@ -220,15 +230,14 @@ class Acl {
                 $actions = [];
                 $actionsList = $this->getActionReflex($controllerNs);
                 foreach ($actionsList as $action => $value) {
-                    //echo $action;die;
-                    if ($action !== '__construct') {
+                    if (!in_array($action, ['__construct', '__destruct', '__toString'])) {
                         foreach ($roleList as $role => $acl) {
-                              $isNew = $this->isNew($controller, $action, $role);
-                              $acl = ($isNew || $reset)
-                                ? $this->getDefaultAcl($role)
-                                : $this->get($controller, $action, $role);
-                              $roleList[$role] = $acl;
-                              $this->set($controller, $action, $role, $acl, $isNew);
+                            $isNew = $this->isNew($controller, $action, $role);
+                            $acl = ($isNew || $reset)
+                              ? $this->getDefaultAcl($role)
+                              : $this->get($controller, $action, $role);
+                            $roleList[$role] = $acl;
+                            $this->set($controller, $action, $role, $acl, $isNew);
                         }
                         $actions[$action] = $roleList;
                     }
@@ -239,7 +248,7 @@ class Acl {
         /*} else {
             $ressource = $cacheRessources->get(self::ACL_CACHE_KEY);
         }*/
-        unset($cacheRessources);
+        //unset($cacheRessources);
         return $ressource;
     }
     
@@ -250,10 +259,7 @@ class Acl {
      * @return type
      */
     private function getActionReflex($controllerNs) {
-        $actions = array_diff(
-            $this->getPublicMethods($controllerNs), 
-            $this->getPublicMethods(get_parent_class($controllerNs))
-        );
+        $actions = $this->getPublicMethods($controllerNs);
         $actionList = [];
         foreach ($actions as $action) {
             $actionList[] = $action->name;
