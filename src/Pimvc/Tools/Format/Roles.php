@@ -7,23 +7,15 @@
 
 namespace Pimvc\Tools\Format;
 
-class Roles {
+class Roles implements Interfaces\Roles{
     
-    const ACL_ROLE_ANONYMOUS = 'anonymous';
-    const ACL_ROLE_WAITING = 'waiting';
-    const ACL_ROLE_USER = 'user';
-    const ACL_ROLE_PRO = 'pro';
-    const ACL_ROLE_SVI = 'svi';
-    const ACL_ROLE_ADMIN = 'admin';
-    
-    protected static $roles = array(
+     static $roles = [
         'Anonymes' => self::ACL_ROLE_ANONYMOUS
         , 'En attente' => self::ACL_ROLE_WAITING
         , 'Utilisateurs' => self::ACL_ROLE_USER
         , 'Professionnels' => self::ACL_ROLE_PRO
-        , 'Ivr' => self::ACL_ROLE_SVI
         , 'Administrateurs' => self::ACL_ROLE_ADMIN
-    );
+    ];
 
     /**
      * get
@@ -32,7 +24,7 @@ class Roles {
      * @return string 
      */
     public static function get($code) {
-        return self::$roles[$code];
+        return  self::$roles[$code];
     }
     
     /**
