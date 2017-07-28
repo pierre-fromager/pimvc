@@ -380,12 +380,12 @@ class Users extends \Pimvc\Db\Model\Orm {
         $dateExp = '';
         if ($this->isValidOffer($offer)){
             $dateFormat = 'Y-m-d H:i:s';
-            $dateToday = new DateTime(date($dateFormat));
+            $dateToday = new \DateTime(date($dateFormat));
             $prefixUnit = ($offer == 'demo') ? 'PT' : 'P';
             $suffixUnit = ($offer == 'demo') ? 'H' : 'D';
             $interval = $prefixUnit . $this->getOfferDaysValidity($offer) 
                 . $suffixUnit;
-            $dateInteval = new DateInterval($interval);
+            $dateInteval = new \DateInterval($interval);
             $dateExp = ($dateToday->add($dateInteval)->format($dateFormat));    
         }
         return $dateExp;
