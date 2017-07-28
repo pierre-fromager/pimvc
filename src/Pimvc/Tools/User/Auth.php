@@ -96,6 +96,7 @@ class Auth {
             $userInfo->name = $result[0]['name'];
             $userInfo->email = $result[0]['email'];
             $userInfo->token = $result[0]['token'];
+            $userInfo->fid = $result[0]['fid'];
             $this->setSessionProfile($this->id, $this->profil, $userInfo);
             $this->message = 'Utilisateur '
                 . $this->userLink()
