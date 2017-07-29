@@ -222,7 +222,7 @@ class Glyph implements Interfaces\Glyph{
                     self::IMG_CLONE_TITLE
                     , self::IMG_CLONE_FILE
                     , self::IMG_CLONE_CLASS
-                    , $this->getActionLink('clone')
+                    , $this->getActionLink('duplicate')
                     , self::CONFIRM_MESSAGE_CLONE
                 ) 
             : '';
