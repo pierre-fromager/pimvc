@@ -160,9 +160,6 @@ class App implements Interfaces\App{
      * @throws \Exception
      */
     private function setConfig(Config $config) {
-        if (!$config && !is_array($config)) {
-            throw new \Exception('Config error');
-        }
         $this->config = $config;
     }
     
@@ -173,9 +170,6 @@ class App implements Interfaces\App{
      * @return $this
      */
     public function setPath($path) {
-        if (!defined('APP_APP')) {
-            define('APP_APP', $path);
-        }
         $this->path = $path;
         return $this;
     }
