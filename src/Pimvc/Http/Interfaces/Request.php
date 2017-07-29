@@ -29,11 +29,13 @@ interface Request {
     const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
     const PARAM_SERVER_REMOTE_ADDR = 'REMOTE_ADDR';
 
-    public function __construct();
+    public function __construct(\Pimvc\Config $config);
 
     public function getMethod();
     
     public function setMethod($method);
+    
+    public function setOptions(\Pimvc\Config $config);
 
     public function isHome();
 

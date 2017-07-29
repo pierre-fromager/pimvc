@@ -18,14 +18,16 @@ class Request implements Interfaces\Request, \SplSubject{
     private $cookie;
     private $server;
     private $isSapi;
+    private $options;
 
     /**
      * __construct
      * 
      * @return $this
      */
-    public function __construct() {
+    public function __construct(\Pimvc\Config $config) {
         $this->setSapi()
+            ->setOptions($config)
             ->setServer()
             ->setUri()
             ->setMethod()
@@ -78,7 +80,9 @@ class Request implements Interfaces\Request, \SplSubject{
      * @return string
      */
     public function getScheme() {
-        return $this->getServer(self::REQUEST_SCHEME);
+        return ($this->options->scheme) 
+            ? $this->options->scheme 
+            : $this->getServer(self::REQUEST_SCHEME);
     }
     
     /**
@@ -87,7 +91,9 @@ class Request implements Interfaces\Request, \SplSubject{
      * @return string
      */
     public function getHost() {
-        return $this->getServer(self::REQUEST_HOST);
+        return ($this->options->hostname) 
+            ? $this->options->hostname 
+            : $this->getServer(self::REQUEST_HOST);
     }
     
     /**
@@ -320,10 +326,20 @@ class Request implements Interfaces\Request, \SplSubject{
     /**
      * isSapi
      * 
-     * @return boolean
+     * @return $this
      */
     private function setSapi() {
         $this->isSapi = (php_sapi_name() === self::REQUEST_SAPI_CLI);
+        return $this;
+    }
+    
+    /**
+     * setOptions
+     * 
+     * @return $this
+     */
+    public function setOptions(\Pimvc\Config $config) {
+        $this->options =  (new \Pimvc\Http\Request\Options())->load($config);
         return $this;
     }
 

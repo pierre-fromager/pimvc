@@ -11,8 +11,10 @@ namespace Pimvc\Interfaces;
 interface App {
 
     const APP_APP = 'app';
+    const APP_REQUEST = 'request';
     const APP_PATH = 'APP_PATH';
     const APP_DEFAULT_LOCALE = 'defaultLocale';
+    const APP_SSL = 'ssl';
     const APP_ROUTES = 'routes';
     const APP_CLASSES = 'classes';
     const APP_PREFIX = 'prefix';

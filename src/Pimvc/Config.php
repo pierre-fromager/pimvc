@@ -67,6 +67,30 @@ class Config implements configInterface{
     }
     
     /**
+     * hasEntry
+     * 
+     * @param string $key
+     * @return boolean
+     */
+    public function hasEntry($key) {
+        return isset($this->settings[$key]);
+    }
+    
+    /**
+     * load
+     * 
+     * @return $this
+     */
+    public function load() {
+        $filename = $this->getFilename();
+        if (!$this->check($filename)) {
+            throw new \Exception(self::CONFIG_ERROR_MISSING . $this->env);
+        }
+        $this->settings = require $this->getFilename();
+        return $this;
+    }
+    
+    /**
      * getFilename
      * 
      * @return string
@@ -99,18 +123,6 @@ class Config implements configInterface{
         ];
     }
 
-    /**
-     * load
-     * 
-     * @return $this
-     */
-    public function load() {
-        $filename = $this->getFilename();
-        if (!$this->check($filename)) {
-            throw new \Exception(self::CONFIG_ERROR_MISSING . $this->env);
-        }
-        $this->settings = require $this->getFilename();
-        return $this;
-    }
+
 
 }
