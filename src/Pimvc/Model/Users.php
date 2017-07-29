@@ -72,7 +72,6 @@ class Users extends \Pimvc\Db\Model\Orm {
         ];
         $where = [
             'profil' => 'pro'
-            , 'fid#!=' => 0
         ];
         $order = ['fid' => 'asc'];
         $this->cleanRowset();
