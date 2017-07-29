@@ -231,7 +231,7 @@ class Liste {
      * @return boolean 
      */
     private function isStaticMethod($class, $method) {
-        $reflex = new ReflectionMethod($class, $method);
+        $reflex = new \ReflectionMethod($class, $method);
         $isStatic = ($reflex->isStatic());
         unset($reflex);
         return $isStatic;
