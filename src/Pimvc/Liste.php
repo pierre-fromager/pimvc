@@ -482,8 +482,8 @@ class Liste {
      */
     public function getJson() {
         $alias = $this->_model->getAlias();
-        $jsonList = new stdClass();
-        $jsonList->liste = new stdClass();
+        $jsonList = new \stdClass();
+        $jsonList->liste = new \stdClass();
         $jsonList->liste->alias = $alias;
         $jsonList->liste->filters = $this->filter;
         $jsonList->liste->columns = $this->columns;
@@ -499,10 +499,8 @@ class Liste {
             }
         }
         $jsonList->liste->counter = $this->_model->counter($this->filter);
-        $jsonList->liste->results = $reducedDatas;      
-        $phpV = substr(phpversion(), 0, 3);
-        $jsonOption = ($phpV > '5.3') ? JSON_PRETTY_PRINT : JSON_NUMERIC_CHECK;
-        return json_encode($jsonList, $jsonOption);
+        $jsonList->liste->results = $reducedDatas;
+        return $jsonList;
     }
         
     /**
