@@ -19,6 +19,7 @@ interface Liste {
     const PARAM_PAGESIZE = 'pagesize';
     const PARAM_PARENTHESIS = 'parenthesis';
     const PARAM_BREAK = '<br style="clear:both">';
+    const PARAM_ID = 'id';
 
     public function __construct(
         $modelName

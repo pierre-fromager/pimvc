@@ -94,6 +94,7 @@ interface Glyph {
     const CONFIRM_MESSAGE_CLONE = 'Voulez vous dupliquer ?';
     
     public function __construct($params, $controler, $exclude = [], $actionPrefix = '', $actionSuffix = '');
+    public function __destruct();
     public function __toString();
 
 }

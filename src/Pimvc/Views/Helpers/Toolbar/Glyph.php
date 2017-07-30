@@ -2,6 +2,8 @@
 
 namespace Pimvc\Views\Helpers\Toolbar;
 
+use \Pimvc\Html\Element\Decorator;
+
 class Glyph implements Interfaces\Glyph{
 
     protected $content = '';
@@ -12,8 +14,6 @@ class Glyph implements Interfaces\Glyph{
     protected $deleteLink = '';
     protected $controlerLink = '';
     protected $id = '';
-    protected $numero_bdl = '';
-    protected $numero_ligne = '';
     protected $actionPrefix;
     protected $actionSuffix;
 
@@ -30,14 +30,8 @@ class Glyph implements Interfaces\Glyph{
             ? array_merge($defaultExclude, $exclude) 
             : $defaultExclude;
         $this->id = (isset($params['id'])) 
-                ? $params['id'] 
-                : '';
-        $this->numero_bdl = (isset($params['numero_bdl'])) 
-                ? $params['numero_bdl'] 
-                : '';
-        $this->numero_ligne = (isset($params['numero_ligne'])) 
-                ? $params['numero_ligne'] 
-                : '';
+            ? $params['id'] 
+            : '';
         $controlSplit = (strpos($controler, '/') !== false) 
             ? explode('/', $controler) 
             : $controler;
@@ -98,18 +92,17 @@ class Glyph implements Interfaces\Glyph{
         $iconOptions = array(
             'class' => 'glyphicon glyphicon-' . $imgFilename
         );
-        $icon = new \Pimvc\Html\Element\Decorator('i', ' ', $iconOptions);
+        $icon = new Decorator('i', ' ', $iconOptions);
         $iconWrapperOptions = array(
             'class' => 'btn btn-default btn-xs ' . $imgClass
             , 'alt' => $imgTitle
             , 'title' => $imgTitle
         );
-        $iconWrapper = new \Pimvc\Html\Element\Decorator(
+        $iconWrapper = new Decorator(
             'span'
             , (string) $icon
             , $iconWrapperOptions
         );
-        //var_dump($imgLink);die;
         $linkOptions = array(
             'href' => $this->baseUrl . $imgLink
             , 'target' => $target
@@ -120,7 +113,7 @@ class Glyph implements Interfaces\Glyph{
                 . '\'' . $confirmMessage . '\''
                 . ')';
         }
-        $link = new \Pimvc\Html\Element\Decorator(
+        $link = new Decorator(
             'a'
             , (string) $iconWrapper
             , $linkOptions
@@ -333,23 +326,6 @@ class Glyph implements Interfaces\Glyph{
     }
     
     /**
-     * getLworkorderLink returns link for line work order 
-     * 
-     * @return string 
-     */
-    private function getLworkorderLink() {
-        $validateLink = (!$this->exclude[self::EXCLUDE_LWORKORDER]) 
-            ? self::IMG_SEP . $this->getGlyphLink(
-                self::IMG_LWORKORDER_TITLE
-                , self::IMG_LWORKORDER_FILE
-                , self::IMG_LWORKORDER_CLASS
-                , self::LWORKORDER_CONTROLLER . self::LWORKORDER_ACTION . $this->id 
-                    . '/numero_ligne/' . $this->numero_ligne
-                ) : '';
-        return $validateLink;
-    }
-    
-    /**
      * getOrderLink returns link for order 
      * 
      * @return string 
@@ -364,23 +340,6 @@ class Glyph implements Interfaces\Glyph{
                 ) 
             : '';
         return $orderLink;
-    }
-
-    /**
-     * getShppingLink returns link for shipping
-     * 
-     * @return string 
-     */
-    private function getShppingLink() {
-        $shippingLink = (!$this->exclude[self::EXCLUDE_SHIPPING]) 
-            ? self::IMG_SEP . $this->getGlyphLink(
-                self::IMG_SHIPPING_TITLE
-                , self::IMG_SHIPPING_FILE
-                , self::SHIPPING_CONTROLLER . self::SHIPPING_ACTION . $this->id 
-                    . '/numero_bdl/' . $this->numero_bdl
-                ) 
-            : '';
-        return $shippingLink;
     }
     
     /**
@@ -408,6 +367,16 @@ class Glyph implements Interfaces\Glyph{
      */
     public function __toString() {
         return (string) $this->content;
+    }
+    
+    /**
+     * @see __destruct
+     * 
+     */
+    public function __destruct() {
+        foreach ($this as $key => $value) {
+            unset($this->$key);
+        }
     }
 
 }
