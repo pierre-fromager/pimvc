@@ -123,6 +123,7 @@ class Liste {
             : [];
         $this->_model->setCasts($this->casts);
         $this->setData();
+        return $this;
     }
     
     /**
@@ -265,7 +266,8 @@ class Liste {
      * @param array $formaters
      */
     public function setFormaters($formaters) {
-        $this->formaters = $formaters; 
+        $this->formaters = $formaters;
+        return $this;
     }
 
     /**
@@ -322,6 +324,7 @@ class Liste {
      */
     public function setLabels($labels) {
         $this->labels = $labels;
+        return $this;
     }
 
 
@@ -545,6 +548,7 @@ class Liste {
      */
     public function setActionCondition($conditions) {
         $this->actionCondition = $conditions;
+        return $this;
     }
     
     /**
