@@ -107,12 +107,13 @@ class Session {
             );
             self::set($name, $postedData, $key);
         }
-        if ($reset) {
-            self::set($name, $assist);
-        }
         $assist = (sessionTools::has($name, $key)) 
             ? sessionTools::get($name, $key) 
             : [];
+        if ($reset) {
+            $assist = [];
+            self::set($name, $assist);
+        }
         return $assist;
     }
     
