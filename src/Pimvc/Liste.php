@@ -6,45 +6,29 @@
  * 
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
+
 namespace Pimvc;
 
 use Pimvc\Views\Helpers\Toolbar\Glyph as helperToolbarGlyph;
 
-class Liste {
-
-    const DEFAULT_DELETE_ACION = '/delete';
-    const DEFAULT_EDIT_ACION = '/edit';
-    const LISTE_DEFAULT_PAGESIZE = 50;
-    const LIST_SCRIPT_PARTIAL = 'listsearchscript.php';
-    const LIST_SEARCH_ORDER = 'asc';
-    const CLASS_ACTION = 'table-action';
-    const PARAM_PAGESIZE = 'pagesize';
-    const PARAM_PARENTHESIS = 'parenthesis';
-    const PARAM_BREAK = '<br style="clear:both">';
+class Liste implements Interfaces\Liste {
 
     protected $_modelAdapter = '';
-
     protected $columns = null;
     protected $data = [];
     protected $controler = null;
-    
     private $headers = '';
     private $labels = [];
     private $body = '';
-    
     private $_model = null;
     private $_modelMapper = null;
-    
     private $exclude = [];
     private $excludeAction = [];
     private $curentPage = false;
     private $filter = [];
     private $mandatory = [];
-    
     protected $sql = '';
-    
     private $booleanList = [];
-    
     private $needAction = false;
     private $order = null;
     private $keyOrder = '';
@@ -52,14 +36,11 @@ class Liste {
     private $parenthesis = [];
     private $actionCondition = [];
     private $content;
-    
     private $formaters = [];
     private $isFormated = false;
-
     private $usePaging = true;
     private $showSql = false;
     private $casts = [];
-    
     private $actionPrefix;
     private $actionSuffix;
 
@@ -102,7 +83,9 @@ class Liste {
         $this->exclude = $exclude;
         $this->excludeAction = $excludeAction;
         foreach ($this->excludeAction as $key => $value) {
-            if ($value) $this->needAction = true;
+            if ($value) {
+                $this->needAction = true;
+            }
         }
         if (isset($options['or']) && !empty($options['or'])) {
             $this->or = $options['or'];
@@ -133,6 +116,7 @@ class Liste {
      */
     public function setActionPrefix($prefix = '') {
         $this->actionPrefix = $prefix;
+        return $this;
     }
     
     /**
@@ -142,6 +126,7 @@ class Liste {
      */
     public function setActionSuffix($suffix = '') {
         $this->actionSuffix = $suffix;
+        return $this;
     }
     
     /**
@@ -159,11 +144,11 @@ class Liste {
      * @param type $key
      * @param type $order 
      */
-    protected function setKeyOrder($key,$order) {
+    protected function setKeyOrder($key, $order) {
         $this->keyOrder = $key;
         $this->order = $order;
+        return $this;
     }
-
 
     /**
      * setData sets data to be processed
@@ -186,13 +171,12 @@ class Liste {
         $pagesize = Tools\Session::has(self::PARAM_PAGESIZE) 
             ? Tools\Session::get(self::PARAM_PAGESIZE) 
             : self::LISTE_DEFAULT_PAGESIZE;
-        
         $limit = array($pagesize, $this->curentPage * $pagesize);
         $this->_model->find($this->columns, $where, $order, $limit);
         $this->sql = $this->_model->getSql();
-        
         $this->data = $this->_model->getRowsetAsArray();
         $this->formatHelpers();
+        return $this;
     }
 
     /**
@@ -257,7 +241,8 @@ class Liste {
      * @param string $helperName 
      */
     public function setFormater($key, $helperName) {
-        $this->formaters[$key] = $helperName; 
+        $this->formaters[$key] = $helperName;
+        return $this;
     }
     
     /**
@@ -277,6 +262,7 @@ class Liste {
      */
     public function setUsePaging($usage) {
         $this->usePaging = $usage;
+        return $this;
     }
     
     /**
@@ -286,6 +272,7 @@ class Liste {
      */
     public function setShowSql($enable) {
         $this->showSql = $enable;
+        return $this;
     }
 
     /**
@@ -314,6 +301,7 @@ class Liste {
      */
     public function setLabel($name, $value) {
         $this->labels[$name] = $value;
+        return $this;
     }
     
     /**
@@ -327,7 +315,6 @@ class Liste {
         return $this;
     }
 
-
     /**
      * getCommandes returns toolbar for editing
      * 
@@ -337,14 +324,16 @@ class Liste {
     private function getCommandes($line) {
         $id = strtolower($this->_model->getPrimary());
         $idValue = $line[$id];
-        $commandes = (string) new helperToolbarGlyph(
-            array('id' => $idValue)
+        $commandes = new helperToolbarGlyph(
+            [self::PARAM_ID => $idValue]
             , $this->controler
             , $this->excludeAction
             , $this->actionPrefix
             , $this->actionSuffix
         );
-        return '<td class="' . self::CLASS_ACTION . '">' . $commandes . '</td>';
+        $stringCommande = (string) $commandes;
+        unset($commandes);
+        return '<td class="' . self::CLASS_ACTION . '">' . $stringCommande . '</td>';
     }
 
     /**
@@ -398,7 +387,7 @@ class Liste {
      * 
      * @return string 
      */
-    private function getCaption(){
+    private function getCaption() {
         return '<caption>' . $this->modelName . '</caption>';
     }
 
@@ -422,18 +411,18 @@ class Liste {
      * @return string 
      */
     protected function getTable() {
-        $defaultClasses = array(
+        $defaultClasses = [
             'managetable'
             , 'table'
             , 'table-condensed'
             , 'table-hover' 
             , 'table-stripped'
             , 'col-sm-12'
-        );
-        $tableOptions = array(
-            'id' => 'table_' . md5($this->modelName)
+        ];
+        $tableOptions = [
+            self::PARAM_ID => 'table_' . md5($this->modelName)
             , 'class' => implode(' ', $defaultClasses)
-        );
+        ];
         $table = (string) new Html\Element\Decorator(
             'table'
             , $this->getHeaders() . $this->body
@@ -455,7 +444,7 @@ class Liste {
         $this->_model->setParenthesis($this->parenthesis);
         $modelSize = $this->_model->counter($this->filter);
         $paging = ($this->usePaging) ? $this->getPaging($modelSize) : '';
-        $this->content = $this->getSql() . $paging ;
+        $this->content = $this->getSql() . $paging;
         $this->content .= $this->getTable() . $this->getScript();
     }
     
@@ -465,9 +454,8 @@ class Liste {
      * @return string 
      */
     private function getSql() {
-        return ($this->showSql) ? '<pre>' . $this->sql .'</pre>' : '';
+        return ($this->showSql) ? '<pre>' . $this->sql . '</pre>' : '';
     }
-
 
     /**
      * getData
@@ -526,7 +514,7 @@ class Liste {
         $comboPage = Views\Helpers\Pagesize::getCombo($urlCombo, $pageSize);
         return $navPaging 
             . '<div class="items-par-page">' 
-            . $modelSize . ' résultat(s), '. $comboPage . ' items/page' 
+            . $modelSize . ' résultat(s), ' . $comboPage . ' items/page'
             . '</div>';
     }
         
@@ -587,7 +575,6 @@ class Liste {
         $view->setParams([])->setFilename($templatePath)->render();
         return (string) $view;
     }
-
 
     /**
      * @see __destruct
