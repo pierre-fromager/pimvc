@@ -20,6 +20,9 @@ interface Liste {
     const PARAM_PARENTHESIS = 'parenthesis';
     const PARAM_BREAK = '<br style="clear:both">';
     const PARAM_ID = 'id';
+    const PARAM_ORDER = 'order';
+    const PARAM_K_ORDER = 'keyOrder';
+    const PARAM_CASTS = 'casts';
 
     public function __construct(
         $modelName

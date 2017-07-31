@@ -95,14 +95,14 @@ class Liste implements Interfaces\Liste {
             $this->parenthesis = $options[self::PARAM_PARENTHESIS];
             $this->_model->setParenthesis($this->parenthesis);
         }
-        $this->order = (isset($options['order'])) 
-            ? $options['order'] 
+        $this->order = (isset($options[self::PARAM_ORDER])) 
+            ? $options[self::PARAM_ORDER] 
             : self::LIST_SEARCH_ORDER;
-        $this->keyOrder = (isset($options['keyOrder']))
-            ? $options['keyOrder'] 
+        $this->keyOrder = (isset($options[self::PARAM_K_ORDER]))
+            ? $options[self::PARAM_K_ORDER] 
             : '';
-        $this->casts = (isset($options['casts'])) 
-            ? $options['casts'] 
+        $this->casts = (isset($options[self::PARAM_CASTS])) 
+            ? $options[self::PARAM_CASTS] 
             : [];
         $this->_model->setCasts($this->casts);
         $this->setData();
@@ -178,37 +178,6 @@ class Liste implements Interfaces\Liste {
         $this->formatHelpers();
         return $this;
     }
-
-    
-    
-    /**
-     * formatColon
-     * 
-     * @param type $colon
-     * @param type $helper 
-     */
-    private function formatColonel($colon, $helper) {
-        if (strpos($helper, '::') !== false) {
-            list($class, $dummy, $method) = explode(':', $helper);
-            if (method_exists($class, $method)) {
-                $isStatic = $this->isStaticMethod($class, $method);
-                $helperInstance = ($isStatic) ? null : new $class;
-                foreach ($this->data as $key => $values) {
-                    foreach ($values as $k => $v) {
-                        if ($colon == $k) {
-                            $this->data[$key][$k] = ($isStatic) 
-                                ? call_user_func_array(
-                                    $helper
-                                    , array($this->data[$key][$k])
-                                ) 
-                                : $helperInstance->{$method}($this->data[$key][$k]);
-                        }
-                    }
-                }
-                unset($helperInstance);
-            }
-        }
-    }
     
     /**
      * formatColon
@@ -217,50 +186,29 @@ class Liste implements Interfaces\Liste {
      * @param type $helper 
      */
     private function formatColon($colon, $helper) {
-        if (strpos($helper, '::') !== false) {
-            list($class, $dummy, $method) = explode(':', $helper);
-            if (method_exists($class, $method)) {
-                $isStatic = $this->isStaticMethod($class, $method);
-                $helperInstance = ($isStatic) ? null : new $class;
-                foreach ($this->data as $key => $values) {
-                    foreach ($values as $k => $v) {
-                        if ($colon == $k) {
-                            $this->data[$key][$k] = ($isStatic) 
-                                ? call_user_func_array(
-                                    $helper
-                                    , array($this->data[$key][$k])
-                                ) 
-                                : $helperInstance->{$method}($this->data[$key][$k]);
-                        }
-                    }
-                }
-                unset($helperInstance);
-            }
-        } else {
-            if (class_exists($helper)) {
-                foreach ($this->data as $key => $values) {
-                    foreach ($values as $k => $v) {
-                        if ($colon == $k) {
-                            $this->data[$key][$k] = $helper::getStatic($this->data[$key][$k]);
-                        }
+        if ($this->isValidFormater($helper)) {
+            foreach ($this->data as $key => $values) {
+                foreach ($values as $k => $v) {
+                    if ($colon == $k) {
+                        $this->data[$key][$k] = $helper::getStatic($this->data[$key][$k]);
                     }
                 }
             }
         }
     }
-    
+
     /**
-     * isStaticMethod
+     * isValidFormater
      * 
-     * @param string $class
-     * @param string $method
-     * @return boolean 
+     * @param Helper\Format\Interfaces\Liste $helper
+     * @return boolean
      */
-    private function isStaticMethod($class, $method) {
-        $reflex = new \ReflectionMethod($class, $method);
-        $isStatic = ($reflex->isStatic());
-        unset($reflex);
-        return $isStatic;
+    private function isValidFormater($helper) {
+        return class_exists($helper)
+            && in_array(
+                Helper\Format\Interfaces\Liste::class, 
+                class_implements($helper)
+            );
     }
 
     /**
