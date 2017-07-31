@@ -24,6 +24,7 @@ class Glyph implements Interfaces\Glyph{
      * @param string $controler 
      */
     public function __construct($params, $controler, $exclude = [], $actionPrefix = '', $actionSuffix = '') {
+        
         $this->setBaseUrl();
         $defaultExclude =  $this->getDefaultExclude();
         $this->exclude = (!empty($exclude)) 
@@ -32,8 +33,8 @@ class Glyph implements Interfaces\Glyph{
         $this->id = (isset($params['id'])) 
             ? $params['id'] 
             : '';
-        $controlSplit = (strpos($controler, '/') !== false) 
-            ? explode('/', $controler) 
+        $controlSplit = (strpos($controler, DIRECTORY_SEPARATOR) !== false) 
+            ? explode(DIRECTORY_SEPARATOR, $controler) 
             : $controler;
         $this->controlerLink = (is_array($controlSplit)) 
             ? $controlSplit[0]
@@ -65,6 +66,7 @@ class Glyph implements Interfaces\Glyph{
             , self::EXCLUDE_DETAIL => false
             , self::EXCLUDE_DELETE => false
             , self::EXCLUDE_VALIDATE => false
+            , self::EXCLUDE_REFUSE => false
             , self::EXCLUDE_PDF => false
             , self::EXCLUDE_MAILTASK => true
             , self::EXCLUDE_IMPORT => false
@@ -292,7 +294,7 @@ class Glyph implements Interfaces\Glyph{
     }
     
     /**
-     * getNewsletterLink returns link for newslettering article
+     * getValidateLink returns link for validation
      * 
      * @return string 
      */
@@ -303,6 +305,23 @@ class Glyph implements Interfaces\Glyph{
                 , self::IMG_VALIDATE_FILE
                 , self::IMG_VALIDATE_CLASS
                 , $this->controlerLink . self::VALIDATE_ACTION . $this->id
+            ) 
+            : '';
+        return $validateLink;
+    }
+    
+    /**
+     * getRefuseLink returns link for refuse
+     * 
+     * @return string 
+     */
+    private function getRefuseLink() {
+        $validateLink = (!$this->exclude[self::EXCLUDE_REFUSE]) 
+            ? self::IMG_SEP . $this->getGlyphLink(
+                self::IMG_REFUSE_TITLE
+                , self::IMG_REFUSE_FILE
+                , self::IMG_REFUSE_CLASS
+                , $this->controlerLink . self::REFUSE_ACTION . $this->id
             ) 
             : '';
         return $validateLink;
@@ -351,6 +370,7 @@ class Glyph implements Interfaces\Glyph{
             . $this->getDetailLink()
             . $this->getOrderLink()
             . $this->getValidateLink()
+            . $this->getRefuseLink()
             . $this->getCloneLink()
             . $this->getEditLink()
             . $this->getDeleteLink()

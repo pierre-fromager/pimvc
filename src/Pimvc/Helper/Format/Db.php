@@ -8,11 +8,9 @@
 
 namespace Pimvc\Helper\Format;
 
-abstract class Db {
+use Pimvc\Html\Element\Decorator;
 
-    const Model_Expiraton = 30000;
-    const Model_Value_Unknown = 'Unknown';
-    const LINK_CLASS = 'format-link';
+abstract class Db implements Interfaces\Db {
 
     protected $_name = '';
     protected $domainName = '';
@@ -33,17 +31,10 @@ abstract class Db {
     protected $link = '';
     protected $app;
 
-    /**
-     * pre
-     * 
-     */
     protected function pre() {}
-
-    /**
-     * post
-     * 
-     */
     protected function post() {}
+    abstract public static function getInstance();
+    abstract public static function getStatic($value);
 
     /**
      * @see  __construct
@@ -51,47 +42,101 @@ abstract class Db {
     public function __construct() {
         $this->app = \Pimvc\App::getInstance();
         $this->pre();
-        $this->expiration = ($this->expiration) 
-            ? $this->expiration 
-            : self::Model_Expiraton;
+        $this->expiration = ($this->expiration) ? $this->expiration : self::Model_Expiraton;
         $this->domainInstance = new $this->domainName;
-        $this->modelInstance = new $this->modelName($this->app->getConfig()->getSettings('dbPool'));
+        $this->modelInstance = new $this->modelName($this->getModelOptions());
         $this->allowedKeys = $this->domainInstance->getVars();
-        $isValid = ($this->isAllowed($this->keySearch) && $this->isAllowed($this->keyValue));
-        if ($isValid) {
-            $what = array($this->keySearch, $this->keyValue);
-            if ($this->keyAggregate) {
-                $what = array_merge($what, $this->keyAggregate);
-            }
-            if ($this->filter) {
-                $list = implode(',', $this->filter);
-                $where = array($this->keySearch . '#IN' => '(' . $list . ')');
-            } else {
-                $where = array();
-            }
-            $this->modelInstance->find($what, $where);
+        $this->process();
+        unset($this->domainInstance);
+        unset($this->modelInstance);
+        $this->post();
+    }
+    
+    /**
+     * process
+     * 
+     */
+    private function process() {
+        if ($this->isValid()) {
+            $this->modelInstance->find($this->getWhat(), $this->getWhere());
             $results = $this->modelInstance->getRowsetAsArray();
             foreach ($results as $result) {
                 $k = $result[$this->keySearch];
                 $v = $result[$this->keyValue];
                 $aggregation = ($this->keyAggregate) 
                     ? $this->aggregateSeparator . $this->getAggregateValues(
-                        $result, 
-                        $this->keyAggregate
+                        $result, $this->keyAggregate
                     ) 
                     : '';
                 $this->data[$k] = $v . $aggregation;
             }
+            unset($results);
         } else {
-            echo 'Invalid Keys in Helper Db : ' . $this->domainName
-            . ' for fields ' . $this->keySearch . '||' . $this->keyValue
-            . '<hr><pre>' . print_r($this->allowedKeys, true) . '</pre>';
-            die;
+            $this->errorKey();
         }
-        unset($results);
-        unset($this->domainInstance);
-        unset($this->modelInstance);
-        $this->post();
+    }
+    
+    /**
+     * errorKey
+     * 
+     * @throws Exception
+     */
+    private function errorKey() {
+        $message = 'Invalid Keys in Helper Db : ' . $this->domainName
+            . ' for fields ' . $this->keySearch . ' with value ' . $this->keyValue
+            . ' from ' . implode(' ',$this->allowedKeys);
+        throw new Exception($message);
+    }
+
+    /**
+     * isValid
+     * 
+     * @return boolean
+     */
+    private function isValid() {
+        return ($this->isAllowed($this->keySearch) && $this->isAllowed($this->keyValue));
+    }
+    
+    /**
+     * getWhat
+     * 
+     * @return array
+     */
+    private function getWhat() {
+        $what = array($this->keySearch, $this->keyValue);
+        if ($this->keyAggregate) {
+            $what = array_merge($what, $this->keyAggregate);
+        }
+        return $what;
+    }
+
+    /**
+     * getWhere
+     * 
+     * @return array
+     */
+    private function getWhere() {
+        return ($this->filter) 
+            ? [ $this->keySearch . self::SEARCH_IN => $this->getFilterString() ] 
+            : [];
+    }
+    
+    /**
+     * getFilterString
+     * 
+     * @return string
+     */
+    private function getFilterString() {
+        return self::O_BRACE . implode(self::COMA, $this->filter) . self::C_BRACE;
+    }
+
+    /**
+     * getModelOptions
+     * 
+     * @return array
+     */
+    private function getModelOptions() {
+        return $this->app->getConfig()->getSettings(self::DB_POOL);
     }
 
     /**
@@ -139,11 +184,15 @@ abstract class Db {
      */
     private function getLink($key) {
         $baseUrl = $this->app->getRequest()->getBaseUrl();
-        return '<a'
-            . ' class="' . self::LINK_CLASS . '"'
-            . ' href="' . $baseUrl . $this->link . '/id/' . $key . '">'
-            . $this->data[$key]
-            . '</a>';
+        return new Decorator(
+            'a', 
+            $this->data[$key],
+            [
+                'class' => self::LINK_CLASS,
+                'href' => $baseUrl . $this->link . DIRECTORY_SEPARATOR . self::PARAM_ID 
+                . DIRECTORY_SEPARATOR . $key
+            ]
+        );
     }
 
     /**
@@ -153,11 +202,10 @@ abstract class Db {
      * @return string 
      */
     public function get($key) {
-        return (isset($this->data[$key])) 
-            ? (empty($this->link)) 
-                ? $this->data[$key] 
-                : $this->getLink($key) 
-            : self::Model_Value_Unknown . ' (' . $key . ')';
+        if (!isset($this->data[$key])) {
+            throw new \Exception(self::Model_Value_Unknown . $key);
+        }
+        return (empty($this->link)) ? $this->data[$key] : $this->getLink($key);
     }
 
     /**

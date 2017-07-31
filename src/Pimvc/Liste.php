@@ -179,6 +179,37 @@ class Liste implements Interfaces\Liste {
         return $this;
     }
 
+    
+    
+    /**
+     * formatColon
+     * 
+     * @param type $colon
+     * @param type $helper 
+     */
+    private function formatColonel($colon, $helper) {
+        if (strpos($helper, '::') !== false) {
+            list($class, $dummy, $method) = explode(':', $helper);
+            if (method_exists($class, $method)) {
+                $isStatic = $this->isStaticMethod($class, $method);
+                $helperInstance = ($isStatic) ? null : new $class;
+                foreach ($this->data as $key => $values) {
+                    foreach ($values as $k => $v) {
+                        if ($colon == $k) {
+                            $this->data[$key][$k] = ($isStatic) 
+                                ? call_user_func_array(
+                                    $helper
+                                    , array($this->data[$key][$k])
+                                ) 
+                                : $helperInstance->{$method}($this->data[$key][$k]);
+                        }
+                    }
+                }
+                unset($helperInstance);
+            }
+        }
+    }
+    
     /**
      * formatColon
      * 
@@ -204,6 +235,16 @@ class Liste implements Interfaces\Liste {
                     }
                 }
                 unset($helperInstance);
+            }
+        } else {
+            if (class_exists($helper)) {
+                foreach ($this->data as $key => $values) {
+                    foreach ($values as $k => $v) {
+                        if ($colon == $k) {
+                            $this->data[$key][$k] = $helper::getStatic($this->data[$key][$k]);
+                        }
+                    }
+                }
             }
         }
     }
@@ -363,9 +404,13 @@ class Liste implements Interfaces\Liste {
                         $operator = (isset($conditionv['operator'])) 
                             ? $conditionv['operator'] 
                             : '==';
-                        $evalString = "return '" . $lines[$key] . "'"
-                            . $operator . "'" . $value . "';";
-                        $hasCondition = eval($evalString);
+                        $isCallback = is_callable($value);
+                        if ($isCallback) {
+                            $hasCondition = $value($lines[$key]);
+                        } else {
+                            $evalString = "return '" . $lines[$key] . "'" . $operator . "'" . $value . "';";
+                            $hasCondition = eval($evalString);
+                        }
                         if ($hasCondition) {
                             $newCondition = array($conditionk => true);
                             $this->excludeAction = array_merge(

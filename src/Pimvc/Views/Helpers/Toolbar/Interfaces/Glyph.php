@@ -38,6 +38,10 @@ interface Glyph {
     const IMG_VALIDATE_FILE = 'ok';
     const IMG_VALIDATE_CLASS = 'btn-info';
     const VALIDATE_ACTION = '/validate/id/';
+    const IMG_REFUSE_TITLE = 'Refuser';
+    const IMG_REFUSE_FILE = 'remove';
+    const IMG_REFUSE_CLASS = 'btn-danger';
+    const REFUSE_ACTION = '/refuse/id/';
     const IMG_PDF_TITLE = 'Imprimer Pdf';
     const IMG_PDF_FILE = 'print';
     const IMG_PDF_CLASS = 'btn-default';
@@ -82,6 +86,7 @@ interface Glyph {
     const EXCLUDE_DETAIL = 'xdetail';
     const EXCLUDE_DELETE = 'xdelete';
     const EXCLUDE_VALIDATE = 'xvalidate';
+    const EXCLUDE_REFUSE = 'xrefuse';
     const EXCLUDE_PDF = 'xpdf';
     const EXCLUDE_SHIPPING = 'xshipping';
     const EXCLUDE_LWORKORDER = 'xlworkorder';
