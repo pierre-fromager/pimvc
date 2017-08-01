@@ -491,7 +491,8 @@ abstract class Orm implements ormInterface{
      * 
      */   
     public function cleanRowset() {
-       $this->_rowset = []; 
+       $this->_rowset = [];
+       return $this;
     }
     
     /**
@@ -536,6 +537,7 @@ abstract class Orm implements ormInterface{
      */
     protected function setCurrent(){
          $this->_current = $this->getRow($this->_currentIndex);
+         return $this;
     }
     
     /**
@@ -590,7 +592,8 @@ abstract class Orm implements ormInterface{
      */
     public function rewind() {
         $this->_currentIndex = 0;
-        $this->setCurrent();     
+        $this->setCurrent();
+        return $this;
     }
 
     /**
@@ -607,6 +610,7 @@ abstract class Orm implements ormInterface{
             $this->_error = true;
             //throw new Exception('Nothing to seek ,use find before seeking.');
         }
+        return $this;
     }
 
     /**
@@ -646,6 +650,7 @@ abstract class Orm implements ormInterface{
             $error = 'Current domain object ' . $this->_domainClass . ' failed';
             throw new \Exception($error);
         }
+        return $this;
     }
 
     
@@ -693,6 +698,7 @@ abstract class Orm implements ormInterface{
             $error = 'Current domain object ' . $this->_domainClass . ' failed';
             throw new \Exception($error);
         }
+        return $this;
     }
     
     /**
@@ -719,6 +725,7 @@ abstract class Orm implements ormInterface{
      */
     public function setOr($params) {
         $this->_Or = $params;
+        return $this;
     }
     
     /**
@@ -728,6 +735,7 @@ abstract class Orm implements ormInterface{
      */
     public function setParenthesis($params) {
         $this->_parenthesis = $params;
+        return $this;
     }
     
 
@@ -782,6 +790,7 @@ abstract class Orm implements ormInterface{
                 }
             }
         }
+        return $this;
     }
 
     /**
@@ -880,7 +889,8 @@ abstract class Orm implements ormInterface{
      * @param string $patch 
      */
     public function setPatchWere($patch) {
-        $this->patchWhere = $patch; 
+        $this->patchWhere = $patch;
+        return $this;
     }
 
     /**
@@ -1002,6 +1012,7 @@ abstract class Orm implements ormInterface{
                 );
             }
         }
+        return $this;
     }
     
     /**
@@ -1536,6 +1547,7 @@ abstract class Orm implements ormInterface{
             echo 'EOPDSQL2';
             die;
         }
+        return $this;
     }
 
     /**
@@ -1582,6 +1594,7 @@ abstract class Orm implements ormInterface{
                     . $this->_primary . ' IN (' . $quoteLot . ')';
             $this->run($sql);
         }
+        return $this;
     }
 
     /**

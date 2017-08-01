@@ -5,28 +5,27 @@
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
+
 namespace Pimvc\Model;
 
-class Users extends \Pimvc\Db\Model\Orm {
-    
-    const USERS_STATUS_VALID = 'valid';
-    const USERS_STATUS_WAITING = 'waiting';
-    
-    protected $_name ='user';
-    protected $_primary = 'id';
+use \Pimvc\Db\Model\Orm;
+
+class Users extends Orm implements Interfaces\Users {
+
+    protected $_name = 'user';
+    protected $_primary = self::PARAM_ID;
     protected $_alias = 'users';
     protected $_adapter = self::MODEL_ADAPTER_MYSQL;
-    
     private $userInfoFields = [
-        'id'
+        self::PARAM_ID
         //, 'iid'
-        , 'name'
-        , 'email'
-        , 'password'
-        , 'profil'
-        , 'status'
+        , self::PARAM_NAME
+        , self::PARAM_EMAIL
+        , self::PARAM_PASSWORD
+        , self::PARAM_PROFIL
+        , self::PARAM_STATUS
     ];
-    
+
     /**
      * __construct
      * 
@@ -36,7 +35,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         parent::__construct($config);
         return $this;
     }
-    
+
     /**
      * getAuth
      * 
@@ -46,19 +45,20 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getAuth($login, $password) {
         $what = [
-            'id', 'fid', 'email', 'login', 'password'
-            , 'name', 'profil', 'status', 'token'
+            self::PARAM_ID, self::PARAM_FID, self::PARAM_EMAIL, 
+            self::PARAM_LOGIN, self::PARAM_PASSWORD, self::PARAM_NAME, 
+            self::PARAM_PROFIL, self::PARAM_STATUS, self::PARAM_TOKEN
         ];
         $where = [
-            'login' => $login
-            , 'password' => $password
-            , 'status#in' => "('valid','waiting')" // Allow both waiting and valid users to login
+            self::PARAM_LOGIN => $login
+            , self::PARAM_PASSWORD => $password
+            , self::PARAM_STATUS.'#'.'in' => "('valid','waiting')" // Allow both waiting and valid users to login
         ];
         $this->cleanRowset();
         $this->find($what, $where);
         return $this->getRowsetAsArray();
     }
-    
+
     /**
      * getPro
      * 
@@ -66,20 +66,18 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getPro() {
         $what = [
-            'id', 'fid', 'name', 'photo'
-            , 'adresse', 'gsm', 'email'
+            self::PARAM_ID, self::PARAM_FID, self::PARAM_NAME, 'photo'
+            , 'adresse', 'gsm', self::PARAM_EMAIL
             , 'cp', 'ville', 'site'
         ];
-        $where = [
-            'profil' => 'pro'
-        ];
-        $order = ['fid' => 'asc'];
+        $where = [self::PARAM_PROFIL => 'pro'];
+        $order = [self::PARAM_FID => 'asc'];
         $this->cleanRowset();
         $this->find($what, $where, $order);
         $results = $this->getRowsetAsArray();
         return $results;
     }
-    
+
     /**
      * getStatus
      * 
@@ -99,10 +97,9 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getAll() {
-        $this->find(['*'],['id'=>'%'],['id'=>'asc']);
+        $this->find(['*'], [self::PARAM_ID => '%'], [self::PARAM_ID => 'asc']);
         return $this->getRowsetAsArray();
     }
-
 
     /**
      * getById
@@ -113,10 +110,10 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getById($id, $what = ['*']) {
         $this->cleanRowset();
-        $this->find($what, ['id' => $id]);
+        $this->find($what, [self::PARAM_ID => $id]);
         return $this->_current;
     }
- 
+
     /**
      * getWaitings
      * 
@@ -125,19 +122,16 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function getWaitings() {
         return $this->getByStatus(self::USERS_STATUS_WAITING);
     }
-    
+
     /**
      * getValids
      * 
      * @return array 
      */
     public function getValids($what) {
-        return $this->getByStatus(
-            self::USERS_STATUS_VALID
-            , $what
-        );
+        return $this->getByStatus(self::USERS_STATUS_VALID, $what);
     }
-    
+
     /**
      * getByStatus
      * 
@@ -145,22 +139,19 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     private function getByStatus($status, $what = ['*']) {
-        $where = ['status' => $status];
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find($what, [self::PARAM_STATUS => $status])->getRowsetAsArray();
     }
-    
-    
+
     /**
      * count
      * 
      * @return int 
      */
     public function count() {
-        $this->find(['id']);
+        $this->find([self::PARAM_ID]);
         return count($this->getRowsetAsArray());
     }
-    
+
     /**
      * getList
      * 
@@ -168,15 +159,13 @@ class Users extends \Pimvc\Db\Model\Orm {
      * @return array 
      */
     public function getList($name) {
-        $this->find(
-            ['id', 'name']
-            , ['name' => '%' . $name . '%']
-            , ['id' => 'desc']
-        );
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [self::PARAM_ID, self::PARAM_NAME]
+            , [self::PARAM_NAME => '%' . $name . '%']
+            , [self::PARAM_ID => 'desc']
+        )->getRowsetAsArray();
     }
-    
-   
+
     /**
      * validCredential returns user id as assoc array if credential is valid or false
      * 
@@ -196,7 +185,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         }
         return $valid;
     }
-    
+
     /**
      * userExists
      * 
@@ -206,15 +195,15 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function userExists($login) {
         $this->cleanRowset();
         $this->find(
-            ['id']
-            , ['login' => $login]
-            , ['id' => 'desc']
-            , []
-            , 'login'
+                [self::PARAM_ID]
+                , [self::PARAM_LOGIN => $login]
+                , [self::PARAM_ID => 'desc']
+                , []
+                , self::PARAM_LOGIN
         );
         return (count($this->getRowset()) > 0);
     }
-    
+
     /**
      * getByEmail
      * 
@@ -224,12 +213,11 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getByEmail($email, $what = ['*']) {
         $this->cleanRowset();
-        $this->find($what, ['email' => $email]);
+        $this->find($what, [self::PARAM_EMAIL => $email]);
         $result = $this->getCurrent();
         $result = (isset($result->email)) ? $result : [];
         return $result;
     }
-
 
     /**
      * validate
@@ -240,7 +228,7 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function validate($id) {
         return $this->changeStatus($id, self::USERS_STATUS_VALID);
     }
-    
+
     /**
      * changeStatus
      * 
@@ -252,14 +240,13 @@ class Users extends \Pimvc\Db\Model\Orm {
         $returnCode = false;
         if (!empty($id) && !empty($status)) {
             $this->cleanRowset();
-            $this->setWhere(['id' => $id]);
-            $datas = ['status' => $status];
+            $this->setWhere([self::PARAM_ID => $id]);
+            $datas = [self::PARAM_STATUS => $status];
             $returnCode = $this->update($datas);
         }
         return $returnCode;
     }
-    
-    
+
     /**
      * countEmailsByProfil
      * 
@@ -269,16 +256,14 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function countEmailsByProfil($profil = 'pros') {
         $result = false;
         $this->cleanRowset();
-        $this->find(
-            ['email']
-            , ['profil' => $profil]
-            , ['id' => 'desc']
+        return $this->find(
+            [self::PARAM_EMAIL]
+            , [self::PARAM_PROFIL => $profil]
+            , [self::PARAM_ID => 'desc']
             , []
-            , 'email'
-        );
-        $result = $this->getRowsetAsArray();
-        return $result;
-}
+            , self::PARAM_EMAIL
+        )->getRowsetAsArray();
+    }
 
     /**
      * getEmailsByProfil
@@ -290,15 +275,15 @@ class Users extends \Pimvc\Db\Model\Orm {
         $results = [];
         $result = $this->countEmailsByProfil($profil);
         foreach ($result as $item) {
-            if (!empty($item['email'])) {
-                $results[] = strtolower($item['email']);
-            }           
+            if (!empty($item[self::PARAM_EMAIL])) {
+                $results[] = strtolower($item[self::PARAM_EMAIL]);
+            }
         }
         unset($result);
         return $results;
     }
-    
-        /**
+
+    /**
      * isValid
      * 
      * @param int $uid
@@ -307,28 +292,29 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function isValid($uid) {
         $isValid = false;
         if (!empty($uid)) {
-            $counter = $this->counter(['id' => $uid, 'status' => 'valid']);
+            $counter = $this->counter([self::PARAM_ID => $uid, self::PARAM_STATUS => 'valid']);
             $isValid = ($counter > 1);
         }
         return $counter;
     }
-    
+
     /*
      * countExpirationDays
      * 
      * @param int $uid
      */
+
     public function countExpirationDays($uid) {
         $this->cleanRowset();
         $what = [];
-        $where = ['id' => $uid];
+        $where = [self::PARAM_ID => $uid];
         $this->find($what, $where);
         $dateToday = new \DateTime(date('Y-m-d H:i:s'));
         $dateEnd = new \DateTime($this->_current->dateexp);
         $daysCount = ($dateToday->diff($dateEnd, false)->format('%R%a'));
         return $daysCount;
     }
-    
+
     /**
      * isExpired
      * 
@@ -338,7 +324,6 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function isExpired($uid) {
         return ($this->countExpirationDays($uid) <= 0);
     }
-    
 
     /**
      * setExpirationDate
@@ -350,7 +335,7 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function setExpirationDate($uid, $offer) {
         $result = false;
         if (!empty($uid)) {
-            $criterias = ['id' => $uid];
+            $criterias = [self::PARAM_ID => $uid];
             $this->cleanRowset();
             $this->find([], $criterias);
             $domainObject = $this->getCurrent();
@@ -360,7 +345,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         }
         return $result;
     }
-    
+
     /**
      * getExpirationDate
      * 
@@ -369,15 +354,15 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getExpirationDate($offer) {
         $dateExp = '';
-        if ($this->isValidOffer($offer)){
+        if ($this->isValidOffer($offer)) {
             $dateFormat = 'Y-m-d H:i:s';
             $dateToday = new \DateTime(date($dateFormat));
             $prefixUnit = ($offer == 'demo') ? 'PT' : 'P';
             $suffixUnit = ($offer == 'demo') ? 'H' : 'D';
-            $interval = $prefixUnit . $this->getOfferDaysValidity($offer) 
-                . $suffixUnit;
+            $interval = $prefixUnit . $this->getOfferDaysValidity($offer)
+                    . $suffixUnit;
             $dateInteval = new \DateInterval($interval);
-            $dateExp = ($dateToday->add($dateInteval)->format($dateFormat));    
+            $dateExp = ($dateToday->add($dateInteval)->format($dateFormat));
         }
         return $dateExp;
     }
@@ -390,7 +375,7 @@ class Users extends \Pimvc\Db\Model\Orm {
     private function getOffers() {
         return ['demo', 'liberte', 'classique', 'premium'];
     }
-    
+
     /**
      * getOfferInterval
      * 
@@ -407,7 +392,7 @@ class Users extends \Pimvc\Db\Model\Orm {
         $offerInterval = array_combine($this->getOffers(), $daysValidity);
         return $offerInterval[$offer];
     }
-    
+
     /**
      * isValidOffer
      * 
@@ -417,8 +402,7 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function isValidOffer($offer) {
         return (boolean) in_array($offer, $this->getOffers());
     }
-    
-    
+
     /**
      * countOffersAjax
      * 
@@ -427,16 +411,15 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function countOffersAjax() {
         $this->cleanRowset();
-        $this->find(
+        return $this->find(
             ['offer']
-            , ['offer#in' => '("demo","liberte","premium","classique")']
-            , ['id' => 'desc']
+            , ['offer' . '#' . 'in' => '("demo","liberte","premium","classique")']
+            , [self::PARAM_ID => 'desc']
             , [15]
             , 'offer'
-        );
-        return $this->getRowsetAsArray();
+        )->getRowsetAsArray();
     }
-    
+
     /**
      * countByRoleAjax
      * 
@@ -445,21 +428,15 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function countByRoleAjax() {
         $this->cleanRowset();
-        $validOffers = '("admin","user")';
-        $where = [
-            'profil#in' => $validOffers
-        ];
-        $this->find(
-            ['profil']
-            , $where
-            , ['id' => 'desc']
+        return $this->find(
+            [self::PARAM_PROFIL]
+            , ['profil#in' => '("admin","user")']
+            , [self::PARAM_ID => 'desc']
             , [15]
-            , 'profil'
-        );
-        return $this->getRowsetAsArray();
+            , self::PARAM_PROFIL
+        )->getRowsetAsArray();
     }
-    
-    
+
     /**
      * countByStatusAjax
      * 
@@ -468,20 +445,15 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function countByStatusAjax() {
         $this->cleanRowset();
-        $validOffers = '("valid","waiting")';
-        $where = [
-            'status#in' => $validOffers
-        ];
-        $this->find(
-            ['status']
-            , $where
-            , ['id' => 'desc']
+        return $this->find(
+            [self::PARAM_STATUS]
+            , [self::PARAM_STATUS . '#' . 'in' => '("valid","waiting")']
+            , [self::PARAM_ID => 'desc']
             , [15]
-            , 'status'
-        );
-        return $this->getRowsetAsArray();
+            , self::PARAM_STATUS
+        )->getRowsetAsArray();
     }
-    
+
     /**
      * countByCountriesAjax
      * 
@@ -490,15 +462,14 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function countByCountriesAjax() {
         $this->cleanRowset();
-        $this->find(
+        return $this->find(
             ['country']
             , []
-            , ['id' => 'desc']
+            , [self::PARAM_ID => 'desc']
             , [15]
             , 'country'
-        );
-        return $this->getRowsetAsArray();
-}
+        )->getRowsetAsArray();
+    }
 
     /**
      * updateIp
@@ -506,12 +477,12 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function updateIp() {
         $this->cleanRowset();
-        $id =  \Pimvc\App::getInstance()->getRequest()->getSession('id');
+        $id = \Pimvc\App::getInstance()->getRequest()->getSession(self::PARAM_ID);
         $user = $this->getById($id);
         $user->ip = $_SERVER['REMOTE_ADDR'];
         $this->save($user);
     }
-    
+
     /**
      * getAllowedIps
      * 
@@ -520,15 +491,15 @@ class Users extends \Pimvc\Db\Model\Orm {
     public function getAllowedIps() {
         $this->cleanRowset();
         $this->find(
-            ['ip']
-            , ['ip#!=' => ' ']
-            , ['id' => 'desc']
+            [self::PARAM_IP]
+            , [self::PARAM_IP . '#' . '!=' => ' ']
+            , [self::PARAM_ID => 'desc']
             , []
-            , 'ip'
+            , self::PARAM_IP
         );
         return $this->getRowsetAsArray();
     }
-    
+
     /**
      * getListFromIdsIn
      * 
@@ -537,12 +508,12 @@ class Users extends \Pimvc\Db\Model\Orm {
      */
     public function getListFromIdsIn($in = []) {
         $this->cleanRowset();
-        $inCriteria = "('" . implode("','", $in) . "')";
-        $this->find(['id', 'name'], ['id#in' => $inCriteria]);     
-        $results = $this->getRowsetAsArray();
-        return $results;
+        return $this->find(
+            [self::PARAM_ID, self::PARAM_NAME], 
+            [self::PARAM_ID . '#' . 'in' => "('" . implode("','", $in) . "')"]
+        )->getRowsetAsArray();
     }
-    
+
     /**
      * getAuthByToken
      * 
@@ -553,9 +524,9 @@ class Users extends \Pimvc\Db\Model\Orm {
         $this->cleanRowset();
         $this->find(
             $this->userInfoFields, 
-            ['token' => $token, 'status' => 'valid']
+            [self::PARAM_TOKEN => $token, self::PARAM_STATUS => 'valid']
         );
         return $this->getRowsetAsArray();
     }
-}
 
+}
