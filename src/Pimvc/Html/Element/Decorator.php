@@ -169,14 +169,12 @@ class Decorator {
     private function getOptions($options = []) {
         $formatedOptions = self::EMPTY_VAL;
         if (!empty($options)) {
-            array_walk(
-                $options
-                , create_function(
-                    self::FORMAT_OPTIONS_ARGS
-                    , self::FORMAT_OPTIONS_CODE
-                )
-            );
-            $formatedOptions = implode($options, self::EMPTY_VAL);
+            $render = [];
+            foreach ($options as $key => $value) {
+                $render[] = ' ' . $key . '="' . $value . '"';
+            }
+            $formatedOptions = implode($render, self::EMPTY_VAL);
+            unset($render);
         }
         return $formatedOptions;
     }

@@ -69,7 +69,7 @@ class Liste implements Interfaces\Liste {
         $this->isFormated = false;
         $this->mandatory = $mandatory;
         $this->filter = $filter;
-        $this->curentPage = $curentPage;
+        $this->curentPage = (int) $curentPage;
         $this->modelName = $modelName;
         $modelClass = $modelName;
         $this->modelConfig = \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool');

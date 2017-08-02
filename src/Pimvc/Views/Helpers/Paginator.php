@@ -35,7 +35,7 @@ class Paginator {
         $this->content = '';
         $this->baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
         $this->link = $link . '/page/';
-        $this->curentPage = $curentPage;
+        $this->curentPage = (int) $curentPage;
         $this->pageSize = $pageSize;
         $this->maxPage = $maxPage;
         if ($this->maxPage > 0) {
@@ -94,7 +94,7 @@ class Paginator {
         $navScale = self::PAGINATOR_DEFAULT_SCALE - 1;
         $navSplit = $navScale / 2;
         if ($this->maxPage > 0) {
-            $start = $this->curentPage - $navSplit;
+            $start = (int) $this->curentPage - $navSplit;
             $compound = ($start < 0) ? abs($start) : 0;
             if ($compound) {
                 $start = 0;
