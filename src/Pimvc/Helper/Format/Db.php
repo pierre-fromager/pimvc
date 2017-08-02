@@ -33,8 +33,6 @@ abstract class Db implements Interfaces\Db {
 
     protected function pre() {}
     protected function post() {}
-    abstract public static function getInstance();
-    abstract public static function getStatic($value);
 
     /**
      * @see  __construct
