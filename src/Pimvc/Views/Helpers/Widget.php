@@ -12,18 +12,21 @@ use Pimvc\Html\Element\Decorator as Deco;
 
 abstract class Widget implements Interfaces\Widget {
 
-    protected $title;
-    protected $body;
     protected $content;
     protected $sectionOptions;
     protected $sectionDecorator;
     protected $headerDecorator;
     protected $headerOptions;
+    protected $title;
+    protected $titleOptions;
     protected $titleDecorator;
+    protected $body;
     protected $bodyDecorator;
     protected $bodyOtions;
-    protected $titleOptions;
     protected $bodyOptions;
+    protected $footer;
+    protected $footerDecorator;
+    protected $footerOtions;
 
     /**
      * __construct
@@ -41,7 +44,9 @@ abstract class Widget implements Interfaces\Widget {
      */
     public function render() {
         $this->content = $this->getSection(
-            $this->getHeader($this->title) . $this->getBody($this->body)
+            $this->getHeader($this->title) 
+                . $this->getBody($this->body) 
+                . $this->getFooter()
         );
     }
 
@@ -124,6 +129,37 @@ abstract class Widget implements Interfaces\Widget {
         $this->sectionDecorator = $decorator;
         return $this;
     }
+    
+    /**
+     * setFooter
+     * 
+     * @param string $footer
+     * @return $this
+     */
+    public function setFooter($footer) {
+        $this->footer = $footer;
+        return $this;
+    }
+    
+    /**
+     * setFooterDecorator
+     * 
+     * @param string $decorator 
+     */
+    public function setFooterDecorator($decorator) {
+        $this->footerDecorator = $decorator;
+        return $this;
+    }
+    
+    /**
+     * setFooteOptions
+     * 
+     * @param array $options 
+     */
+    public function setFooteOptions($options) {
+        $this->footerOtions = $options;
+        return $this;
+    }
 
     /**
      * setHeaderDecorator
@@ -152,7 +188,9 @@ abstract class Widget implements Interfaces\Widget {
      * @return string 
      */
     private function getSection($content) {
-        return (string) new Deco($this->sectionDecorator, $content, $this->sectionOptions);
+        return ($content) 
+            ? (string) new Deco($this->sectionDecorator, $content, $this->sectionOptions) 
+            : '';
     }
 
     /**
@@ -161,7 +199,9 @@ abstract class Widget implements Interfaces\Widget {
      * @return string 
      */
     private function getBody() {
-        return (string) new Deco($this->bodyDecorator, $this->body, $this->bodyOptions);
+        return ($this->body) 
+            ? (string) new Deco($this->bodyDecorator, $this->body, $this->bodyOptions) 
+            : '';
     }
 
     /**
@@ -171,19 +211,32 @@ abstract class Widget implements Interfaces\Widget {
      * @return string 
      */
     private function getHeader($title) {
-        return (string) new Deco(
-            $this->headerDecorator, $this->getFormatedTitle($title), $this->headerOptions
-        );
+        return ($title) 
+            ? (string) new Deco($this->headerDecorator, $this->formatedTitle($title), $this->headerOptions) 
+            : '';
+    }
+    
+    /**
+     * getFooter
+     * 
+     * @return string 
+     */
+    private function getFooter() {
+        return ($this->footer) 
+            ? (string) new Deco($this->footerDecorator, $this->footer, $this->footerOtions) 
+            : '';
     }
 
     /**
-     * getFormatedTitle
+     * formatedTitle
      * 
      * @param string $title
      * @return string 
      */
-    private function getFormatedTitle($title) {
-        return (string) new Deco($this->titleDecorator, $title, $this->titleOptions);
+    private function formatedTitle($title) {
+        return ($title) ? 
+            (string) new Deco($this->titleDecorator, $title, $this->titleOptions) 
+            : '';
     }
 
     /**
