@@ -5,26 +5,23 @@
  *
  * @author pierrefromager
  */
+
 namespace Pimvc\Views\Helpers;
 
-use Pimvc\Html\Element\Decorator as widgetDecorator;
+use Pimvc\Html\Element\Decorator as Deco;
 
-class Widget {
+abstract class Widget implements Interfaces\Widget {
 
-    const PARAM_SECTION = 'section';
-    const PARAM_HEADER = 'header';
-    const PARAM_BODY = 'body';
-    const PARAM_WIDGET = 'widget';
-    const PARAM_CLASS = 'class';
-    const TITLE_DECORATOR = 'h3';
-    const BODY_DECORATOR = 'div';
-    
     protected $title;
     protected $body;
     protected $content;
-    
     protected $sectionOptions;
+    protected $sectionDecorator;
+    protected $headerDecorator;
+    protected $headerOptions;
     protected $titleDecorator;
+    protected $bodyDecorator;
+    protected $bodyOtions;
     protected $titleOptions;
     protected $bodyOptions;
 
@@ -34,80 +31,109 @@ class Widget {
      * @param string $title
      * @param string $body 
      */
-    public function __construct($title, $body) {
-        $this->content = '';
-        $this->setTitle($title);
-        $this->setBody($body);
-        $this->setSectionOptions([]);
-        $this->setTitleDecorator(self::TITLE_DECORATOR);
-        $this->setTitleOptions([]);
-        $this->setBodyOptions([]);
-        $this->render();
+    public function __construct() {
+        return $this;
     }
-    
+
     /**
      * render
      * 
      */
     public function render() {
         $this->content = $this->getSection(
-            $this->getHeader($this->title)
-            . $this->getBody($this->body)              
+            $this->getHeader($this->title) . $this->getBody($this->body)
         );
     }
-    
+
     /**
      * setTitleOptions
      * 
      * @param array $options 
      */
-    public function setTitleOptions($options) {
+    public function setTitleOptions($options = []) {
         $this->titleOptions = $options;
+        return $this;
     }
-    
+
     /**
      * setTitleDecorator
      * 
      * @param string $decorator 
      */
-    public function setTitleDecorator($decorator) {
+    public function setTitleDecorator($decorator = self::TITLE_DECORATOR) {
         $this->titleDecorator = $decorator;
+        return $this;
     }
-    
+
+    /**
+     * setBodyDecorator
+     * 
+     * @param string $decorator 
+     */
+    public function setBodyDecorator($decorator = self::BODY_DECORATOR) {
+        $this->bodyDecorator = $decorator;
+        return $this;
+    }
+
     /**
      * setBodyOptions
      * 
      * @param array $options 
      */
-    public function setBodyOptions($options) {
+    public function setBodyOptions($options = []) {
         $this->bodyOptions = $options;
+        return $this;
     }
-    
+
     /**
      * setBody
      * 
-     * @param array $options 
+     * @param string $body 
      */
-    public function setBody($body) {
+    public function setBody($body = '') {
         $this->body = $body;
+        return $this;
     }
-    
+
     /**
      * setTitle
      * 
-     * @param array $options 
+     * @param string $title 
      */
     public function setTitle($title) {
         $this->title = $title;
+        return $this;
     }
-    
+
     /**
      * setSectionOptions
      * 
      * @param array $options 
      */
-    public function setSectionOptions($options) {
+    public function setSectionOptions($options = []) {
         $this->sectionOptions = $options;
+        return $this;
+    }
+
+    /**
+     * setSectionDecorator
+     * 
+     * @param string $decorator 
+     */
+    public function setSectionDecorator($decorator) {
+        $this->sectionDecorator = $decorator;
+        return $this;
+    }
+
+    /**
+     * setHeaderDecorator
+     * 
+     * @param string $decorator
+     * @return $this
+     */
+    public function setHeaderDecorator($decorator) {
+        $this->headerDecorator = $decorator;
+        return $this;
     }
 
     /**
@@ -126,42 +152,18 @@ class Widget {
      * @return string 
      */
     private function getSection($content) {
-        $sectionOptions = array(
-            self::PARAM_CLASS => self::PARAM_WIDGET
-        );
-        $sectionOptions = array_merge($sectionOptions, $this->sectionOptions);
-        $section = new widgetDecorator(
-            self::PARAM_SECTION
-            , $content
-            , $sectionOptions
-        );
-        $section->render();
-        $sectionContent = (string) $section;
-        unset($section);
-        return $sectionContent;
+        return (string) new Deco($this->sectionDecorator, $content, $this->sectionOptions);
     }
-    
+
     /**
      * getBody
      * 
      * @return string 
      */
     private function getBody() {
-        $bodyOptions = array(
-            self::PARAM_CLASS => self::PARAM_BODY
-        );
-        $bodyOptions = array_merge($bodyOptions, $this->bodyOptions);
-        $body = new widgetDecorator(
-            self::BODY_DECORATOR
-            , $this->body
-            , $bodyOptions
-        );
-        $body->render();
-        $bodyContent = (string) $body;
-        unset($body);
-        return $bodyContent;
+        return (string) new Deco($this->bodyDecorator, $this->body, $this->bodyOptions);
     }
-    
+
     /**
      * getHeader
      * 
@@ -169,17 +171,11 @@ class Widget {
      * @return string 
      */
     private function getHeader($title) {
-        $headerTitleContent = '';
-        if ($title) {
-            $formatedTitle = $this->getFormatedTitle($title);
-            $header = new widgetDecorator(self::PARAM_HEADER, $formatedTitle);
-            $header->render();
-            $headerTitleContent = (string) $header;
-            unset($header);
-        }
-        return $headerTitleContent;
+        return (string) new Deco(
+            $this->headerDecorator, $this->getFormatedTitle($title), $this->headerOptions
+        );
     }
-    
+
     /**
      * getFormatedTitle
      * 
@@ -187,19 +183,16 @@ class Widget {
      * @return string 
      */
     private function getFormatedTitle($title) {
-        $formatedTitleContent = '';
-        if ($title) {
-            $formatedTitle = new widgetDecorator(
-                $this->titleDecorator
-                , $title
-                , $this->titleOptions
-            );
-            $formatedTitle->render();
-            $formatedTitleContent = (string) $formatedTitle;
-            unset($formatedTitle);
-        }
-        return $formatedTitleContent;
+        return (string) new Deco($this->titleDecorator, $title, $this->titleOptions);
+    }
+
+    /**
+     * isValid
+     * 
+     * @return boolean
+     */
+    protected function isValid() {
+        return ($this->title && $this->body);
     }
 
 }
-
