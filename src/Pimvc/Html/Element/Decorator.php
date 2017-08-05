@@ -14,8 +14,6 @@ class Decorator {
     const LT = '<';
     const GT = '>';
     const SL = '/';
-    const FORMAT_OPTIONS_ARGS = '&$i,$k';
-    const FORMAT_OPTIONS_CODE = 'if ($i!="") $i=" $k=\"$i\"";';
 
     protected $element;
     protected $text;
@@ -32,7 +30,7 @@ class Decorator {
      * @param boolean $render
      */
     public function __construct($element, $text, $options = [], $render = true) {
-        $this->content = '';
+        $this->content = self::EMPTY_VAL;
         $this->setElement($element);
         $this->setText($text);
         $this->setOptions($options);
@@ -59,7 +57,7 @@ class Decorator {
             $options = (empty($this->options)) 
                 ? self::EMPTY_VAL 
                 : $this->getOptions($this->options);
-            $text = ($this->isDisplayText()) ? $this->text : '';
+            $text = ($this->isDisplayText()) ? $this->text : self::EMPTY_VAL;
             $end = (empty($text) && ($this->isSelfClosing())) 
                 ? self::SL . self::GT 
                 : self::GT . $text . self::LT

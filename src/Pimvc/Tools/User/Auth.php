@@ -57,35 +57,12 @@ class Auth {
     }
 
     /**
-     * userLink returns user link
-     * 
-     * @param string $uname
-     * @param int $uid
-     * @return string 
-     */
-    private function userLink() {
-        $link = $this->baseUrl . self::AUTH_LINK_PROFIL . $this->id;
-        $linkParams = array(
-            'link' => $link
-            , 'value' => $this->profil
-        );
-        $linkOptions = array(
-            'title' => self::AUTH_LINK_TITLE
-        );
-        $userLink = \Pimvc\Html\Element::link($linkParams, $linkOptions);
-        return $userLink;
-    }
-
-    /**
      * process processes authentication
      * 
      */
     protected function process() {
-        $result = $this->authModel->getAuth($this->login, $this->password);
-        if (!$result) {
-            $this->setAllowed(false);
-            $this->message = self::AUTH_UNKNOW_USER;
-        } else {
+        $this->setAllowed(false);
+        if ($result = $this->authModel->getAuth($this->login, $this->password)) {
             $this->setAllowed(true);
             $this->authModel->updateIp();
             $this->id = $result[0]['id'];
@@ -98,13 +75,9 @@ class Auth {
             $userInfo->token = $result[0]['token'];
             $userInfo->fid = $result[0]['fid'];
             $this->setSessionProfile($this->id, $this->profil, $userInfo);
-            $this->message = 'Utilisateur '
-                . $this->userLink()
-                . ', profil ' . $this->profil
-                . ' connecté (php v' . PHP_VERSION . ').';
         }
     }
-    
+
     /**
      * setSessionProfile
      * 
