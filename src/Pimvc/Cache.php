@@ -109,7 +109,7 @@ class Cache {
         $serializedCache = serialize($cache);
         if (!$this->exist($this->path)) {
             mkdir($this->path, 0777, true);
-            chmod(dirname($this->path,2), 0777, true);
+            chmod(dirname($this->path, 2), 0777);
         }
         
         file_put_contents($filename, $serializedCache);
