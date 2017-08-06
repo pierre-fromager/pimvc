@@ -8,14 +8,12 @@
 
 namespace Pimvc\Views\Helpers;
 
-use Pimvc\Views\Helpers\Bootstrap\Button as bootstrapButton;
-
 class Acl {
 
     const ACL_ICONS_PATH = 'public/img/acl/';
     const CR = "\n";
     const MAX_ACL_ACTION = 4;
-    const ACL_TITLE = 'Gestion des droits.';
+    const ACL_TITLE = 'Gestion des droits';
     const ACL_CONTROLLER_ACTION = 'acl/toggle';
 
     protected $content = '';
@@ -40,16 +38,9 @@ class Acl {
      * 
      */
     protected function process() {
-        $cr = "\n";
         $this->content = '<div class="acl-manager">';
-        $applyButton = new bootstrapButton('Appliquer');
-        $applyButton->setType(bootstrapButton::TYPE_SUCCESS);
-        $applyButton->setSize(bootstrapButton::SIZE_SMALL);
-        $applyButton->setStyle('float:right');
-        $applyButton->setDatalink($this->baseUrl . 'acl/list');
-        $applyButton->render();
-        $this->content .= '<h2>'.self::ACL_TITLE.(string) $applyButton.'</h2>';
-        unset($applyButton);
+        $this->content .= '<h2>' . '<span class="fa fa-lock">&nbsp;</span>&nbsp;' 
+            . self::ACL_TITLE . '</h2>';
         foreach ($this->ressources as $controllerName => $actions) {
             $shortCrtl = $this->getClassnameFromNamespace($controllerName);
             $this->content .= '<div id="' . $shortCrtl . '" class="controler_header inactive">' . self::CR
@@ -85,7 +76,7 @@ class Acl {
      * @return string
      */
     private function getClassnameFromNamespace($namespace) {
-        return substr($namespace, 1 + strrpos($namespace,'\\'), strlen($namespace));
+        return substr($namespace, 1 + strrpos($namespace, '\\'), strlen($namespace));
     }
 
     /**
@@ -97,13 +88,11 @@ class Acl {
      * @return type
      */
     protected function changeArrayKeys($array, $old_key, $new_key) {
-
-        if (!array_key_exists($old_key, $array))
+        if (!array_key_exists($old_key, $array)) {
             return $array;
-
+        }
         $keys = array_keys($array);
         $keys[array_search($old_key, $keys)] = $new_key;
-
         return array_combine($keys, $array);
     }
 
