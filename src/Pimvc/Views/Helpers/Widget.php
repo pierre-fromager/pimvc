@@ -173,6 +173,17 @@ abstract class Widget implements Interfaces\Widget {
     }
 
     /**
+     * setHeaderDecorator
+     * 
+     * @param array $options
+     * @return $this
+     */
+    public function setHeaderOptions($options) {
+        $this->headerOptions = $options;
+        return $this;
+    }
+
+    /**
      * __toString
      * 
      * @return string 
