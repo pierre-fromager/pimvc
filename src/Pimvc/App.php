@@ -24,13 +24,13 @@ class App implements Interfaces\App{
     public $hash;
     private static $instance = null;
     public $logger = null;
-    public $storage = null;
-    public $config = null;
-    public $routes = null;
-    public $router = null;
-    public $controller = null;
+    protected $storage = null;
+    protected $config = null;
+    protected $routes = null;
+    protected $router = null;
+    protected $controller = null;
     public $path = null;
-    public $request = null;
+    protected $request = null;
     public $response = null;
     public $view = null;
     public $db = null;
@@ -254,6 +254,15 @@ class App implements Interfaces\App{
      */
     public function getConfig() {
         return $this->config;
+    }
+    
+    /**
+     * getConfig
+     * 
+     * @return Pimvc\Storage
+     */
+    public function getStorage() {
+        return $this->storage;
     }
     
     /**

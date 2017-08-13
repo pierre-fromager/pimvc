@@ -45,7 +45,7 @@ class Css {
      * 
      */
     public static function save() {
-        \Pimvc\App::getInstance()->storage->css = self::$items;
+        \Pimvc\App::getInstance()->getStorage()->css = self::$items;
     }
 
     /**
@@ -53,7 +53,7 @@ class Css {
      * 
      */
     public static function render() {
-        $items = \Pimvc\App::getInstance()->storage->css;
+        $items = \Pimvc\App::getInstance()->getStorage()->css;
         if ($items) {
             foreach ($items as $item) {
                 self::$content .= (self::isHelperCssInstance($item)) 

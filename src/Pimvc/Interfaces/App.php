@@ -53,6 +53,8 @@ interface App {
     public function getController();
 
     public function getConfig();
+    
+    public function getStorage();
 
     public function run();
 }

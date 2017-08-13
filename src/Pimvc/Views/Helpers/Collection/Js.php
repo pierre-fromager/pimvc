@@ -45,7 +45,7 @@ class Js {
      * 
      */
     public static function save() {
-        \Pimvc\App::getInstance()->storage->js = self::$items;
+        \Pimvc\App::getInstance()->getStorage()->js = self::$items;
     }
 
     /**
@@ -53,7 +53,7 @@ class Js {
      * 
      */
     public static function render() {
-        $items = \Pimvc\App::getInstance()->storage->js;
+        $items = \Pimvc\App::getInstance()->getStorage()->js;
         if ($items) {
             foreach ($items as $item) {
                 self::$content .= (self::ishelperJsInstance($item)) 
