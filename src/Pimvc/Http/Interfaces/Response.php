@@ -19,12 +19,19 @@ interface Response {
     const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';
     const HEADER_CACHE_EXPIRE = 'Expires: Sat, 26 Jul 1997 05:00:00 GMT';
     const HEADER_LOCATION = 'Location: ';
+    const HTTP_CODES = [
+        200 => '200 OK',
+        302 => '302 Redirect',
+        403 => '403 Forbiden',
+        404 => '404 Not Found',
+        500 => '500 Server Error'
+    ];
 
-    public function __construct($content);
+    public function __construct();
             
     public function setContent($content);
 
-    public function setHttpCode($code = 200);
+    public function setHttpCode($code);
 
     public function setType($type = null);
 

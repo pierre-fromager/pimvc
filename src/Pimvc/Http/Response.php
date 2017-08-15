@@ -14,7 +14,7 @@ class Response implements Interfaces\Response{
     private $type;
     private $headers;
     private $httpCode;
-    private $httpCodes;
+    private $httpCodes = self::HTTP_CODES;
     private $redirectUrl = '';
 
     /**
@@ -24,23 +24,7 @@ class Response implements Interfaces\Response{
      * @param string $type
      * @return $this
      */
-    public function __construct($content = []) {
-        $this->setHttpCodes()->setContent($content);
-        return $this;
-    }
-    
-    /**
-     * setHttpCodes
-     * 
-     */
-    private function setHttpCodes() {
-        $this->httpCodes = [
-            200 => '200 OK',
-            302 => '302 Redirect',
-            403 => '403 Forbiden',
-            404 => '404 Not Found',
-            500 => '500 Server Error'
-        ];
+    public function __construct() {
         return $this;
     }
 
@@ -86,7 +70,6 @@ class Response implements Interfaces\Response{
      */
     public function setHttpCode($code = 200) {
         $this->httpCode = $code;
-        
         return $this;
     }
 
@@ -156,7 +139,7 @@ class Response implements Interfaces\Response{
      * 
      * @return boolean
      */
-    private function isJsonType() {
+    public function isJsonType() {
         return ($this->type === self::TYPE_JSON);
     }
 
@@ -165,11 +148,11 @@ class Response implements Interfaces\Response{
      * 
      */
     public function dispatch() {
+        http_response_code($this->httpCode);
         if ($this->redirectUrl) {
             header(self::HEADER_LOCATION . $this->redirectUrl);
             die;
         } else {
-            http_response_code($this->httpCode);
             $this->setHeaders()->sendHeaders();
             echo ($this->isJsonType()) 
                 ? json_encode($this->content, JSON_PRETTY_PRINT) 
