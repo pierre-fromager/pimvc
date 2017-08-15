@@ -178,12 +178,47 @@ class Request implements Interfaces\Request, \SplSubject{
             case self::REQUEST_METHOD_POST:
                 $this->request = &$_POST;
                 break;
+            case self::REQUEST_METHOD_PUT:
+            case self::REQUEST_METHOD_PATCH:
+            case self::REQUEST_METHOD_DELETE:
+            case self::REQUEST_METHOD_COPY:
+            case self::REQUEST_METHOD_HEAD:
+            case self::REQUEST_METHOD_OPTIONS:
+            case self::REQUEST_METHOD_LINK:
+            case self::REQUEST_METHOD_UNLINK:
+            case self::REQUEST_METHOD_PURGE:
+            case self::REQUEST_METHOD_LOCK:
+            case self::REQUEST_METHOD_UNLOCK:
+            case self::REQUEST_METHOD_PROPFIND:
+            case self::REQUEST_METHOD_VIEW:
+                $this->request = $this->getInput();
+                break;
         }
         return [
             self::REQUEST_P_METHOD => $this->method,
             self::REQUEST_P_REQUEST => $this->request,
             self::REQUEST_P_COOKIE => $this->cookie
         ];
+    }
+    
+    /**
+     * getInput
+     * 
+     * @return array
+     */
+    private function getInput(){
+        $input = [];
+        parse_str(
+            file_get_contents(
+                self::REQUEST_INPUT, 
+                false , 
+                null, 
+                -1 , 
+                $this->getServer(self::REQUEST_CONTENT_LENGTH)
+            ), 
+            $input
+        );
+        return $input;
     }
     
     /**

@@ -14,6 +14,22 @@ interface Request {
     const REQUEST_METHOD = 'REQUEST_METHOD';
     const REQUEST_METHOD_GET = 'GET';
     const REQUEST_METHOD_POST = 'POST';
+    const REQUEST_METHOD_PUT = 'PUT';
+    const REQUEST_METHOD_PATCH = 'PATCH';
+    const REQUEST_METHOD_HEAD = 'HEAD';
+    const REQUEST_METHOD_OPTIONS = 'OPTIONS';
+    const REQUEST_METHOD_COPY = 'COPY';
+    const REQUEST_METHOD_LINK = 'LINK';
+    const REQUEST_METHOD_VIEW = 'VIEW';
+    const REQUEST_METHOD_PURGE = 'PURGE';
+    const REQUEST_METHOD_UNLINK = 'UNLINK';
+    const REQUEST_METHOD_LOCK = 'LOCK';
+    const REQUEST_METHOD_UNLOCK = 'UNLOCK';
+    const REQUEST_METHOD_PROPFIND = 'PROPFIND';
+    const REQUEST_METHOD_DELETE = 'DELETE';
+    const REQUEST_METHOD_TRACE = 'TRACE';
+    const REQUEST_CONTENT_LENGTH = 'CONTENT_LENGTH';
+    const REQUEST_INPUT = 'php://input';
     const REQUEST_P_METHOD = 'method';
     const REQUEST_P_REQUEST = 'request';
     const REQUEST_P_COOKIE = 'cookie';
@@ -23,7 +39,6 @@ interface Request {
     const REQUEST_SCHEME = 'REQUEST_SCHEME';
     const REQUEST_SLASH = '/';
     const SCHEME_SUFFIX = '://';
-    
     const PARAM_APACHE_HEADERS = 'apache_request_headers';
     const PARAM_X_FORWARD = 'X-Forwarded-For';
     const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
