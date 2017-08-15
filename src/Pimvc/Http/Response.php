@@ -37,6 +37,7 @@ class Response implements Interfaces\Response{
         $this->httpCodes = [
             200 => '200 OK',
             302 => '302 Redirect',
+            403 => '403 Forbiden',
             404 => '404 Not Found',
             500 => '500 Server Error'
         ];
@@ -85,6 +86,7 @@ class Response implements Interfaces\Response{
      */
     public function setHttpCode($code = 200) {
         $this->httpCode = $code;
+        
         return $this;
     }
 
@@ -167,6 +169,7 @@ class Response implements Interfaces\Response{
             header(self::HEADER_LOCATION . $this->redirectUrl);
             die;
         } else {
+            http_response_code($this->httpCode);
             $this->setHeaders()->sendHeaders();
             echo ($this->isJsonType()) 
                 ? json_encode($this->content, JSON_PRETTY_PRINT) 

@@ -41,21 +41,24 @@ abstract class Response extends Request implements Interfaces\Response{
     /**
      * getHtmlResponse
      * 
-     * @param type $view
-     * @param type $cookieName
-     * @param type $cookieValue
+     * @param string|View $view
+     * @param string $cookieName
+     * @param string $cookieValue
+     * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '') {
-        $response = $this->getApp()->getResponse()->setContent($view)
+    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '', $httpCode = 200) {
+        $response = $this->getApp()
+            ->getResponse()
+            ->setContent($view)
             ->setType(httpResponse::TYPE_HTML)
-            ->setHttpCode(200);
+            ->setHttpCode($httpCode);
         if ($cookieName && $cookieValue) {
             $response->withCookie($cookieName, $cookieValue);
         }
         return $response;
     }
-    
+
     /**
      * getJsonReponse
      * 
