@@ -6,7 +6,7 @@ namespace Pimvc;
  * controller
  * 
  */
-class Controller implements Interfaces\Controller{
+class Controller implements Interfaces\Controller {
 
     private $app;
     private $name = null;
@@ -14,18 +14,18 @@ class Controller implements Interfaces\Controller{
     private $params = [];
     private $result = null;
     private $errorsMessage = [
-        '' ,
-        'Controller not found' ,
-        'Missing class' ,
-        'Missing method' ,
-        'Bad router' ,
-        'Bad routes' ,
-        'No routes match' ,
+        '',
+        'Controller not found',
+        'Missing class',
+        'Missing method',
+        'Bad router',
+        'Bad routes',
+        'No routes match',
         'Forbidden'
     ];
     private $errorCode = 0;
     private $errorMessage = '';
-    private $errors =  [];
+    private $errors = [];
     private $classPrefix = '';
 
     /**
@@ -40,7 +40,7 @@ class Controller implements Interfaces\Controller{
         $this->errors = [];
         return $this;
     }
-    
+
     /**
      * setClassPrefix
      * 
@@ -69,7 +69,7 @@ class Controller implements Interfaces\Controller{
         $this->name = $name;
         return $this;
     }
-    
+
     /**
      * setAction
      * 
@@ -80,7 +80,7 @@ class Controller implements Interfaces\Controller{
         $this->action = $action;
         return $this;
     }
-    
+
     /**
      * setForbidden
      * 
@@ -90,17 +90,17 @@ class Controller implements Interfaces\Controller{
         $this->addError(7);
         return $this;
     }
-    
+
     /**
      * getPath
      * 
      * @return string
      */
     public function getPath() {
-        return $this->app->path . DIRECTORY_SEPARATOR . self::_namespace 
-            . DIRECTORY_SEPARATOR . $this->name . self::phpExt;
+        return $this->app->path . DIRECTORY_SEPARATOR . self::_namespace
+                . DIRECTORY_SEPARATOR . $this->name . self::phpExt;
     }
-    
+
     /**
      * check
      * 
@@ -113,8 +113,10 @@ class Controller implements Interfaces\Controller{
             $classExists = class_exists($className, false);
             $methodExists = method_exists($className, $this->action);
             if (!$methodExists || !$classExists) {
-                if (!$classExists) $this->addError(2);
-                if (!$methodExists) $this->addError(3);
+                if (!$classExists)
+                    $this->addError(2);
+                if (!$methodExists)
+                    $this->addError(3);
                 $passed = false;
             }
         } else {
@@ -123,7 +125,7 @@ class Controller implements Interfaces\Controller{
         }
         return $passed;
     }
-    
+
     /**
      * setDefault
      * 
@@ -131,12 +133,12 @@ class Controller implements Interfaces\Controller{
      */
     public function setDefault() {
         list($this->name, $this->action) = [
-            ucfirst(self::error), 
+            ucfirst(self::error),
             ucfirst(self::defaultAction)
         ];
         return $this;
     }
-    
+
     /**
      * run
      * 
@@ -153,9 +155,7 @@ class Controller implements Interfaces\Controller{
         if ($matches = $this->app->getRouter()->compile()) {
             @list($this->name, $this->action, $this->params) = $matches;
             $this->name = ucfirst($this->name);
-            $this->action = ($this->action) 
-                ? $this->action 
-                : self::defaultAction;
+            $this->action = ($this->action) ? $this->action : self::defaultAction;
             $this->action = ucfirst($this->action);
             $this->params = ($this->params) ? $this->params : [];
             if (isset($this->params[0])) {
@@ -169,14 +169,18 @@ class Controller implements Interfaces\Controller{
         } else {
             $this->addError(6);
         }
+        $this->check($this->getNamespacedClass());
         if ($this->isError()) {
+            //var_dump($this->errors);die;
             $this->params = [
-                'errors' => $this->errors ,
-                'controller' => $this->name ,
-                'action' => $this->action ,
+                'errors' => $this->errors,
+                'controller' => $this->name,
+                'action' => $this->action,
                 'request' => $this->getApp()->getRequest()
             ];
             $this->setDefault();
+            $this->getApp()->getResponse()->setHttpCode(404);
+            //var_dump($this->getApp()->getResponse());die;
         }
         $this->execute();
         return $this;
@@ -199,7 +203,7 @@ class Controller implements Interfaces\Controller{
             echo $this->result;
         }
     }
-    
+
     /**
      * getParams
      * 
@@ -208,7 +212,7 @@ class Controller implements Interfaces\Controller{
     public function getParams($key = '') {
         return ($key) ? $this->params[$key] : $this->params;
     }
-    
+
     /**
      * getAction
      * 
@@ -217,7 +221,7 @@ class Controller implements Interfaces\Controller{
     public function getAction() {
         return $this->action;
     }
-    
+
     /**
      * setError
      * 
@@ -231,7 +235,7 @@ class Controller implements Interfaces\Controller{
             self::message => $this->errorMessage
         ];
     }
-    
+
     /**
      * isError
      * 
@@ -240,21 +244,19 @@ class Controller implements Interfaces\Controller{
     private function isError() {
         return $this->errors;
     }
-    
+
     /**
      * getNamespacedClass
      * 
      * @return string
      */
     private function getNamespacedClass() {
-        $prefixable = ($this->classPrefix) 
-            ? self::baskSlash . $this->classPrefix 
-            : '';
-        $namespace = $prefixable . self::baskSlash . self::_namespace 
+        $prefixable = ($this->classPrefix) ? self::baskSlash . $this->classPrefix : '';
+        $namespace = $prefixable . self::baskSlash . self::_namespace
             . self::baskSlash . $this->name;
         return $namespace;
     }
-    
+
     /**
      * execute
      * 
@@ -266,7 +268,7 @@ class Controller implements Interfaces\Controller{
         $isCallable = is_callable(array($controllerInstance, $this->action));
         if ($methodExist && $isCallable) {
             $this->result = call_user_func_array(
-                [$controllerInstance, $this->action] , 
+                [$controllerInstance, $this->action], 
                 is_array($this->params) ? $this->params : []
             );
         }
