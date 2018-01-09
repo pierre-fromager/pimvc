@@ -97,8 +97,8 @@ class Controller implements Interfaces\Controller {
      * @return string
      */
     public function getPath() {
-        return $this->app->path . DIRECTORY_SEPARATOR . self::_namespace
-                . DIRECTORY_SEPARATOR . $this->name . self::phpExt;
+        return $this->app->path . self::_namespace . DIRECTORY_SEPARATOR 
+            . str_replace('\\', '/', $this->name) . self::phpExt;
     }
 
     /**
@@ -154,7 +154,9 @@ class Controller implements Interfaces\Controller {
         }
         if ($matches = $this->app->getRouter()->compile()) {
             @list($this->name, $this->action, $this->params) = $matches;
-            $this->name = ucfirst($this->name);
+            $this->name = ($this->isModuleController()) 
+                ? $this->getModuleControllerNs() 
+                : ucfirst($this->name);
             $this->action = ($this->action) ? $this->action : self::defaultAction;
             $this->action = ucfirst($this->action);
             $this->params = ($this->params) ? $this->params : [];
@@ -171,19 +173,40 @@ class Controller implements Interfaces\Controller {
         }
         $this->check($this->getNamespacedClass());
         if ($this->isError()) {
-            //var_dump($this->errors);die;
+            $requestParams = $this->params;
             $this->params = [
                 'errors' => $this->errors,
                 'controller' => $this->name,
                 'action' => $this->action,
-                'request' => $this->getApp()->getRequest()
+                'router' => $this->app->getRouter()->compile(),
+                'request' => $this->getApp()->getRequest(),
+                'request_params' => $requestParams,
             ];
             $this->setDefault();
-            $this->getApp()->getResponse()->setHttpCode(404);
-            //var_dump($this->getApp()->getResponse());die;
         }
         $this->execute();
         return $this;
+    }
+    
+    /**
+     * isModuleController
+     * 
+     * @return boolean
+     */
+    private function isModuleController() {
+        $isModule = (strpos($this->name, '/') > 0);
+        return $isModule;
+    }
+    
+    /**
+     * getModuleControllerNs
+     * 
+     * @return boolean
+     */
+    private function getModuleControllerNs() {
+        $parts =  array_map('ucfirst', explode('/', $this->name));
+        $ctrlNs = implode('\\', $parts);
+        return $ctrlNs;
     }
 
     /**

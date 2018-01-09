@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Helper_Acl
+ * Pimvc\Views\Helpers\Acl
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -76,7 +76,7 @@ class Acl {
      * @return string
      */
     private function getClassnameFromNamespace($namespace) {
-        return substr($namespace, 1 + strrpos($namespace, '\\'), strlen($namespace));
+        return str_replace('\\', '_', $namespace);
     }
 
     /**

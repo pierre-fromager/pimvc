@@ -9,9 +9,9 @@
 namespace Pimvc\Tools;
 
 use \Pimvc\File\System\Scanner as fileScanner;
-use Pimvc\Tools\Session as toolsSession;
+use \Pimvc\Tools\Session as toolsSession;
 use \Pimvc\Tools\Format\Roles as roleFormater;
-use Pimvc\Cache\Factory as cacheFactory;
+use \Pimvc\Cache\Factory as cacheFactory;
 
 class Acl {
     
@@ -40,6 +40,8 @@ class Acl {
     
     const PARAM_UNDERSCORE = '_';
     const PARAM_EMPTY = '';
+    const BS = '\\';
+    const SL = '/';
 
     protected $controllerPath = '';
     protected $controllerFileList = array();
@@ -115,18 +117,23 @@ class Acl {
      * @return string 
      */
     protected function getControlerClassname($controllerFilename) {
-        $baseClass = $this->getNamespaceCtrlPrefix() . '\\' . basename($controllerFilename);
-         $className = substr($baseClass, 0, -4);
-        return $className;
+        $controllerBasePath = explode(
+            self::SL . self::ACL_CONTROLLER_SUFFIX . self::SL, 
+            $controllerFilename
+        );
+        $ns = $this->getNamespaceCtrlPrefix() . self::BS 
+            . str_replace(self::SL, self::BS, $controllerBasePath[1]);
+        $ns = str_replace(self::ACL_CONTROLLER_EXT, '', $ns);
+        return $ns;
     }
-    
+
     /**
      * getNamespaceCtrlPrefix
      * 
      * @return string
      */
-    public function getNamespaceCtrlPrefix(){
-        return str_replace('\App', '\Controller', get_class($this->app));
+    public function getNamespaceCtrlPrefix() {
+        return str_replace(self::BS . 'App', self::BS . self::ACL_CONTROLLER_SUFFIX, get_class($this->app));
     }
 
     /**
@@ -357,7 +364,9 @@ class Acl {
      */
     public function set($controller, $action, $role, $acl, $save = true) {
         $this->ressourceList[$controller][$action][$role] = $acl;
-        if ($save) $this->save();
+        if ($save) {
+            $this->save();
+        }
     }
     
     /**

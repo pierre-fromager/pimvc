@@ -64,6 +64,7 @@ class Router implements Interfaces\Router{
         $routes = $this->routes->getRoutes();
         $routesLength = sizeof($routes);
         for ($i = 0; $i < $routesLength; $i++) {
+            $matches = [];
             $match = preg_match($routes[$i], $this->getUri(), $matches);
             if ($match) {
                 array_shift($matches);
