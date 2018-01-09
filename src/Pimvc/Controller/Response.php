@@ -60,13 +60,13 @@ abstract class Response extends Request implements Interfaces\Response{
     }
 
     /**
-     * getJsonReponse
+     * getJsonResponse
      * 
      * @param mixed $content
      * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getJsonReponse($content, $httpCode = 200) {
+    public function getJsonResponse($content, $httpCode = 200) {
         return $this->getApp()
             ->getResponse()
             ->setContent($content)

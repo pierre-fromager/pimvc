@@ -41,5 +41,5 @@ interface Response extends Request {
      * 
      * @param mixed $content
      */
-    public function getJsonReponse($content);
+    public function getJsonResponse($content);
 }
