@@ -29,6 +29,7 @@ interface Request {
     const REQUEST_METHOD_DELETE = 'DELETE';
     const REQUEST_METHOD_TRACE = 'TRACE';
     const REQUEST_CONTENT_LENGTH = 'CONTENT_LENGTH';
+    const REQUEST_CONTENT_TYPE = 'CONTENT_TYPE';
     const REQUEST_INPUT = 'php://input';
     const REQUEST_P_METHOD = 'method';
     const REQUEST_P_REQUEST = 'request';

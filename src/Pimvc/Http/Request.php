@@ -9,7 +9,6 @@
 namespace Pimvc\Http;
 
 class Request implements Interfaces\Request, \SplSubject{
-
     
     private $request;
     private $url;
@@ -206,21 +205,41 @@ class Request implements Interfaces\Request, \SplSubject{
      * 
      * @return array
      */
-    private function getInput(){
+    private function getInput() {
         $input = [];
-        parse_str(
-            file_get_contents(
-                self::REQUEST_INPUT, 
-                false , 
-                null, 
-                -1 , 
-                $this->getServer(self::REQUEST_CONTENT_LENGTH)
-            ), 
-            $input
-        );
+        $inputContent = file_get_contents(self::REQUEST_INPUT);
+        if ($this->isJson($inputContent)) {
+            $input = json_decode($inputContent, true);
+        } else {
+            parse_str($inputContent, $input);
+        }
         return $input;
     }
+
+    /**
+     * isJson
+     * 
+     * @param type $string
+     * @return boolean
+     */
+    private function isJson($string) {
+        $isContentTypeJson = $this->contentType() === 'application/json';
+        if (!$isContentTypeJson) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
     
+    /**
+     * contentType
+     * 
+     * @return string
+     */
+    public function contentType(){
+        return $this->getServer(self::REQUEST_CONTENT_TYPE);
+    }
+
     /**
      * getParams
      * 
