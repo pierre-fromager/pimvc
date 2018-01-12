@@ -44,6 +44,9 @@ interface Request {
     const PARAM_X_FORWARD = 'X-Forwarded-For';
     const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
     const PARAM_SERVER_REMOTE_ADDR = 'REMOTE_ADDR';
+    const REQUEST_HEADER_PREFIX = 'HTTP_';
+    const REQUEST_HEADER_SPLITTER = '_';
+    const REQUEST_HEADER_SEPARATOR = '-';
 
     public function __construct(\Pimvc\Config $config);
 
@@ -86,4 +89,6 @@ interface Request {
     public function hasSession($name, $key = '');
 
     public function getSession($name, $key = '');
+    
+    public function getHeaders();
 }

@@ -7,8 +7,10 @@
  */
 
 namespace Pimvc\Http;
+use Interfaces\Request as IRequest;
+use \SplSubject as Subject;
 
-class Request implements Interfaces\Request, \SplSubject{
+class Request implements IRequest/*, Subject*/{
     
     private $request;
     private $url;
@@ -396,6 +398,34 @@ class Request implements Interfaces\Request, \SplSubject{
         $this->options =  (new \Pimvc\Http\Request\Options())->load($config);
         return $this;
     }
+    
+    /**
+     * getHeaders
+     * 
+     * @return array
+     */
+    public function getHeaders() {
+        $headers = [];
+        $serverParams = $this->getServer();
+        foreach ($serverParams as $key => $value) {
+            if (($pos = strpos($key, self::REQUEST_HEADER_PREFIX)) !== false) {
+                $headers[$this->headerKeyTransfo($key, $pos)] = $value;
+            }
+        }
+        return $headers;
+    }
+    
+    public function forward($controller = '', $action = '', $params = array()) {
+        
+    }
+
+    public function getApp(): \Pimvc\Controller\Interfaces\app {
+        
+    }
+
+    public function hasValue($key) {
+        return $this->getParams($key) !== '';
+    }
 
     /**
      * assignCookie
@@ -406,7 +436,28 @@ class Request implements Interfaces\Request, \SplSubject{
         $this->cookie = &$_COOKIE;
         return $this;
     }
+    
+    /**
+     * headerKeyTransfo
+     * 
+     * @param string $key
+     * @param int $pos
+     * @return string
+     */
+    private function headerKeyTransfo($key, $pos) {
+        $headerKey = substr(
+            $key, 
+            $pos + strlen(self::REQUEST_HEADER_PREFIX), 
+            strlen($key)
+        );
+        $headerParts = array_map(
+            function($k) { return ucfirst(strtolower($k));}, 
+            explode(self::REQUEST_HEADER_SPLITTER, $headerKey)
+        );
+        return implode(self::REQUEST_HEADER_SEPARATOR, $headerParts);
+    }
 
+    /*
     public function attach(\SplObserver $observer) {
         
     }
@@ -417,6 +468,7 @@ class Request implements Interfaces\Request, \SplSubject{
 
     public function notify() {
         
-    }
+    }*/
+
 
 }
