@@ -214,7 +214,7 @@ class App implements Interfaces\App{
     /**
      * getResponse
      * 
-     * @return Pimvc\Http\Response
+     * @return Response
      */
     public function getResponse() {
         return $this->response;

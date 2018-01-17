@@ -7,10 +7,9 @@
  */
 
 namespace Pimvc\Http;
-use Interfaces\Request as IRequest;
-use \SplSubject as Subject;
+use Pimvc\Http\Interfaces\Request as IRequest;
 
-class Request implements IRequest/*, Subject*/{
+class Request implements IRequest {
     
     private $request;
     private $url;
@@ -225,8 +224,7 @@ class Request implements IRequest/*, Subject*/{
      * @return boolean
      */
     private function isJson($string) {
-        $isContentTypeJson = $this->contentType() === 'application/json';
-        if (!$isContentTypeJson) {
+        if (!($this->contentType() === self::HEADER_CONTENT_TYPE_JSON)) {
             return false;
         }
         json_decode($string);
@@ -409,20 +407,24 @@ class Request implements IRequest/*, Subject*/{
         $serverParams = $this->getServer();
         foreach ($serverParams as $key => $value) {
             if (($pos = strpos($key, self::REQUEST_HEADER_PREFIX)) !== false) {
-                $headers[$this->headerKeyTransfo($key, $pos)] = $value;
+                $key = str_replace(
+                    self::REQUEST_HEADER_REDIRECT_PREFIX, 
+                    self::REQUEST_HEADER_PREFIX, 
+                    $key
+                );
+                $headers[$this->headerKeyTransfo($key)] = $value;
             }
         }
+        $headers[self::HEADER_CONTENT_TYPE] = $this->contentType();
         return $headers;
     }
-    
-    public function forward($controller = '', $action = '', $params = array()) {
-        
-    }
 
-    public function getApp(): \Pimvc\Controller\Interfaces\app {
-        
-    }
-
+    /**
+     * hasValue
+     * 
+     * @param string $key
+     * @return boolean
+     */
     public function hasValue($key) {
         return $this->getParams($key) !== '';
     }
@@ -444,31 +446,14 @@ class Request implements IRequest/*, Subject*/{
      * @param int $pos
      * @return string
      */
-    private function headerKeyTransfo($key, $pos) {
-        $headerKey = substr(
-            $key, 
-            $pos + strlen(self::REQUEST_HEADER_PREFIX), 
-            strlen($key)
-        );
+    private function headerKeyTransfo($key) {
         $headerParts = array_map(
             function($k) { return ucfirst(strtolower($k));}, 
-            explode(self::REQUEST_HEADER_SPLITTER, $headerKey)
+            explode(
+                self::REQUEST_HEADER_SPLITTER, 
+                str_replace(self::REQUEST_HEADER_PREFIX, '', $key)
+            )
         );
         return implode(self::REQUEST_HEADER_SEPARATOR, $headerParts);
     }
-
-    /*
-    public function attach(\SplObserver $observer) {
-        
-    }
-
-    public function detach(\SplObserver $observer) {
-        
-    }
-
-    public function notify() {
-        
-    }*/
-
-
 }

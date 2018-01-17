@@ -147,7 +147,7 @@ class Response implements Interfaces\Response{
      * dispatch
      * 
      */
-    public function dispatch() {
+    public function dispatch($andDie = false) {
         http_response_code($this->httpCode);
         if ($this->redirectUrl) {
             header(self::HEADER_LOCATION . $this->redirectUrl);
@@ -157,6 +157,9 @@ class Response implements Interfaces\Response{
             echo ($this->isJsonType()) 
                 ? json_encode($this->content, JSON_PRETTY_PRINT) 
                 : (string) $this->content;
+        }
+        if ($andDie) {
+            die;
         }
 
     }

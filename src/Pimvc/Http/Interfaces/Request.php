@@ -45,8 +45,11 @@ interface Request {
     const PARAM_HTTP_X_FORWARD = 'HTTP_X_FORWARDED_FOR';
     const PARAM_SERVER_REMOTE_ADDR = 'REMOTE_ADDR';
     const REQUEST_HEADER_PREFIX = 'HTTP_';
+    const REQUEST_HEADER_REDIRECT_PREFIX = 'REDIRECT_HTTP_';
     const REQUEST_HEADER_SPLITTER = '_';
-    const REQUEST_HEADER_SEPARATOR = '-';
+    const REQUEST_HEADER_SEPARATOR = '-';    
+    const HEADER_CONTENT_TYPE = 'Content-Type';
+    const HEADER_CONTENT_TYPE_JSON = 'application/json';
 
     public function __construct(\Pimvc\Config $config);
 

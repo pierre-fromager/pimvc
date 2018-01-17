@@ -22,6 +22,8 @@ interface Response {
     const HTTP_CODES = [
         200 => '200 OK',
         302 => '302 Redirect',
+        400 => '400 Bad request',
+        401 => '401 Unauthorized',
         403 => '403 Forbiden',
         404 => '404 Not Found',
         500 => '500 Server Error'
