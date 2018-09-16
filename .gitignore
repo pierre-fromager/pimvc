@@ -1,4 +1,4 @@
-.DS_Store
-vendor
 nbproject
+/vendor
 composer.lock
+.php_cs.cache
