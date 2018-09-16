@@ -6,8 +6,8 @@
  */
 namespace Pimvc\Views\Helpers;
 
-class Paginator {
- 
+class Paginator
+{
     const PAGINATOR_DEFAULT_PAGE = 0;
     const PAGINATOR_DEFAULT_SCALE = 11;
     const PAGINATOR_LABEL_BEGIN = 'Début';
@@ -22,13 +22,14 @@ class Paginator {
 
     /**
      * __construct paginator
-     * 
+     *
      * @param string $link (ex: controler/action)
      * @param int $curentPage
      * @param int $pageSize
-     * @param int $maxPage 
+     * @param int $maxPage
      */
-    public function __construct($link, $curentPage, $pageSize, $maxPage) {
+    public function __construct($link, $curentPage, $pageSize, $maxPage)
+    {
         $cssPath = '/public/css/';
         Collection\Css::add($cssPath . 'paginator.css');
         Collection\Css::save();
@@ -47,31 +48,34 @@ class Paginator {
     
     /**
      * __toString return paginator content as string
-     * 
-     * @return type 
+     *
+     * @return type
      */
-    public function __toString() {
+    public function __toString()
+    {
         return '<div class="paginator">' . $this->content . '</div>';
     }
     
     /**
      * process set paginator content
-     * 
+     *
      */
-    protected function process() {
-        $this->content = $this->getNav(); 
+    protected function process()
+    {
+        $this->content = $this->getNav();
     }
     
     /**
      * getNavItem
-     * 
+     *
      * @param string $label
      * @param int $pageNumber
      * @param string $link
      * @param string $class
-     * @return string 
+     * @return string
      */
-    private function getNavItem($label, $pageNumber, $link, $class) {
+    private function getNavItem($label, $pageNumber, $link, $class)
+    {
         return '<span class=" ' . $class . '">'
             . '<a class="paginatorItemLink" href="' . $this->baseUrl . DIRECTORY_SEPARATOR
             . $link . $pageNumber . '">'
@@ -80,15 +84,16 @@ class Paginator {
 
     /**
      * getNav returns paginator navigation
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getNav() { 
+    private function getNav()
+    {
         $nav = $this->getNavItem(
-            self::PAGINATOR_LABEL_BEGIN
-            , self::PAGINATOR_DEFAULT_PAGE
-            , $this->link
-            , 'paginatorItem begin'
+            self::PAGINATOR_LABEL_BEGIN,
+            self::PAGINATOR_DEFAULT_PAGE,
+            $this->link,
+            'paginatorItem begin'
         );
         $pageNumber = 0;
         $navScale = self::PAGINATOR_DEFAULT_SCALE - 1;
@@ -109,23 +114,23 @@ class Paginator {
             }
             for ($c = $start; $c < $stop; $c++) {
                 $pageNumber = $c;
-                $class = (($pageNumber == $this->curentPage)) 
-                    ? 'paginatorItemSelected' 
+                $class = (($pageNumber == $this->curentPage))
+                    ? 'paginatorItemSelected'
                     : 'paginatorItem';
                 $nav .= $this->getNavItem(
-                    $pageNumber + 1
-                    , $pageNumber
-                    , $this->link, $class
+                    $pageNumber + 1,
+                    $pageNumber,
+                    $this->link,
+                    $class
                 );
             }
         }
         $nav .= $this->getNavItem(
-            self::PAGINATOR_LABEL_END
-            , $this->maxPage -1 
-            , $this->link
-            , 'paginatorItem end'
+            self::PAGINATOR_LABEL_END,
+            $this->maxPage -1,
+            $this->link,
+            'paginatorItem end'
         );
         return $nav;
     }
 }
-

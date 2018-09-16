@@ -8,8 +8,8 @@
 
 namespace Pimvc\Http;
 
-class Router implements Interfaces\Router{
-
+class Router implements Interfaces\Router
+{
     private $uri = null;
     private $server = null;
     private $routes = null;
@@ -17,9 +17,10 @@ class Router implements Interfaces\Router{
 
     /**
      * __construct
-     * 
+     *
      */
-    public function __construct(Routes $routes, Request $request) {
+    public function __construct(Routes $routes, Request $request)
+    {
         $this->routes = $routes;
         $this->request = $request;
         $this->server = $this->request->getServer();
@@ -29,38 +30,42 @@ class Router implements Interfaces\Router{
     
     /**
      * getUri
-     * 
+     *
      * @return string
      */
-    public function getUri() {
+    public function getUri()
+    {
         return $this->uri;
     }
     
     /**
      * setUri
-     * 
+     *
      * @return string
      */
-    public function setUri($uri = '') {
+    public function setUri($uri = '')
+    {
         $this->uri = ($uri) ? $uri : substr($this->request->getUri(), 1);
         return $this;
     }
 
     /**
      * getFragments
-     * 
+     *
      * @return array
      */
-    public function getFragments() {
+    public function getFragments()
+    {
         return explode(self::URI_SEPARATOR, $this->getUri());
     }
     
     /**
      * compile
-     * 
+     *
      * @return array
      */
-    public function compile() {
+    public function compile()
+    {
         $routes = $this->routes->getRoutes();
         $routesLength = sizeof($routes);
         for ($i = 0; $i < $routesLength; $i++) {
@@ -70,6 +75,6 @@ class Router implements Interfaces\Router{
                 array_shift($matches);
                 return $matches;
             }
-        } 
+        }
     }
 }

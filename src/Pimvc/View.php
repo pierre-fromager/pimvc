@@ -4,32 +4,34 @@ namespace Pimvc;
 
 /**
  * view
- * 
+ *
  */
-class View implements Interfaces\View{
-    
+class View implements Interfaces\View
+{
     private $content;
     private $params;
     private $filename;
 
     /**
      * __construct
-     * 
-     * @param array $params     
+     *
+     * @param array $params
      * @param string $filename
      * @return $this
      */
-    public function __construct() {
+    public function __construct()
+    {
         return $this;
     }
     
     /**
      * setFilename
-     * 
+     *
      * @param string $filename
      * @return $this
      */
-    public function setFilename($filename) {
+    public function setFilename($filename)
+    {
         $this->filename = ucfirst($filename);
         if (!file_exists($filename)) {
             throw new \Exception(self::VIEW_ERROR_MISSING . $this->filename);
@@ -39,60 +41,66 @@ class View implements Interfaces\View{
     
     /**
      * setParams
-     * 
+     *
      * @param array $params
      * @return $this
      */
-    public function setParams($params = []) {
+    public function setParams($params = [])
+    {
         $this->params = $params;
         return $this;
     }
     
     /**
      * hasParam
-     * 
+     *
      * @param string $name
      * @return boolean
      */
-    public function hasParam($name) {
+    public function hasParam($name)
+    {
         return isset($this->params[$name]);
     }
     
     /**
      * getParam
-     * 
+     *
      * @param string $name
      * @return mixed
      */
-    public function getParam($name) {
+    public function getParam($name)
+    {
         return $this->params[$name];
     }
     
     /**
      * getParams
-     * 
+     *
      * @return array
      */
-    public function getParams() {
+    public function getParams()
+    {
         return $this->params;
     }
     
     /**
      * setParam
-     * 
+     *
      * @param string $name
      * @return mixed
      */
-    public function setParam($name, $value) {
+    public function setParam($name, $value)
+    {
         $this->params[$name] = $value;
         return $this;
     }
     
     /**
      * render
-     * 
+     *
      */
-    public function render() {
+    public function render()
+    {
         if (is_array($this->params)) {
             ob_start();
             extract($this->params, EXTR_PREFIX_SAME, self::deserializer);
@@ -105,29 +113,32 @@ class View implements Interfaces\View{
 
     /**
      * getContent
-     * 
+     *
      * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
     
     /**
      * setContent
-     * 
+     *
      * @return type
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
         return $this;
     }
 
     /**
      * __toString
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->content;
     }
 }

@@ -8,8 +8,8 @@
 
 namespace Pimvc\Http\Interfaces;
 
-interface Request {
-
+interface Request
+{
     const REQUEST_SAPI_CLI = 'cli';
     const REQUEST_METHOD = 'REQUEST_METHOD';
     const REQUEST_METHOD_GET = 'GET';
@@ -47,7 +47,7 @@ interface Request {
     const REQUEST_HEADER_PREFIX = 'HTTP_';
     const REQUEST_HEADER_REDIRECT_PREFIX = 'REDIRECT_HTTP_';
     const REQUEST_HEADER_SPLITTER = '_';
-    const REQUEST_HEADER_SEPARATOR = '-';    
+    const REQUEST_HEADER_SEPARATOR = '-';
     const HEADER_CONTENT_TYPE = 'Content-Type';
     const HEADER_CONTENT_TYPE_JSON = 'application/json';
 

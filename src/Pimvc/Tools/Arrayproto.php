@@ -2,7 +2,7 @@
 
 /**
  * class Tools_Array
- * 
+ *
  * Tools for array management.
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
@@ -11,7 +11,8 @@
  */
 namespace Pimvc\Tools;
 
-class Arrayproto {
+class Arrayproto
+{
 
     /**
      * ato returns mixed from array
@@ -19,7 +20,8 @@ class Arrayproto {
      * @param array $array
      * @return object
      */
-    public static function ato($array) {
+    public static function ato($array)
+    {
         if (is_array($array)) {
             foreach ($array as &$item) {
                 $item = self::ato($item);
@@ -35,7 +37,8 @@ class Arrayproto {
      * @param mixed $arrObjData
      * @param array $arrSkipIndices
      */
-    public static function ota($arrObjData, $arrSkipIndices = array()) {
+    public static function ota($arrObjData, $arrSkipIndices = array())
+    {
         $arrData = array();
 
         // if input is object, convert into array
@@ -59,12 +62,13 @@ class Arrayproto {
 
     /**
      * sortBySubkey sorts an array from a given array subkey and sort order
-     * 
+     *
      * @param array $array
      * @param string $subkey
-     * @param string $sortType 
+     * @param string $sortType
      */
-    public static function sortBySubkey(&$array, $subkey, $sortType = SORT_DESC) {
+    public static function sortBySubkey(&$array, $subkey, $sortType = SORT_DESC)
+    {
         $keys = array();
         foreach ($array as $subarray) {
             $keys[] = $subarray[$subkey];
@@ -73,13 +77,14 @@ class Arrayproto {
     }
     
     /**
-     * conciliate returns $data key & values, intersecting $col key on $data keys 
-     * 
+     * conciliate returns $data key & values, intersecting $col key on $data keys
+     *
      * @param array $data
      * @param array $cols
-     * @return array 
+     * @return array
      */
-    public static function conciliate($data, $cols) {
+    public static function conciliate($data, $cols)
+    {
         $dataCols = array_fill_keys($cols, '');
         return array_intersect_key($data, $dataCols);
     }
@@ -87,37 +92,42 @@ class Arrayproto {
 
     /**
      * conciliateLot returns concialiate for n $rows array
-     * 
+     *
      */
-    public static function conciliateLot($data, $cols) { 
+    public static function conciliateLot($data, $cols)
+    {
         $result = array();
         foreach ($data as $row) {
             $result[] = self::conciliate($row, $cols);
         }
-        return $result; 
+        return $result;
     }
     
     /**
      * mergeAssoc
-     * 
+     *
      * @param array $array1
      * @param array $array2
-     * @return array 
+     * @return array
      */
-    public static function mergeAssoc($array1, $array2) {
+    public static function mergeAssoc($array1, $array2)
+    {
         return array_combine(
-            array_merge(array_keys($array1), array_keys($array2))
-            , array_merge(array_values($array1), array_values($array2)
-        ));
+            array_merge(array_keys($array1), array_keys($array2)),
+            array_merge(
+                array_values($array1),
+                array_values($array2)
+            )
+        );
     }
     
     /**
      * array_column
-     * 
+     *
      * @param type $input
      * @param type $columnKey
      * @param type $indexKey
-     * @return null|boolean 
+     * @return null|boolean
      */
     public static function array_column($input = null, $columnKey = null, $indexKey = null)
     {
@@ -172,7 +182,6 @@ class Arrayproto {
         $resultArray = array();
 
         foreach ($paramsInput as $row) {
-
             $key = $value = null;
             $keySet = $valueSet = false;
 
@@ -196,7 +205,6 @@ class Arrayproto {
                     $resultArray[] = $value;
                 }
             }
-
         }
 
         return $resultArray;
@@ -204,16 +212,17 @@ class Arrayproto {
 
     /**
      * recursive_array_search
-     * 
+     *
      * @param string $needle
      * @param array $haystack
      * @return boolean || int
      */
-    public static function recursive_array_search($needle, $haystack) {
+    public static function recursive_array_search($needle, $haystack)
+    {
         foreach ($haystack as $key => $value) {
             $current_key = $key;
-            if ($needle === $value 
-                    || (is_array($value) 
+            if ($needle === $value
+                    || (is_array($value)
                     && self::recursive_array_search($needle, $value) !== false)
                     ) {
                 return $current_key;
@@ -224,11 +233,12 @@ class Arrayproto {
     
     /**
      * rotateMatrix
-     * 
+     *
      * @param type $matrix
-     * @return type 
+     * @return type
      */
-    public static function rotateMatrix($matrix) {
+    public static function rotateMatrix($matrix)
+    {
         $rows = count($matrix);
         $cols = count($matrix[0]); // assumes non empty matrix
         $ridx = 0;
@@ -250,12 +260,13 @@ class Arrayproto {
     
     /**
      * recursive_array_diff
-     * 
+     *
      * @param array $a1
      * @param array $a2
-     * @return array 
+     * @return array
      */
-    public static function recursive_array_diff($a1, $a2) {
+    public static function recursive_array_diff($a1, $a2)
+    {
         $r = array();
         foreach ($a1 as $k => $v) {
             if (array_key_exists($k, $a2)) {
@@ -275,5 +286,4 @@ class Arrayproto {
         }
         return $r;
     }
-
 }

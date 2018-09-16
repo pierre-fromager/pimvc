@@ -11,8 +11,8 @@
 
 namespace Pimvc;
 
-class Cache {
-
+class Cache
+{
     const DEFAULT_CACHE_EXPIRATION = 300; // = 5 minutes * 60 secondes
     const DEFAULT_CACHE_PATH = '/cache/';
     const DEFAULT_CACHE_EXT = '.tmp';
@@ -28,23 +28,24 @@ class Cache {
 
     /**
      * Constructor set page name and time to live with expiration value.
-     * 
+     *
      * @param string $page
-     * @param int $expiration 
+     * @param int $expiration
      */
     public function __construct(
-            $name
-            , $expiration = self::DEFAULT_CACHE_EXPIRATION
-            , $adapter = self::DEFAULT_ADPATER
-        ) {
+        $name,
+        $expiration = self::DEFAULT_CACHE_EXPIRATION,
+        $adapter = self::DEFAULT_ADPATER
+    ) {
         $this->adapter = $adapter;
         $appPath = \Pimvc\App::getInstance()->getPath();
         $this->setPath($appPath . self::DEFAULT_CACHE_PATH);
-        $this->setName($name);        
+        $this->setName($name);
         $this->expiration = $expiration;
         if (self::DEBUG) {
             $this->logger = Logger::getInstance(
-                $appPath . LOG_DIR, Logger::DEBUG
+                $appPath . LOG_DIR,
+                Logger::DEBUG
             );
         }
     }
@@ -52,20 +53,22 @@ class Cache {
     /**
      * load cache file content.
      */
-    protected function load() {
+    protected function load()
+    {
         $this->cache = unserialize(file_get_contents($this->path . $this->name));
     }
     
     /**
      * get loads and returns cache content
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function get() {
+    public function get()
+    {
         if (self::DEBUG) {
             $this->logger->logDebug(
-                __METHOD__
-                , basename($this->path . $this->name)
+                __METHOD__,
+                basename($this->path . $this->name)
             );
         }
         $this->load();
@@ -74,34 +77,37 @@ class Cache {
 
     /**
      * exist return true if file or directory exists.
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    protected function exist($filename) {
+    protected function exist($filename)
+    {
         return file_exists($filename);
     }
 
     /**
      * expired return true if cache file date is greater than now minus expiration.
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    public function expired() {
+    public function expired()
+    {
         $filename = $this->path . $this->name;
         $expirationDate = time() - $this->expiration;
-        $fileDate = ($this->exist($filename)) 
-            ? filemtime($filename) 
+        $fileDate = ($this->exist($filename))
+            ? filemtime($filename)
             : false;
         return $expirationDate > $fileDate;
     }
     
     /**
      * fill the cache file for a given $cache content.
-     * 
+     *
      * @param type $cache
      * @return mixed
      */
-    public function set($cache) {
+    public function set($cache)
+    {
         $filename = $this->path . $this->name;
         if (self::DEBUG) {
             $this->logger->logDebug(__METHOD__, basename($filename));
@@ -119,70 +125,73 @@ class Cache {
     
     /**
      * setName
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name  . self::DEFAULT_CACHE_EXT;
     }
     
     /**
      * getName
-     * 
-     * @return string $name 
+     *
+     * @return string $name
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
     
     /**
      * setPath
-     * 
-     * @param string $path 
+     *
+     * @param string $path
      */
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->path = $path;
     }
     
     /**
      * getPath
-     * 
-     * @return string $path 
+     *
+     * @return string $path
      */
-    public function getPath() {
+    public function getPath()
+    {
         return $this->path;
     }
     
-     /**
-     * setExpiration
-     * 
-     * @param int $expiration 
-     */
-    public function setExpiration($expiration) {
+    /**
+    * setExpiration
+    *
+    * @param int $expiration
+    */
+    public function setExpiration($expiration)
+    {
         $this->expiration = $expiration;
     }
     
     /**
      * getExpiration
-     * 
-     * @return int $expiration 
+     *
+     * @return int $expiration
      */
-    public function getExpiration() {
+    public function getExpiration()
+    {
         return $this->expiration;
     }
     
     /**
      * delete
-     * 
+     *
      */
-    public function delete() {
+    public function delete()
+    {
         $filename = $this->path . $this->name;
         if (file_exists($filename)) {
             unlink($filename);
         }
     }
-    
-    
-
 }
-

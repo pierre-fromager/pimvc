@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers;
 
-class Urlselector {
-
+class Urlselector
+{
     const OPTION_OPEN_VALUE = '<option value="';
     const OPTION_END = '">';
     const OPTION_CLOSE_VALUE = '</option>';
@@ -23,23 +23,24 @@ class Urlselector {
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @param string $url
      * @param array $options
      * @param string $default
      * @param string $defaultMessage
-     * @return string 
+     * @return string
      */
-    public static function get($name, $url, $options, $default, $defaultMessage = '') {
+    public static function get($name, $url, $options, $default, $defaultMessage = '')
+    {
         self::$selected = $default;
         $selector = self::SELECT_OPEN_VALUE . $name . '" '
             . 'onchange="location.href='
             . "'" . $url . "' +"
             . 'this.options[this.selectedIndex].value;">'
             . self::CR;
-        $selector .= self::OPTION_OPEN_VALUE . $defaultMessage .self::OPTION_END 
-                . self::OPTION_DEFAULT_MESSAGE . self::OPTION_CLOSE_VALUE 
+        $selector .= self::OPTION_OPEN_VALUE . $defaultMessage .self::OPTION_END
+                . self::OPTION_DEFAULT_MESSAGE . self::OPTION_CLOSE_VALUE
                 . self::CR;
         $selector .= self::getOptions($options, $default);
         $selector .= self::SELECT_CLOSE_VALUE . self::CR;
@@ -48,17 +49,18 @@ class Urlselector {
     
     /**
      * getOptions
-     * 
+     *
      * @param array $options
      * @param string $default
-     * @return string 
+     * @return string
      */
-    private static function getOptions($options, $default) {
+    private static function getOptions($options, $default)
+    {
         $optionsContent = '';
         $options = self::getTupple($options);
         foreach ($options as $key => $value) {
-            $selected = ($value == self::$selected) 
-                ? self::OPTION_SELECTED 
+            $selected = ($value == self::$selected)
+                ? self::OPTION_SELECTED
                 : self::OPTION_END;
             $optionsContent .= self::getOption($key, $value, $selected);
         }
@@ -67,38 +69,41 @@ class Urlselector {
     
     /**
      * getOption
-     * 
+     *
      * @param string $key
      * @param string $value
      * @param string $selected
-     * @return string 
+     * @return string
      */
-    private static function getOption($key,$value,$selected) {
-        return self::OPTION_OPEN_VALUE 
-            . $value 
-            . $selected 
-            . $key 
+    private static function getOption($key, $value, $selected)
+    {
+        return self::OPTION_OPEN_VALUE
+            . $value
+            . $selected
+            . $key
             . self::OPTION_CLOSE_VALUE;
     }
     
     /**
      * isAssoc
-     * 
+     *
      * @param array $array
-     * @return boolean 
+     * @return boolean
      */
-    private static function isAssoc($array) {
+    private static function isAssoc($array)
+    {
         $array = array_keys($array);
         return ($array !== array_keys($array));
     }
     
     /**
      * getTupple
-     * 
+     *
      * @param array $options
-     * @return boolean 
+     * @return boolean
      */
-    private static function getTupple($options) {
+    private static function getTupple($options)
+    {
         $tupple = [];
         if (!self::isAssoc($options)) {
             foreach ($options as $value) {

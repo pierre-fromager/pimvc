@@ -8,18 +8,19 @@
 
 namespace Pimvc\Tools;
 
-class Translator {
- 
+class Translator
+{
     private $_adapter = null;
     private $_data = [];
     private $_locale = null;
 
     /**
      * __construct
-     * 
+     *
      * @param Object $adapter
      */
-    public function __construct($adapter) {
+    public function __construct($adapter)
+    {
         $this->_adapter = $adapter;
         $this->_data = $this->_adapter->getTranslationData();
         $this->_locale = $this->_adapter->getLocale();
@@ -27,11 +28,12 @@ class Translator {
 
     /**
      * translate
-     * 
+     *
      * @param string $msg
-     * @return string 
+     * @return string
      */
-    public function translate($msg) {
+    public function translate($msg)
+    {
         if (!isset($this->_data[$msg])) {
             $this->_adapter->addTranslationItem($msg);
             $this->_data[$msg] = '';
@@ -42,5 +44,4 @@ class Translator {
         }
         return $msg;
     }
-
 }

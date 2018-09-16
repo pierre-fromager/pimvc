@@ -8,8 +8,8 @@
 
 namespace Pimvc\Interfaces;
 
-interface Autoloader {
-
+interface Autoloader
+{
     const AUTOLOAD_BOOT = 'load';
     const AUTOLOAD_BACKSLASH = '\\';
     const AUTOLOAD_SLASH = '/';

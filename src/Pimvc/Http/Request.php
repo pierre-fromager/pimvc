@@ -7,10 +7,9 @@
  */
 
 namespace Pimvc\Http;
-use Pimvc\Http\Interfaces\Request as IRequest;
 
-class Request implements IRequest {
-    
+class Request implements \Pimvc\Http\Interfaces\Request
+{
     private $request;
     private $url;
     private $uri;
@@ -22,10 +21,11 @@ class Request implements IRequest {
 
     /**
      * __construct
-     * 
+     *
      * @return $this
      */
-    public function __construct(\Pimvc\Config $config) {
+    public function __construct(\Pimvc\Config $config)
+    {
         $this->setSapi()
             ->setOptions($config)
             ->setServer()
@@ -38,104 +38,114 @@ class Request implements IRequest {
     
     /**
      * getMethod
-     * 
+     *
      * @return string
      */
-    public function getMethod() {
+    public function getMethod()
+    {
         return $this->method;
     }
     
     /**
      * isHome
-     * 
+     *
      * @return boolean
      */
-    public function isHome() {
+    public function isHome()
+    {
         return ($this->getUri() === DIRECTORY_SEPARATOR);
     }
     
     /**
      * getUri
-     * 
+     *
      * @return string
      */
-    public function getUri() {
+    public function getUri()
+    {
         return $this->uri;
     }
     
     /**
      * setUri
-     * 
+     *
      * @param string $uri
      * @return Request
      */
-    public function setUri($uri = '') {
+    public function setUri($uri = '')
+    {
         $this->uri = ($uri) ? $uri : $this->getServer(self::REQUEST_URI);
         return $this;
     }
     
     /**
      * getScheme
-     * 
+     *
      * @return string
      */
-    public function getScheme() {
-        return ($this->options->scheme) 
-            ? $this->options->scheme 
+    public function getScheme()
+    {
+        return ($this->options->scheme)
+            ? $this->options->scheme
             : $this->getServer(self::REQUEST_SCHEME);
     }
     
     /**
      * getHost
-     * 
+     *
      * @return string
      */
-    public function getHost() {
-        return ($this->options->hostname) 
-            ? $this->options->hostname 
+    public function getHost()
+    {
+        return ($this->options->hostname)
+            ? $this->options->hostname
             : $this->getServer(self::REQUEST_HOST);
     }
     
     /**
      * getUrl
-     * 
+     *
      * @return string
      */
-    public function getUrl() {
+    public function getUrl()
+    {
         return  $this->getBaseUrl() . $this->getUri();
     }
     
     /**
      * getBaseUrl
-     * 
+     *
      * @return string
      */
-    public function getBaseUrl() {
+    public function getBaseUrl()
+    {
         return  $this->getScheme() . self::SCHEME_SUFFIX . $this->getHost();
     }
 
     /**
      * getServer
-     * 
+     *
      * @param string $param
      * @return array
      */
-    public function getServer($param = '') {
+    public function getServer($param = '')
+    {
         if (!$param) {
             return $this->server;
         }
-        return (isset($this->server[$param])) 
-            ? $this->server[$param] 
+        return (isset($this->server[$param]))
+            ? $this->server[$param]
             : '';
     }
     
     /**
      * getParsedQuery
-     * 
+     *
      * @param type $query
      * @return type
      */
-    public function getParsedQuery($query){
+    public function getParsedQuery($query)
+    {
         $fragments = [];
         parse_str(parse_url($query)[self::REQUEST_QUERY], $fragments);
         return $fragments;
@@ -143,11 +153,12 @@ class Request implements IRequest {
     
     /**
      * getQueryTupple
-     * 
+     *
      * @param string $query
      * @return array
      */
-    public function getQueryTupple($query = '') {
+    public function getQueryTupple($query = '')
+    {
         $array = explode(self::REQUEST_SLASH, ($query) ? $query : $this->getUri());
         array_shift($array);
         $keys = $values = [];
@@ -157,22 +168,24 @@ class Request implements IRequest {
             $aSize = count($array);
         }
         for ($i = 0; $i < $aSize; $i++) {
-            if ($i & 1)
+            if ($i & 1) {
                 $values[] = $array[$i];
-            else
+            } else {
                 $keys[] = $array[$i];
+            }
         }
         return array_combine($keys, $values);
     }
 
     /**
      * get
-     * 
+     *
      * @return array
      */
-    public function get() {
+    public function get()
+    {
         switch ($this->method) {
-            case self::REQUEST_METHOD_GET: 
+            case self::REQUEST_METHOD_GET:
                 $this->request = &$_GET;
                 break;
             case self::REQUEST_METHOD_POST:
@@ -203,10 +216,11 @@ class Request implements IRequest {
     
     /**
      * getInput
-     * 
+     *
      * @return array
      */
-    private function getInput() {
+    private function getInput()
+    {
         $input = [];
         $inputContent = file_get_contents(self::REQUEST_INPUT);
         if ($this->isJson($inputContent)) {
@@ -219,11 +233,12 @@ class Request implements IRequest {
 
     /**
      * isJson
-     * 
+     *
      * @param type $string
      * @return boolean
      */
-    private function isJson($string) {
+    private function isJson($string)
+    {
         if (!($this->contentType() === self::HEADER_CONTENT_TYPE_JSON)) {
             return false;
         }
@@ -233,28 +248,31 @@ class Request implements IRequest {
     
     /**
      * contentType
-     * 
+     *
      * @return string
      */
-    public function contentType(){
+    public function contentType()
+    {
         return $this->getServer(self::REQUEST_CONTENT_TYPE);
     }
 
     /**
      * getParams
-     * 
+     *
      * @return array
      */
-    public function getParams($key = '') {
+    public function getParams($key = '')
+    {
         $params = $this->get()[self::REQUEST_P_REQUEST];
         return ($key && isset($params[$key])) ? $params[$key] : $params;
     }
 
     /**
      * startSession
-     * 
+     *
      */
-    public function startSession() {
+    public function startSession()
+    {
         if (!$this->isSapi) {
             session_name(sha1($this->getBaseUrl()));
             session_start();
@@ -264,12 +282,13 @@ class Request implements IRequest {
     
     /**
      * set
-     * 
+     *
      * @param string $name
-     * @param mixed $value 
-     * @param string $key 
+     * @param mixed $value
+     * @param string $key
      */
-    public function setSession($name, $value, $key = '') {
+    public function setSession($name, $value, $key = '')
+    {
         if ($key) {
             $_SESSION[$name][$key] = $value;
         } else {
@@ -280,11 +299,12 @@ class Request implements IRequest {
     
     /**
      * deleteSession
-     * 
+     *
      * @param string $name
-     * @param string $key 
+     * @param string $key
      */
-    public function deleteSession($name, $key = '') {
+    public function deleteSession($name, $key = '')
+    {
         if ($key) {
             unset($_SESSION[$name][$key]);
         } else {
@@ -295,12 +315,13 @@ class Request implements IRequest {
 
     /**
      * hasSession
-     * 
+     *
      * @param string $name
      * @param string $key
-     * @return boolean 
+     * @return boolean
      */
-    public function hasSession($name, $key = '') {
+    public function hasSession($name, $key = '')
+    {
         if (!$key) {
             return (isset($_SESSION[$name]) && !empty($_SESSION[$name]));
         }
@@ -309,12 +330,13 @@ class Request implements IRequest {
 
     /**
      * getSession
-     * 
+     *
      * @param string $name
      * @param string $key
-     * @return mixed 
+     * @return mixed
      */
-    public function getSession($name, $key = '') {
+    public function getSession($name, $key = '')
+    {
         if (!$key) {
             return ($this->hasSession($name)) ? $_SESSION[$name] : '';
         }
@@ -323,10 +345,11 @@ class Request implements IRequest {
     
     /**
      * getExtRemoteAddr
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function getRemoteAddr() {
+    public function getRemoteAddr()
+    {
         $headers = array();
         if (function_exists(self::PARAM_APACHE_HEADERS)) {
             $headers = apache_request_headers();
@@ -347,69 +370,75 @@ class Request implements IRequest {
     
     /**
      * getCookie
-     * 
+     *
      * @param string $name
      * @return string
      */
-    public function getCookie($name) {
+    public function getCookie($name)
+    {
         return (isset($this->cookie[$name])) ? $this->cookie[$name] : '';
     }
 
     /**
      * setServer
-     * 
+     *
      */
-    public function setServer($server = []) {
+    public function setServer($server = [])
+    {
         $this->server = ($this->isSapi) ? $server : $_SERVER;
         return $this;
     }
     
     /**
      * assignMethod
-     * 
+     *
      * @param type $method
      * @return $this
      */
-    public function setMethod($method = 'GET') {
-        $this->method = ($this->isSapi) 
-            ? $method 
+    public function setMethod($method = 'GET')
+    {
+        $this->method = ($this->isSapi)
+            ? $method
             : $this->getServer(self::REQUEST_METHOD);
         return $this;
     }
     
     /**
      * isSapi
-     * 
+     *
      * @return $this
      */
-    private function setSapi() {
+    private function setSapi()
+    {
         $this->isSapi = (php_sapi_name() === self::REQUEST_SAPI_CLI);
         return $this;
     }
     
     /**
      * setOptions
-     * 
+     *
      * @return $this
      */
-    public function setOptions(\Pimvc\Config $config) {
+    public function setOptions(\Pimvc\Config $config)
+    {
         $this->options =  (new \Pimvc\Http\Request\Options())->load($config);
         return $this;
     }
     
     /**
      * getHeaders
-     * 
+     *
      * @return array
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         $headers = [];
         $serverParams = $this->getServer();
         foreach ($serverParams as $key => $value) {
             if (($pos = strpos($key, self::REQUEST_HEADER_PREFIX)) !== false) {
                 $key = str_replace(
-                    self::REQUEST_HEADER_REDIRECT_PREFIX, 
-                    self::REQUEST_HEADER_PREFIX, 
+                    self::REQUEST_HEADER_REDIRECT_PREFIX,
+                    self::REQUEST_HEADER_PREFIX,
                     $key
                 );
                 $headers[$this->headerKeyTransfo($key)] = $value;
@@ -421,36 +450,41 @@ class Request implements IRequest {
 
     /**
      * hasValue
-     * 
+     *
      * @param string $key
      * @return boolean
      */
-    public function hasValue($key) {
+    public function hasValue($key)
+    {
         return $this->getParams($key) !== '';
     }
 
     /**
      * assignCookie
-     * 
+     *
      * @return $this
      */
-    private function setCookie() {
+    private function setCookie()
+    {
         $this->cookie = &$_COOKIE;
         return $this;
     }
     
     /**
      * headerKeyTransfo
-     * 
+     *
      * @param string $key
      * @param int $pos
      * @return string
      */
-    private function headerKeyTransfo($key) {
+    private function headerKeyTransfo($key)
+    {
         $headerParts = array_map(
-            function($k) { return ucfirst(strtolower($k));}, 
+            function ($k) {
+                return ucfirst(strtolower($k));
+            },
             explode(
-                self::REQUEST_HEADER_SPLITTER, 
+                self::REQUEST_HEADER_SPLITTER,
                 str_replace(self::REQUEST_HEADER_PREFIX, '', $key)
             )
         );

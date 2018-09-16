@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers\Widgets\Interfaces;
 
-interface Standart {
-
+interface Standart
+{
     const PARAM_SECTION = 'section';
     const PARAM_HEADER = 'header';
     const DECORATOR_BODY = 'div';
@@ -17,5 +17,4 @@ interface Standart {
     const WIDGET_CLASS = 'widget';
     const TITLE_DECORATOR = 'h3';
     const BODY_DECORATOR = 'div';
-
 }

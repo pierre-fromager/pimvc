@@ -10,15 +10,14 @@ namespace Pimvc\Model;
 
 use \Pimvc\Db\Model\Orm;
 
-class Users extends Orm implements Interfaces\Users {
-
+class Users extends Orm implements Interfaces\Users
+{
     protected $_name = 'user';
     protected $_primary = self::PARAM_ID;
     protected $_alias = 'users';
     protected $_adapter = self::MODEL_ADAPTER_MYSQL;
-    private $userInfoFields = [
+    protected $userInfoFields = [
         self::PARAM_ID
-        //, 'iid'
         , self::PARAM_NAME
         , self::PARAM_EMAIL
         , self::PARAM_PASSWORD
@@ -28,25 +27,27 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * __construct
-     * 
-     * @param array $config 
+     *
+     * @param array $config
      */
-    public function __construct($config = []) {
+    public function __construct($config = [])
+    {
         parent::__construct($config);
         return $this;
     }
 
     /**
      * getAuth
-     * 
+     *
      * @param string $login
      * @param string $password
-     * @return array 
+     * @return array
      */
-    public function getAuth($login, $password) {
+    public function getAuth($login, $password)
+    {
         $what = [
-            self::PARAM_ID, self::PARAM_FID, self::PARAM_EMAIL, 
-            self::PARAM_LOGIN, self::PARAM_PASSWORD, self::PARAM_NAME, 
+            self::PARAM_ID, self::PARAM_FID, self::PARAM_EMAIL,
+            self::PARAM_LOGIN, self::PARAM_PASSWORD, self::PARAM_NAME,
             self::PARAM_PROFIL, self::PARAM_STATUS, self::PARAM_TOKEN
         ];
         $where = [
@@ -61,10 +62,11 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getPro
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getPro() {
+    public function getPro()
+    {
         $what = [
             self::PARAM_ID, self::PARAM_FID, self::PARAM_NAME, 'photo'
             , 'adresse', 'gsm', self::PARAM_EMAIL
@@ -80,10 +82,11 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getStatus
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getStatus() {
+    public function getStatus()
+    {
         return [
             'waiting' => 'En attente'
             , 'valid' => 'Validé'
@@ -93,22 +96,24 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getAll
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getAll() {
+    public function getAll()
+    {
         $this->find(['*'], [self::PARAM_ID => '%'], [self::PARAM_ID => 'asc']);
         return $this->getRowsetAsArray();
     }
 
     /**
      * getById
-     * 
+     *
      * @param int $id
      * @param array $what
-     * @return \Model_Domain_Users  
+     * @return \Model_Domain_Users
      */
-    public function getById($id, $what = ['*']) {
+    public function getById($id, $what = ['*'])
+    {
         $this->cleanRowset();
         $this->find($what, [self::PARAM_ID => $id]);
         return $this->_current;
@@ -116,63 +121,69 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getWaitings
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getWaitings() {
+    public function getWaitings()
+    {
         return $this->getByStatus(self::USERS_STATUS_WAITING);
     }
 
     /**
      * getValids
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getValids($what) {
+    public function getValids($what)
+    {
         return $this->getByStatus(self::USERS_STATUS_VALID, $what);
     }
 
     /**
      * getByStatus
-     * 
+     *
      * @param string $status
-     * @return array 
+     * @return array
      */
-    private function getByStatus($status, $what = ['*']) {
+    private function getByStatus($status, $what = ['*'])
+    {
         return $this->find($what, [self::PARAM_STATUS => $status])->getRowsetAsArray();
     }
 
     /**
      * count
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    public function count() {
+    public function count()
+    {
         $this->find([self::PARAM_ID]);
         return count($this->getRowsetAsArray());
     }
 
     /**
      * getList
-     * 
+     *
      * @param string $name
-     * @return array 
+     * @return array
      */
-    public function getList($name) {
+    public function getList($name)
+    {
         return $this->find(
-            [self::PARAM_ID, self::PARAM_NAME]
-            , [self::PARAM_NAME => '%' . $name . '%']
-            , [self::PARAM_ID => 'desc']
+            [self::PARAM_ID, self::PARAM_NAME],
+            [self::PARAM_NAME => '%' . $name . '%'],
+            [self::PARAM_ID => 'desc']
         )->getRowsetAsArray();
     }
 
     /**
      * validCredential returns user id as assoc array if credential is valid or false
-     * 
+     *
      * @param string $credential
-     * @return array | boolean 
+     * @return array | boolean
      */
-    public function validCredential($credential) {
+    public function validCredential($credential)
+    {
         $sql = "select id from $this->_name where md5(concat(login,password)) like '$credential'";
         try {
             $sth = $this->_db->prepare($sql);
@@ -188,30 +199,32 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * userExists
-     * 
+     *
      * @param string $login
-     * @return type 
+     * @return type
      */
-    public function userExists($login) {
+    public function userExists($login)
+    {
         $this->cleanRowset();
         $this->find(
-                [self::PARAM_ID]
-                , [self::PARAM_LOGIN => $login]
-                , [self::PARAM_ID => 'desc']
-                , []
-                , self::PARAM_LOGIN
+            [self::PARAM_ID],
+            [self::PARAM_LOGIN => $login],
+            [self::PARAM_ID => 'desc'],
+            [],
+            self::PARAM_LOGIN
         );
         return (count($this->getRowset()) > 0);
     }
 
     /**
      * getByEmail
-     * 
+     *
      * @param string $email
      * @param array $what
-     * @return \Model_Domain_Users 
+     * @return \Model_Domain_Users
      */
-    public function getByEmail($email, $what = ['*']) {
+    public function getByEmail($email, $what = ['*'])
+    {
         $this->cleanRowset();
         $this->find($what, [self::PARAM_EMAIL => $email]);
         $result = $this->getCurrent();
@@ -221,22 +234,24 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * validate
-     * 
+     *
      * @param int $id
-     * @return boolean 
+     * @return boolean
      */
-    public function validate($id) {
+    public function validate($id)
+    {
         return $this->changeStatus($id, self::USERS_STATUS_VALID);
     }
 
     /**
      * changeStatus
-     * 
+     *
      * @param int $id
      * @param string $status
-     * @return boolean 
+     * @return boolean
      */
-    private function changeStatus($id, $status) {
+    private function changeStatus($id, $status)
+    {
         $returnCode = false;
         if (!empty($id) && !empty($status)) {
             $this->cleanRowset();
@@ -249,29 +264,31 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * countEmailsByProfil
-     * 
+     *
      * @param string $profil
-     * @return array 
+     * @return array
      */
-    public function countEmailsByProfil($profil = 'pros') {
+    public function countEmailsByProfil($profil = 'pros')
+    {
         $result = false;
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_EMAIL]
-            , [self::PARAM_PROFIL => $profil]
-            , [self::PARAM_ID => 'desc']
-            , []
-            , self::PARAM_EMAIL
+            [self::PARAM_EMAIL],
+            [self::PARAM_PROFIL => $profil],
+            [self::PARAM_ID => 'desc'],
+            [],
+            self::PARAM_EMAIL
         )->getRowsetAsArray();
     }
 
     /**
      * getEmailsByProfil
-     * 
+     *
      * @param string $profil
-     * @return array 
+     * @return array
      */
-    public function getEmailsByProfil($profil = 'pros') {
+    public function getEmailsByProfil($profil = 'pros')
+    {
         $results = [];
         $result = $this->countEmailsByProfil($profil);
         foreach ($result as $item) {
@@ -285,11 +302,12 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * isValid
-     * 
+     *
      * @param int $uid
-     * @return boolean 
+     * @return boolean
      */
-    public function isValid($uid) {
+    public function isValid($uid)
+    {
         $isValid = false;
         if (!empty($uid)) {
             $counter = $this->counter([self::PARAM_ID => $uid, self::PARAM_STATUS => 'valid']);
@@ -300,11 +318,12 @@ class Users extends Orm implements Interfaces\Users {
 
     /*
      * countExpirationDays
-     * 
+     *
      * @param int $uid
      */
 
-    public function countExpirationDays($uid) {
+    public function countExpirationDays($uid)
+    {
         $this->cleanRowset();
         $what = [];
         $where = [self::PARAM_ID => $uid];
@@ -317,22 +336,24 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * isExpired
-     * 
+     *
      * @param int $uid
-     * @return boolean 
+     * @return boolean
      */
-    public function isExpired($uid) {
+    public function isExpired($uid)
+    {
         return ($this->countExpirationDays($uid) <= 0);
     }
 
     /**
      * setExpirationDate
-     * 
+     *
      * @param int $uid
      * @param string $offer
-     * @return boolean 
+     * @return boolean
      */
-    public function setExpirationDate($uid, $offer) {
+    public function setExpirationDate($uid, $offer)
+    {
         $result = false;
         if (!empty($uid)) {
             $criterias = [self::PARAM_ID => $uid];
@@ -348,11 +369,12 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getExpirationDate
-     * 
+     *
      * @param string $offer
-     * @return string 
+     * @return string
      */
-    public function getExpirationDate($offer) {
+    public function getExpirationDate($offer)
+    {
         $dateExp = '';
         if ($this->isValidOffer($offer)) {
             $dateFormat = 'Y-m-d H:i:s';
@@ -369,20 +391,22 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getOffers
-     * 
-     * @return type 
+     *
+     * @return type
      */
-    private function getOffers() {
+    private function getOffers()
+    {
         return ['demo', 'liberte', 'classique', 'premium'];
     }
 
     /**
      * getOfferInterval
-     * 
+     *
      * @param string $offer
-     * @return string 
+     * @return string
      */
-    private function getOfferDaysValidity($offer) {
+    private function getOfferDaysValidity($offer)
+    {
         $daysValidity = [
             96 // Hours
             , 1095 // Days
@@ -395,87 +419,93 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * isValidOffer
-     * 
+     *
      * @param string $offer
-     * @return boolean 
+     * @return boolean
      */
-    public function isValidOffer($offer) {
+    public function isValidOffer($offer)
+    {
         return (boolean) in_array($offer, $this->getOffers());
     }
 
     /**
      * countOffersAjax
-     * 
+     *
      * @param string $offer
-     * @return array 
+     * @return array
      */
-    public function countOffersAjax() {
+    public function countOffersAjax()
+    {
         $this->cleanRowset();
         return $this->find(
-            ['offer']
-            , ['offer' . '#' . 'in' => '("demo","liberte","premium","classique")']
-            , [self::PARAM_ID => 'desc']
-            , [15]
-            , 'offer'
+            ['offer'],
+            ['offer' . '#' . 'in' => '("demo","liberte","premium","classique")'],
+            [self::PARAM_ID => 'desc'],
+            [15],
+            'offer'
         )->getRowsetAsArray();
     }
 
     /**
      * countByRoleAjax
-     * 
+     *
      * @param string $offer
-     * @return array 
+     * @return array
      */
-    public function countByRoleAjax() {
+    public function countByRoleAjax()
+    {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_PROFIL]
-            , ['profil#in' => '("admin","user")']
-            , [self::PARAM_ID => 'desc']
-            , [15]
-            , self::PARAM_PROFIL
+            [self::PARAM_PROFIL],
+            ['profil#in' => '("admin","user")'],
+            [self::PARAM_ID => 'desc'],
+            [15],
+            self::PARAM_PROFIL
         )->getRowsetAsArray();
     }
 
     /**
      * countByStatusAjax
-     * 
+     *
      * @param string $offer
-     * @return array 
+     * @return array
      */
-    public function countByStatusAjax() {
+    public function countByStatusAjax()
+    {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_STATUS]
-            , [self::PARAM_STATUS . '#' . 'in' => '("valid","waiting")']
-            , [self::PARAM_ID => 'desc']
-            , [15]
-            , self::PARAM_STATUS
+            [self::PARAM_STATUS],
+            [self::PARAM_STATUS . '#' . 'in' => '("valid","waiting")'],
+            [self::PARAM_ID => 'desc'],
+            [15],
+            self::PARAM_STATUS
         )->getRowsetAsArray();
     }
 
     /**
      * countByCountriesAjax
-     * 
+     *
      * @param string $offer
-     * @return array 
+     * @return array
      */
-    public function countByCountriesAjax() {
+    public function countByCountriesAjax()
+    {
         $this->cleanRowset();
         return $this->find(
-            ['country']
-            , []
-            , [self::PARAM_ID => 'desc']
-            , [15]
-            , 'country'
+            ['country'],
+            [],
+            [self::PARAM_ID => 'desc'],
+            [15],
+            'country'
         )->getRowsetAsArray();
     }
 
     /**
      * updateIp
-     * 
+     *
      */
-    public function updateIp() {
+    public function updateIp()
+    {
         $this->cleanRowset();
         $id = \Pimvc\App::getInstance()->getRequest()->getSession(self::PARAM_ID);
         $user = $this->getById($id);
@@ -485,48 +515,50 @@ class Users extends Orm implements Interfaces\Users {
 
     /**
      * getAllowedIps
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getAllowedIps() {
+    public function getAllowedIps()
+    {
         $this->cleanRowset();
         $this->find(
-            [self::PARAM_IP]
-            , [self::PARAM_IP . '#' . '!=' => ' ']
-            , [self::PARAM_ID => 'desc']
-            , []
-            , self::PARAM_IP
+            [self::PARAM_IP],
+            [self::PARAM_IP . '#' . '!=' => ' '],
+            [self::PARAM_ID => 'desc'],
+            [],
+            self::PARAM_IP
         );
         return $this->getRowsetAsArray();
     }
 
     /**
      * getListFromIdsIn
-     * 
+     *
      * @param array $in
-     * @return array 
+     * @return array
      */
-    public function getListFromIdsIn($in = []) {
+    public function getListFromIdsIn($in = [])
+    {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_ID, self::PARAM_NAME], 
+            [self::PARAM_ID, self::PARAM_NAME],
             [self::PARAM_ID . '#' . 'in' => "('" . implode("','", $in) . "')"]
         )->getRowsetAsArray();
     }
 
     /**
      * getAuthByToken
-     * 
+     *
      * @param string $token
-     * @return array 
+     * @return array
      */
-    public function getAuthByToken($token) {
+    public function getAuthByToken($token)
+    {
         $this->cleanRowset();
         $this->find(
-            $this->userInfoFields, 
+            $this->userInfoFields,
             [self::PARAM_TOKEN => $token, self::PARAM_STATUS => 'valid']
         );
         return $this->getRowsetAsArray();
     }
-
 }

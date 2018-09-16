@@ -8,8 +8,8 @@
 
 namespace Pimvc\Tools\Format\Interfaces;
 
-interface Roles {
-
+interface Roles
+{
     const ACL_ROLE_ANONYMOUS = 'anonymous';
     const ACL_ROLE_WAITING = 'waiting';
     const ACL_ROLE_USER = 'user';

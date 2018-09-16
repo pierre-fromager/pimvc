@@ -8,18 +8,20 @@
 
 namespace Pimvc\Input\Custom\Filters;
 
-class Enum extends Abstracts\Filters{
-    
+class Enum extends Abstracts\Filters
+{
     protected $options;
     protected $default;
 
 
-    public function __construc($options) {
+    public function __construc($options)
+    {
         $this->options = $options;
         $this->default = $this->getDefault($param);
     }
     
-    public function getDefault($param) {
+    public function getDefault($param)
+    {
         return [
             self::VALUES => [],
             self::STRICT => false, // Value to return on fail
@@ -30,22 +32,24 @@ class Enum extends Abstracts\Filters{
         
     /**
      * enumIsValid
-     * 
+     *
      * @param type $val
      * @param type $options
      * @return type
      */
-    private function isValid($val, $options) {
+    private function isValid($val, $options)
+    {
         return (in_array($val, $options[self::VALUES], $options[self::STRICT]));
     }
     
     /**
      * enum
-     * 
+     *
      * @param type $val
      * @return type
      */
-    public function process($val) {
+    public function process($val)
+    {
         $options = $this->getOptions($this->getDefaultEnumOptions());
         if ($this->isValid($val, $options)) {
             if ($this->castAble($val, $options)) {
@@ -57,8 +61,7 @@ class Enum extends Abstracts\Filters{
         }
     }
 
-    public function getOptions(array $options) {
-        
+    public function getOptions(array $options)
+    {
     }
-
 }

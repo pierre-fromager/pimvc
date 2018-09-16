@@ -8,8 +8,8 @@
 
 namespace Pimvc\Interfaces;
 
-interface Liste {
-
+interface Liste
+{
     const DEFAULT_DELETE_ACION = '/delete';
     const DEFAULT_EDIT_ACION = '/edit';
     const LISTE_DEFAULT_PAGESIZE = 50;
@@ -25,14 +25,14 @@ interface Liste {
     const PARAM_CASTS = 'casts';
 
     public function __construct(
-        $modelName
-        , $controler = 'user'
-        , $exclude = []
-        , $excludeAction = []
-        , $curentPage = 0
-        , $filter = []
-        , $mandatory = []
-        , $options = []
+        $modelName,
+        $controler = 'user',
+        $exclude = [],
+        $excludeAction = [],
+        $curentPage = 0,
+        $filter = [],
+        $mandatory = [],
+        $options = []
     );
 
     public function setActionPrefix($prefix = '');

@@ -7,9 +7,8 @@
  */
 namespace Pimvc\Html\Element;
 
-
-class Decorator {
-
+class Decorator
+{
     const EMPTY_VAL = '';
     const LT = '<';
     const GT = '>';
@@ -23,13 +22,14 @@ class Decorator {
 
     /**
      * __construct
-     * 
+     *
      * @param string $element
      * @param type $text
      * @param array $options
      * @param boolean $render
      */
-    public function __construct($element, $text, $options = [], $render = true) {
+    public function __construct($element, $text, $options = [], $render = true)
+    {
         $this->content = self::EMPTY_VAL;
         $this->setElement($element);
         $this->setText($text);
@@ -40,26 +40,28 @@ class Decorator {
     
     /**
      * get
-     * 
-     * @return \Library\Html\Element\Decorator 
+     *
+     * @return \Library\Html\Element\Decorator
      */
-    public function get() {
+    public function get()
+    {
         return $this;
     }
 
     /**
      * render
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function render() {
+    public function render()
+    {
         if ($this->render) {
-            $options = (empty($this->options)) 
-                ? self::EMPTY_VAL 
+            $options = (empty($this->options))
+                ? self::EMPTY_VAL
                 : $this->getOptions($this->options);
             $text = ($this->isDisplayText()) ? $this->text : self::EMPTY_VAL;
-            $end = (empty($text) && ($this->isSelfClosing())) 
-                ? self::SL . self::GT 
+            $end = (empty($text) && ($this->isSelfClosing()))
+                ? self::SL . self::GT
                 : self::GT . $text . self::LT
                     . self::SL . $this->element . self::GT;
             $this->content = self::LT . $this->element . $options . $end;
@@ -69,46 +71,51 @@ class Decorator {
     }
     /**
      * setElement
-     * 
-     * @param string $element 
+     *
+     * @param string $element
      */
-    public function setElement($element) {
+    public function setElement($element)
+    {
         $this->element = $element;
     }
     
     /**
      * setOptions
      * s
-     * @param array $options 
+     * @param array $options
      */
-    public function setOptions($options) {
+    public function setOptions($options)
+    {
         $this->options = (is_array($options)) ? $options : [];
     }
     
     /**
      * setText
-     * 
-     * @param string $text 
+     *
+     * @param string $text
      */
-    public function setText($text) {
+    public function setText($text)
+    {
         $this->text = $text;
     }
     
     /**
      * getText
-     * 
-     * @param string $text 
+     *
+     * @param string $text
      */
-    public function getText() {
+    public function getText()
+    {
         return $this->text;
     }
 
     /**
      * optionsArray
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function optionsArray() {
+    public function optionsArray()
+    {
         return array(
             'element' => $this->element
             , 'options' => $this->options
@@ -118,17 +125,19 @@ class Decorator {
     /**
      * __toString
 
-     * @return string 
+     * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return (string) $this->content;
     }
     
     /**
      * __destruct
-     * 
+     *
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         foreach ($this as $key => $value) {
             unset($this->$key);
         }
@@ -136,10 +145,11 @@ class Decorator {
 
     /**
      * isClosedException
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    private function isSelfClosing() {
+    private function isSelfClosing()
+    {
         $selfClosingTag = array(
             'area', 'base', 'br', 'col', 'command', 'embed', 'hr'
             , 'img', 'input', 'keygen', 'link', 'meta', 'param'
@@ -151,20 +161,22 @@ class Decorator {
     
     /**
      * isDisplayText
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    private function isDisplayText() {
+    private function isDisplayText()
+    {
         return $this->element != 'input';
     }
 
     /**
      * formatOptions
-     * 
+     *
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function getOptions($options = []) {
+    private function getOptions($options = [])
+    {
         $formatedOptions = self::EMPTY_VAL;
         if (!empty($options)) {
             $render = [];

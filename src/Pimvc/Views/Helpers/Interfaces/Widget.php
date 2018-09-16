@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers\Interfaces;
 
-interface Widget {
-    
+interface Widget
+{
     const PARAM_CLASS = 'class';
 
     public function __construct();

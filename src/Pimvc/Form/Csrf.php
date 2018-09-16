@@ -7,8 +7,8 @@
  */
 namespace Pimvc\Form;
 
-class Csrf {
-
+class Csrf
+{
     const PREFIX = '';
     const CSRF_ERROR_MISSING_SESSION = 'Missing CSRF session token.';
     const CSRF_ERROR_MISSING_FORM = 'Missing CSRF form token.';
@@ -26,14 +26,14 @@ class Csrf {
 
     /**
      * check
-     * 
+     *
      * @param type $key
      * @param type $payload
      * @param type $timespan
-     * @return boolean 
+     * @return boolean
      */
-    public static function check($key, $payload, $timespan = null) {
-
+    public static function check($key, $payload, $timespan = null)
+    {
         $tonkenName = self::PREFIX . $key;
         $hasToken = \Pimvc\Tools\Session::has($tonkenName);
         if ($hasToken === false) {
@@ -63,7 +63,7 @@ class Csrf {
 
     /**
      * enableOriginCheck
-     * 
+     *
      * set Check Origin Option
      */
     public static function enableOriginCheck()
@@ -73,14 +73,15 @@ class Csrf {
 
     /**
      * generate
-     * 
+     *
      * @param string $key
      * @param boolean $originCheck
-     * @return string 
+     * @return string
      */
-    public static function generate($key, $originCheck) {
-        $extra = ($originCheck === true) 
-            ? self::getChallengeOrigin() 
+    public static function generate($key, $originCheck)
+    {
+        $extra = ($originCheck === true)
+            ? self::getChallengeOrigin()
             : '';
         $token = self::getToken($extra);
         \Pimvc\Tools\Session::set(self::PREFIX . $key, $token);
@@ -93,41 +94,44 @@ class Csrf {
      * @param Integer $length The string length.
      * @return String The randomly generated string.
      */
-    private static function randomString( $length )
+    private static function randomString($length)
     {
         $string = '';
         $seed = self::CSRF_RANDOM_STRING;
-        $max = strlen( $seed ) - 1;       
-        for ( $i = 0; $i < $length; ++$i ) {
-            $string .= $seed{intval( mt_rand( 0.0, $max ) )};
+        $max = strlen($seed) - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $string .= $seed{intval(mt_rand(0.0, $max))};
         }
         return $string;
     }
     
     /**
      * addError
-     * 
-     * @param string $errorString 
+     *
+     * @param string $errorString
      */
-    private static function addError($errorString) {
+    private static function addError($errorString)
+    {
         self::$errors[] = $errorString;
     }
     
     /**
      * getErrors
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public static function getErrors() {
+    public static function getErrors()
+    {
         return self::$errors;
     }
     
     /**
      * getChallengeOrigin
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getChallengeOrigin() {
+    private static function getChallengeOrigin()
+    {
         $server = $_SERVER['REMOTE_ADDR'];
         $agent = $_SERVER['HTTP_USER_AGENT'];
         return sha1($server . $agent);
@@ -135,11 +139,12 @@ class Csrf {
        
     /**
      * getToken
-     * 
+     *
      * @param string $extra
-     * @return string 
+     * @return string
      */
-    private static function getToken($extra) {
+    private static function getToken($extra)
+    {
         $token = self::getTs()
             . $extra
             . self::randomString(self::CSRF_RANDOM_LENGTH);
@@ -148,45 +153,48 @@ class Csrf {
     
     /**
      * validOrigin
-     * 
+     *
      * @param string $hash
-     * @return boolean 
+     * @return boolean
      */
-    private static function isValidOrigin($hash) {
-        $isValid = (self::$doOriginCheck == false) 
-            ? true 
+    private static function isValidOrigin($hash)
+    {
+        $isValid = (self::$doOriginCheck == false)
+            ? true
             : self::isValidChallengeOrigin($hash);
         return $isValid;
     }
     
     /**
      * validChallengeOrigin
-     * 
+     *
      * @param string $hash
-     * @return boolean 
+     * @return boolean
      */
-    private static function isValidChallengeOrigin($hash) {
+    private static function isValidChallengeOrigin($hash)
+    {
         $hashDecoded = base64_decode($hash);
-        $originFromHash = substr($hashDecoded, self::CSRF_TIME_LENGTH, 40);      
+        $originFromHash = substr($hashDecoded, self::CSRF_TIME_LENGTH, 40);
         $challengeOrigin = self::getChallengeOrigin();
         return ($challengeOrigin === $originFromHash);
     }
     
     /**
      * isExpired
-     * 
+     *
      * @param string $hash
      * @param string $timespan
-     * @return boolean 
+     * @return boolean
      */
-    private static function isExpired($hash, $timespan) {
+    private static function isExpired($hash, $timespan)
+    {
         $isReady = ($timespan != null && is_int($timespan));
         $isExpired = true;
         if ($isReady) {
             $hashTime = substr(
-                base64_decode($hash)
-                , 0
-                , self::CSRF_TIME_LENGTH
+                base64_decode($hash),
+                0,
+                self::CSRF_TIME_LENGTH
             );
             $delta = self::getTs() - $hashTime;
             $isExpired = ($delta > $timespan);
@@ -196,12 +204,12 @@ class Csrf {
 
     /**
      * getTs
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    private static function getTs() {
+    private static function getTs()
+    {
         $ts = (int) floor(microtime(true));
         return $ts;
     }
 }
-

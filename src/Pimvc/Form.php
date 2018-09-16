@@ -3,7 +3,7 @@
 /**
  * class Form
  * is a form generator
- * 
+ *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
@@ -11,8 +11,8 @@ namespace Pimvc;
 
 use Pimvc\Html\Element\Decorator;
 
-class Form implements Interfaces\Form{
-   
+class Form implements Interfaces\Form
+{
     protected $baseUrl = '';
     protected $fieldList = [];
     protected $fieldExclude = [];
@@ -58,14 +58,15 @@ class Form implements Interfaces\Form{
 
     /**
      * __construct
-     * 
+     *
      * @param array $fieldList
      * @param string $name
      * @param string $action
      * @param string $method
      * @param array $data
      */
-    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExclude = []) {
+    public function __construct($fieldList = [], $name = '', $action = '', $method = 'POST', $data = [], $fieldExclude = [])
+    {
         $this->fieldList = $fieldList;
         $this->setFieldsExclude($fieldExclude);
         $this->setFields($fieldList);
@@ -81,15 +82,16 @@ class Form implements Interfaces\Form{
     
     /**
      * setFieldsExclude
-     * 
+     *
      * @param array $fieldExclude
      */
-    public function setFieldsExclude($fieldExclude) {
+    public function setFieldsExclude($fieldExclude)
+    {
         $this->fieldExclude = $fieldExclude;
-        if ($fieldExclude){
+        if ($fieldExclude) {
             $this->fieldList = array_values(
                 array_diff(
-                    $this->fieldList, 
+                    $this->fieldList,
                     $fieldExclude
                 )
             );
@@ -98,43 +100,47 @@ class Form implements Interfaces\Form{
     
     /**
      * setName
-     * 
+     *
      * @param string $name
      * @return $this
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
     
     /**
      * setMethod
-     * 
+     *
      * @param string $method
      * @return $this
      */
-    public function setMethod($method) {
+    public function setMethod($method)
+    {
         $this->method = $method;
         return $this;
     }
     
     /**
      * setDatas
-     * 
+     *
      * @param array $datas
      * @return $this
      */
-    public function setDatas($datas) {
+    public function setDatas($datas)
+    {
         $this->data = $datas;
         return $this;
     }
     
     /**
      * setRequest
-     * 
+     *
      * @param \Pimvc\Http\Request $request
      */
-    public function setRequest() {
+    public function setRequest()
+    {
         $this->request = App::getInstance()->getRequest();
         $this->baseUrl = $this->request->getBaseUrl();
         $this->rootUrl = $this->request->getUrl();
@@ -147,14 +153,15 @@ class Form implements Interfaces\Form{
     
     /**
      * setFields
-     * 
+     *
      * @param array $fields
      */
-    public function setFields($fields) {
+    public function setFields($fields)
+    {
         if (!empty($fields) && !self::isAssoc($fields)) {
             $fields = array_map(
-                array(__CLASS__, 'formatFieldsCallback')
-                , $fields
+                array(__CLASS__, 'formatFieldsCallback'),
+                $fields
             );
         }
         $this->fieldList = $fields;
@@ -163,38 +170,41 @@ class Form implements Interfaces\Form{
 
     /**
      * isAssoc returns true if $array is associativ
-     * 
+     *
      * @param type $array
-     * @return type 
+     * @return type
      */
-    private static function isAssoc($array) {   
+    private static function isAssoc($array)
+    {
         return array_keys($array) !== range(0, count($array) - 1);
     }
 
     /**
      * formatFieldsCallback returns pre formated ready to use in form array
-     * 
+     *
      * @param array $n
-     * @return array 
+     * @return array
      */
-    private static function formatFieldsCallback($n) {
+    private static function formatFieldsCallback($n)
+    {
         return (array(self::PARAM_FIELD => $n));
     }
     
     /**
      * getButtons
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getButtons() {
+    private function getButtons()
+    {
         $buttons = '';
         foreach ($this->buttons as $name => $options) {
             $label = $options['label'];
             unset($options['label']);
             $buttons .= (string) new decorator(
-                'button'
-                , $label
-                , $options
+                'button',
+                $label,
+                $options
             );
         }
         return $buttons;
@@ -202,27 +212,29 @@ class Form implements Interfaces\Form{
 
     /**
      * addButton
-     * 
+     *
      * @param string $name
-     * @param array $options 
+     * @param array $options
      */
-    public function addButton($name, $label ,$options = []) {
-        $options[self::PARAM_ID] = (!isset($options[self::PARAM_ID])) 
-            ? 'button_' . strtolower($name) 
+    public function addButton($name, $label, $options = [])
+    {
+        $options[self::PARAM_ID] = (!isset($options[self::PARAM_ID]))
+            ? 'button_' . strtolower($name)
             : $options[self::PARAM_ID];
-        $options[self::PARAM_CLASS] = (!isset($options[self::PARAM_CLASS])) 
-            ? 'btn btn-default' 
+        $options[self::PARAM_CLASS] = (!isset($options[self::PARAM_CLASS]))
+            ? 'btn btn-default'
             : $options[self::PARAM_CLASS];
-        $options['type'] = (!isset($options['type'])) 
-            ? 'button' 
+        $options['type'] = (!isset($options['type']))
+            ? 'button'
             : $options['type'];
-        $options['label'] = (!isset($options['label'])) 
-            ? $label 
+        $options['label'] = (!isset($options['label']))
+            ? $label
             : $options['label'];
         $this->buttons[$name] = $options;
     }
     
-    public function addSection($startField, $stopField, $param = []) {
+    public function addSection($startField, $stopField, $param = [])
+    {
         $name = 'section_' . $startField . '___' . $stopField . '_';
         $this->sections[$name] = array(
             'name' => $name
@@ -232,11 +244,12 @@ class Form implements Interfaces\Form{
         );
     }
     
-    public function getSection($fieldName, $mode = 'start') {
+    public function getSection($fieldName, $mode = 'start')
+    {
         $section = '';
         $sections = array_filter(
-            array_keys($this->sections)
-            , function ($v) use ($fieldName){
+            array_keys($this->sections),
+            function ($v) use ($fieldName) {
                 return strpos($v, '_' . $fieldName  . '_') !== false;
             }
         );
@@ -250,9 +263,9 @@ class Form implements Interfaces\Form{
             if ($isStart || $isStop) {
                 if ($isStart) {
                     $section = (string) new decorator(
-                        $sectionTag
-                        , ''
-                        , $sectionProps['params']
+                        $sectionTag,
+                        '',
+                        $sectionProps['params']
                     );
                     $section = substr($section, 0, -6);
                 } else {
@@ -263,29 +276,32 @@ class Form implements Interfaces\Form{
         return $section;
     }
 
-        /**
+    /**
      * setOptions
-     * 
-     * @param array $options 
+     *
+     * @param array $options
      */
-    public function setOptions($options) {
+    public function setOptions($options)
+    {
         $this->options = $options;
     }
     
     /**
      * disableLabel
-     * 
+     *
      */
-    public function disableLabel(){
+    public function disableLabel()
+    {
         $this->disableLabel = true;
     }
 
-        /**
+    /**
      * getStyle
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function getStyle() {
+    public function getStyle()
+    {
         $width = (!empty($this->width)) ? 'width:' . $this->width . ';' : '';
         $style = 'style="' . $width . '"';
         return $style;
@@ -293,16 +309,17 @@ class Form implements Interfaces\Form{
 
     /**
      * checkbox
-     * 
+     *
      * @param type $label
      * @param type $name
      * @param type $datas
      * @param type $checkedvalues
-     * @return type 
+     * @return type
      */
-    protected function checkbox($label, $name, $datas, $checkedvalues) {
-        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel) 
-            ? ' (*)' 
+    protected function checkbox($label, $name, $datas, $checkedvalues)
+    {
+        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel)
+            ? ' (*)'
             : '';
         $legendLabel = (isset($this->labels[$name])) ? $this->labels[$name] : $label;
         $checkboxes = '<fieldset class="radiogroup ' . $this->fieldsAlign . '">'
@@ -316,20 +333,20 @@ class Form implements Interfaces\Form{
         
         foreach ($datas as $key => $value) {
             $checked = ((is_array($checkedvalues)) && (in_array($key, $checkedvalues)))
-                ? 'checked="checked"' 
-                : '';        
+                ? 'checked="checked"'
+                : '';
             $id = 'field_' . $name . '_' . $key;
             $checkboxes .= '<li class="radiogroup ' . $this->fieldsAlign . '">'
                 . '<label class="radiogroup">' ;
             $checkboxes .= $this->getInput(
-                $id
-                , 'form ' . $this->fieldsAlign
-                , $name . '[]'
-                , $type
-                , $key
-                , $this->mode
-                , $error
-                , $checked
+                $id,
+                'form ' . $this->fieldsAlign,
+                $name . '[]',
+                $type,
+                $key,
+                $this->mode,
+                $error,
+                $checked
             );
             $checkboxes .= $value . '</label></li>';
         }
@@ -339,13 +356,14 @@ class Form implements Interfaces\Form{
     
     /**
      * getWrapper
-     * 
+     *
      * @param string $name
      * @param string $content
-     * @return string 
+     * @return string
      */
-    private function getWrapper($name, $content) {
-        $wrapperClass = (isset($this->wrapperClasses[$name])) 
+    private function getWrapper($name, $content)
+    {
+        $wrapperClass = (isset($this->wrapperClasses[$name]))
             ? $this->wrapperClasses[$name]
             : 'form-element-wrapper ' . $this->fieldsAlign;
         $wrapperOptions = array(
@@ -353,34 +371,36 @@ class Form implements Interfaces\Form{
             , 'class' => $wrapperClass
         );
         return (string) new decorator(
-            'div'
-            , $content
-            , $wrapperOptions
-        );      
+            'div',
+            $content,
+            $wrapperOptions
+        );
     }
     
     /**
      * setWrapperClass
-     * 
+     *
      * @param string $name
-     * @param string $class 
+     * @param string $class
      */
-    public function setWrapperClass($name, $class) {
+    public function setWrapperClass($name, $class)
+    {
         $this->wrapperClasses[$name] = $class;
     }
 
     /**
      * radio
-     * 
+     *
      * @param type $label
      * @param type $name
      * @param type $datas
      * @param type $checkedvalues
-     * @return type 
+     * @return type
      */
-    protected function radio($label, $name, $datas, $checkedvalues) {
-        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel) 
-            ? ' (*)' 
+    protected function radio($label, $name, $datas, $checkedvalues)
+    {
+        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel)
+            ? ' (*)'
             : '';
         if (!$this->mode == 'readonly') {
             $checkboxes = '<fieldset class="radiogroup">'
@@ -395,39 +415,39 @@ class Form implements Interfaces\Form{
             foreach ($datas as $key => $value) {
                 $checked = '';
                 if ($hasCheckValue) {
-                    $checked = ($key == $checkedvalues) 
-                        ? 'checked="checked"' 
+                    $checked = ($key == $checkedvalues)
+                        ? 'checked="checked"'
                         : '';
                 }
                 $id = 'field_' . $name . '_' . $key;
-                $checkboxes .= '<li class="radiogroup ' 
+                $checkboxes .= '<li class="radiogroup '
                         . $this->fieldsAlign . '">'
                         . '<label class="radiogroup">';
                 $checkboxes .= $this->getInput(
-                    $id
-                    , 'form ' . $this->fieldsAlign
-                    , $name
-                    , $type
-                    , $key
-                    , $mode = ''
-                    , $error
-                    , $checked
+                    $id,
+                    'form ' . $this->fieldsAlign,
+                    $name,
+                    $type,
+                    $key,
+                    $mode = '',
+                    $error,
+                    $checked
                 );
                 $checkboxes .= $value . '</label></li>';
             }
             $checkboxes .= '</ul></fieldset>';
-            $checkboxes = '<div class="form-element-wrapper col-sm-6">' 
+            $checkboxes = '<div class="form-element-wrapper col-sm-6">'
                 . $checkboxes . '</div>';
         } else {
-            $dataValue = (isset($datas[$checkedvalues])) 
-                ? $datas[$checkedvalues] 
+            $dataValue = (isset($datas[$checkedvalues]))
+                ? $datas[$checkedvalues]
                 : '';
             $id = 'field_' . $name;
             $checkboxes = $this->input(
-                $label
-                , 'text'
-                , $name
-                , $dataValue
+                $label,
+                'text',
+                $name,
+                $dataValue
             );
         }
         return $checkboxes;
@@ -435,19 +455,20 @@ class Form implements Interfaces\Form{
 
     /**
      * Entrée select de formulaire
-     * 
+     *
      * @param string $label
      * @param string $type
      * @param string $name
      * @param string $value
      */
-    protected function select($label, $name, $datas, $selectedvalue, $class = '') {
+    protected function select($label, $name, $datas, $selectedvalue, $class = '')
+    {
         $options = '';
         $selectTitle = ($class) ? $class : '- Selectionner -';
         if (!$class) {
             $datas = array('' => $selectTitle) + $datas;
-        }     
-        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel) 
+        }
+        $requiredSign = ($this->isRequired($name) && empty($this->mode) && !$this->disableLabel)
             ? ' (*)'
             : '';
         $error = $this->getError($name);
@@ -456,10 +477,10 @@ class Form implements Interfaces\Form{
         $isReadOnly = ($this->mode == 'readonly="readonly"');
         if (!$isReadOnly) {
             foreach ($datas as $key => $value) {
-                $selected = ($key == $selectedvalue) 
-                    ? 'selected="selected"' 
+                $selected = ($key == $selectedvalue)
+                    ? 'selected="selected"'
                     : '';
-                $options.= '<option value="' . $key . '" ' . $selected . '>' 
+                $options.= '<option value="' . $key . '" ' . $selected . '>'
                     . $value . '</option>';
             }
             $select = '<select'
@@ -469,61 +490,63 @@ class Form implements Interfaces\Form{
                 .' id="field_' . $name . '"'
                 . $selectOptionsRender
                 .'>'
-                . $options 
-                . '</select>' 
+                . $options
+                . '</select>'
                 . $error;
         } else {
-            $realValue = (isset($datas[$selectedvalue])) 
-                ? $datas[$selectedvalue] 
+            $realValue = (isset($datas[$selectedvalue]))
+                ? $datas[$selectedvalue]
                 : '';
             $select = $this->getInput(
-                'field_' . $name
-                , 'form'
-                , 'field_' . $name
-                , 'text'
-                , $realValue
-                , $this->mode
-                , $error
+                'field_' . $name,
+                'form',
+                'field_' . $name,
+                'text',
+                $realValue,
+                $this->mode,
+                $error
             );
         }
-        $wrapper = (empty($label)) ? '':'<p class="form ' . $this->fieldsAlign . '">' 
+        $wrapper = (empty($label)) ? '':'<p class="form ' . $this->fieldsAlign . '">'
             . ucfirst($label) . $requiredSign . '</p>';
         $select = $wrapper . $select;
-        return (empty($label)) 
-            ? $select 
+        return (empty($label))
+            ? $select
             : $this->getWrapper($name, $select);
     }
 
     /**
      * Entrée select de formulaire
-     * 
+     *
      * @param string $label
      * @param string $type
      * @param string $name
      * @param string $value
      */
-    protected function mselect($label, $name, $datas, $selectedvalue, $class = '') {
+    protected function mselect($label, $name, $datas, $selectedvalue, $class = '')
+    {
         $options = '';
         /*
         $selectTitle = ($class) ? $class : '- Selectionner -';
         if (!$class) {
             $datas = array('' => $selectTitle) + $datas;
         }*/
-        $requiredSign = ($this->isRequired($name) 
-            && empty($this->mode) 
+        $requiredSign = (
+            $this->isRequired($name)
+            && empty($this->mode)
             && !$this->disableLabel
-        ) 
-            ? ' (*)' 
+        )
+            ? ' (*)'
             : '';
         $error = $this->getError($name);
         $label = (empty($label)) ? $label : $this->getLabel($name, $label);
         $selectOptionsRender = $this->renderElementOptions($name);
         if (is_array($datas)) {
             foreach ($datas as $key => $value) {
-                    $isSelected = (is_array($selectedvalue)) && (in_array($key, $selectedvalue));
-                    $selected = ($isSelected) ? 'selected="selected"' : '';
-                    $options.= '<option value="' . $key . '" ' . $selected . '>'
-                        . $value . '</option>';               
+                $isSelected = (is_array($selectedvalue)) && (in_array($key, $selectedvalue));
+                $selected = ($isSelected) ? 'selected="selected"' : '';
+                $options.= '<option value="' . $key . '" ' . $selected . '>'
+                        . $value . '</option>';
             }
         }
         $select = '<select'
@@ -539,96 +562,98 @@ class Form implements Interfaces\Form{
             . '</select>'
             . $error;
 
-        $wrapper = (empty($label)) 
-            ? '' 
+        $wrapper = (empty($label))
+            ? ''
             : '<p class="form ' . $this->fieldsAlign . '">'
                 . ucfirst($label) . $requiredSign . '</p>'
                 . '<br style="clear:both"/>';
         $select = $wrapper . $select;
-        return (empty($label)) 
-            ? $select 
+        return (empty($label))
+            ? $select
             : $this->elementWrapper(
-                $select
-                , array('class' => 'form-element-wrapper col-sm-6')
+                $select,
+                array('class' => 'form-element-wrapper col-sm-6')
             );
     }
 
     /**
      * Entrée input de formulaire
-     * 
+     *
      * @param string $label
      * @param string $type
      * @param string $name
      * @param string $value
      */
-    protected function input($label, $type, $name, $value, $options = []) {
+    protected function input($label, $type, $name, $value, $options = [])
+    {
         $input = '';
-        $class = (isset($this->classes[$name])) 
-            ? $this->classes[$name] 
+        $class = (isset($this->classes[$name]))
+            ? $this->classes[$name]
             : 'form';
         $id = self::FORM_ELEMENT_ID_PREFIX . $name;
         if (!empty($options)) {
-            $class .= (isset($options[self::PARAM_CLASS])) 
-                ? ' ' . $options[self::PARAM_CLASS] 
+            $class .= (isset($options[self::PARAM_CLASS]))
+                ? ' ' . $options[self::PARAM_CLASS]
                 : '';
-            $id = (isset($options['id'])) 
-                ? $options['id'] 
+            $id = (isset($options['id']))
+                ? $options['id']
                 : $id;
         }
         $error = $this->getError($name);
-        $label = ($type != 'hidden') 
+        $label = ($type != 'hidden')
             ? $this->getFormatedLabel(
-                $name
-                , $this->getLabel($name, $label)
-            ) 
+                $name,
+                $this->getLabel($name, $label)
+            )
             : '';
         $isAjax = ($type == 'autocomplete');
-        $input = ($isAjax) 
+        $input = ($isAjax)
             ? $this->getInputAjax(
-                    $id . '_ajax'
-                    , $class
-                    , ''
-                    , $value
-                    , ''
-                )
+                $id . '_ajax',
+                $class,
+                '',
+                $value,
+                ''
+            )
                 . $this->getInput(
-                    $id
-                    , $class
-                    , $name
-                    , 'hidden'
-                    , $value
-                    , $this->mode
-                    , $error
-                ) 
+                    $id,
+                    $class,
+                    $name,
+                    'hidden',
+                    $value,
+                    $this->mode,
+                    $error
+                )
             : $this->getInput(
-                    $id
-                    , $class
-                    , $name
-                    , $type
-                    , $value
-                    , $this->mode
-                    , $error
-        );
-        $operator = ($this->hasOperator($name)) 
-            ? $this->getOperatorElement($name, $this->getOperator($name)) 
+                $id,
+                $class,
+                $name,
+                $type,
+                $value,
+                $this->mode,
+                $error
+            );
+        $operator = ($this->hasOperator($name))
+            ? $this->getOperatorElement($name, $this->getOperator($name))
             : '';
         return $this->getWrapper($name, $label . $operator . $input);
     }
     
     /**
      * getFormatedLabel
-     * 
+     *
      * @param string $name
      * @param string $labelName
      * @param string $requiredSign
-     * @return string 
+     * @return string
      */
-    private function getFormatedLabel($name, $labelName) {
+    private function getFormatedLabel($name, $labelName)
+    {
         $requiredSign = $this->getRequiredSign($name);
         return (string) new decorator(
-            'p'
-            , $labelName . $requiredSign
-            , array(
+            'p',
+            $labelName . $requiredSign,
+            array(
                 'id' => 'label_' . $name
                 , 'class' => 'form ' . $this->fieldsAlign
             )
@@ -637,58 +662,62 @@ class Form implements Interfaces\Form{
     
     /**
      * getRequiredSign
-     * 
+     *
      * @param string $name
-     * @return string 
+     * @return string
      */
-    private function getRequiredSign($name) {
-        return ($this->isRequired($name) 
-                && empty($this->mode) 
+    private function getRequiredSign($name)
+    {
+        return ($this->isRequired($name)
+                && empty($this->mode)
                 && !$this->disableLabel
             ) ? ' (*)' : '';
     }
 
     /**
      * elementWrapper
-     * 
+     *
      * @param string $content
      * @param array $options
-     * @return string 
+     * @return string
      */
-    protected function elementWrapper($content = '', $options = []) {
-        $class = (isset($options['class'])) 
-            ? $options['class'] 
+    protected function elementWrapper($content = '', $options = [])
+    {
+        $class = (isset($options['class']))
+            ? $options['class']
             : 'form-element-wrapper ';
         return (string) new decorator(
-            'div'
-            , $content
-            , array('class' => $class.' ' . $this->fieldsAlign)
+            'div',
+            $content,
+            array('class' => $class.' ' . $this->fieldsAlign)
         );
     }
     
     /**
      * setAlign
-     * 
-     * @param string $align 
+     *
+     * @param string $align
      */
-    public function setAlign($align) {
+    public function setAlign($align)
+    {
         $this->fieldsAlign = $align;
     }
 
     /**
      * getInputAjax
-     * 
+     *
      * @param string $id
      * @param string $class
      * @param string $value
-     * @return string 
+     * @return string
      */
-    private function getInputAjax($id, $class, $value) {
+    private function getInputAjax($id, $class, $value)
+    {
         $baseUrl = $this->baseUrl;
         $input = new decorator(
-            'input'
-            , ''
-            , array(
+            'input',
+            '',
+            array(
                 'id' => $id
                 , 'class' => $class
                 , 'type' => 'text'
@@ -696,9 +725,9 @@ class Form implements Interfaces\Form{
             )
         );
         $img = new decorator(
-            'img'
-            , ''
-            , array(
+            'img',
+            '',
+            array(
                 'id' => $id . '_delete'
                 , 'class' => 'form'
                 , 'src' => $baseUrl . 'public/images/toolbar/delete.png'
@@ -713,7 +742,7 @@ class Form implements Interfaces\Form{
     
     /**
      * getInput
-     * 
+     *
      * @param string $id
      * @param string $class
      * @param string $name
@@ -721,9 +750,10 @@ class Form implements Interfaces\Form{
      * @param string $value
      * @param string $mode
      * @param string $error
-     * @return string 
+     * @return string
      */
-    private function getInput($id, $class, $name, $type, $value, $mode, $error, $checked = '') {
+    private function getInput($id, $class, $name, $type, $value, $mode, $error, $checked = '')
+    {
         $steps = '';
         if ($type == 'file' || $name == 'filename') {
             $value = '';
@@ -755,9 +785,9 @@ class Form implements Interfaces\Form{
             $defaultInputOptions['checked'] = 'checked';
         }
         return (string) new decorator(
-            'input'
-            , ''
-            , array_merge($defaultInputOptions, $this->getElementOptions($name))
+            'input',
+            '',
+            array_merge($defaultInputOptions, $this->getElementOptions($name))
         ) . $error;
         /*
         return '<input id="' . $id . '" class="' . $class
@@ -770,13 +800,14 @@ class Form implements Interfaces\Form{
 
     /**
      * Entrée texte de formulaire
-     * 
+     *
      * @param string $label
      * @param string $type
      * @param string $name
      * @param string $value
      */
-    protected function textarea($label, $type, $name, $value) {
+    protected function textarea($label, $type, $name, $value)
+    {
         $label = $this->getFormatedLabel($name, $this->getLabel($name, $label));
         $isReadonly = strpos($this->mode, 'readonly') !== false;
         $textareaDefaultOptions = array(
@@ -784,41 +815,42 @@ class Form implements Interfaces\Form{
             , 'name' => $name
         );
         if ($isReadonly) {
-            $textareaDefaultOptions['class'] = 'form ' . $this->fieldsAlign 
-                . ' textarea col-sm-12';            
+            $textareaDefaultOptions['class'] = 'form ' . $this->fieldsAlign
+                . ' textarea col-sm-12';
             $textarea = (string) new decorator(
-                'div'
-                , $value
-                , array_merge(
-                    $textareaDefaultOptions
-                    , $this->getElementOptions($name)
+                'div',
+                $value,
+                array_merge(
+                    $textareaDefaultOptions,
+                    $this->getElementOptions($name)
                 )
             );
         } else {
             $textarea = (string) new decorator(
-                'textarea'
-                , $value
-                , array_merge(
-                    $textareaDefaultOptions
-                    , $this->getElementOptions($name)
+                'textarea',
+                $value,
+                array_merge(
+                    $textareaDefaultOptions,
+                    $this->getElementOptions($name)
                 )
             );
         }
         $bypass = (empty($value) && $isReadonly);
-        return (!$bypass) 
+        return (!$bypass)
             ? $this->getWrapper(
-                $name 
-                , $label . $textarea . $this->getError($name)
-            ) 
+                $name,
+                $label . $textarea . $this->getError($name)
+            )
             : '';
     }
 
     /**
      * Boutton de soumission du formulaire
-     * 
+     *
      * @param string $label
      */
-    protected function submit($label) {
+    protected function submit($label)
+    {
         $submitOptions = array(
             'id' => 'submit-' . $this->name
             , 'class' => 'btn btn-success btn-right form-submit'
@@ -827,29 +859,31 @@ class Form implements Interfaces\Form{
                 
         );
         $submit = (string) new decorator(
-            'input'
-            , ''
-            , $submitOptions
+            'input',
+            '',
+            $submitOptions
         );
         return ($this->mode !=  'readonly') ? $submit : '';
     }
     
     /**
      * Boutton de nettoyage du formulaire
-     * 
+     *
      * @param string $label
      */
-    protected function clean($label) {
+    protected function clean($label)
+    {
         $clean = '<input class="btn btn-default form-reset right" type="reset" value="' . $label . '"/>';
         return ($this->mode != 'readonly') ? $clean : '';
     }
 
     /**
      * Boutton de reset du wizzard formulaire
-     * 
+     *
      * @param string $label
      */
-    protected function resetWizzard($label) {
+    protected function resetWizzard($label)
+    {
         $onclick = "window.location.replace(document.URL + '/reset/true')";
         $wizzard = '<input class="form-reset btn btn-default right" type="button"'
             . ' onclick="' . $onclick . '" value="' . $label . '"/>';
@@ -858,28 +892,31 @@ class Form implements Interfaces\Form{
 
     /**
      * getEncType
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getEncType() {
+    private function getEncType()
+    {
         return $this->encType;
     }
     
     /**
      * setEncType
-     * 
+     *
      * @param string $enctype
-     * @return string 
+     * @return string
      */
-    public function setEncType($enctype) {
+    public function setEncType($enctype)
+    {
         return $this->encType = $enctype;
     }
 
     /**
      * get is form fabric
-     * 
+     *
      */
-    public function get() {
+    public function get()
+    {
         $form = null;
         $input = null;
         $options = [];
@@ -890,7 +927,7 @@ class Form implements Interfaces\Form{
         $needSection = ($countField > $maxSection);
         $advancedId = "'" . '#advanced-' . $formId . "'";
         $sectionStart ="";
-//$sectionStart = '<br style="clear:both">' . PHP_EOL
+        //$sectionStart = '<br style="clear:both">' . PHP_EOL
 //            . '<div'
 //            . ' title="Advanced criterias"'
 //            . ' class="form_inactive"'
@@ -899,11 +936,11 @@ class Form implements Interfaces\Form{
         $sectionStop = ""; //PHP_EOL . '</div>';
         foreach ($this->fieldList as $aField) {
             $fieldName = $aField[self::PARAM_FIELD];
-            $input .= $this->getSection($fieldName,'start');
+            $input .= $this->getSection($fieldName, 'start');
             if (!in_array($fieldName, $this->fieldExclude)) {
                 ++$counterSection;
-                $input .= ($needSection && $counterSection === $maxSection) 
-                    ? $sectionStart 
+                $input .= ($needSection && $counterSection === $maxSection)
+                    ? $sectionStart
                     : '';
                 $options[self::PARAM_CLASS] = '';
                 switch ($fieldName) {
@@ -933,8 +970,8 @@ class Form implements Interfaces\Form{
                     //case 'datem':
                     case 'days':
                         $typeElement = 'text';
-                        $options[self::PARAM_CLASS] = (empty($this->mode)) 
-                            ? 'date-picker' 
+                        $options[self::PARAM_CLASS] = (empty($this->mode))
+                            ? 'date-picker'
                             : '';
                         break;
                     case 'hours':
@@ -948,30 +985,30 @@ class Form implements Interfaces\Form{
                 }
 
                 // @TODO : Hydrate separate method
-                $data = (isset($this->data[$aField[self::PARAM_FIELD]])) 
-                    ? $this->data[$aField[self::PARAM_FIELD]] 
+                $data = (isset($this->data[$aField[self::PARAM_FIELD]]))
+                    ? $this->data[$aField[self::PARAM_FIELD]]
                     : '';
-                $dataPosted = (isset($this->posted[$aField[self::PARAM_FIELD]])) 
-                    ? $this->posted[$aField[self::PARAM_FIELD]] 
+                $dataPosted = (isset($this->posted[$aField[self::PARAM_FIELD]]))
+                    ? $this->posted[$aField[self::PARAM_FIELD]]
                     : $data;
-                $typeElement = (isset($this->types[$aField[self::PARAM_FIELD]])) 
-                    ? $this->types[$aField[self::PARAM_FIELD]] 
+                $typeElement = (isset($this->types[$aField[self::PARAM_FIELD]]))
+                    ? $this->types[$aField[self::PARAM_FIELD]]
                     : $typeElement;
                 if (!is_array($data)) {
-                    $input.= ($typeElement != 'textarea') 
+                    $input.= ($typeElement != 'textarea')
                         ? $this->input(
-                            $aField[self::PARAM_FIELD]
-                            , $typeElement
-                            , $aField[self::PARAM_FIELD]
-                            , $dataPosted
-                            , $options
-                         ) 
+                            $aField[self::PARAM_FIELD],
+                            $typeElement,
+                            $aField[self::PARAM_FIELD],
+                            $dataPosted,
+                            $options
+                        )
                         : $this->textarea(
-                            $aField[self::PARAM_FIELD]
-                            , $typeElement
-                            , $aField[self::PARAM_FIELD]
-                            , $dataPosted
-                         );
+                            $aField[self::PARAM_FIELD],
+                            $typeElement,
+                            $aField[self::PARAM_FIELD],
+                            $dataPosted
+                        );
                 } else {
                     $isCheckbox = isset($this->types[$aField[self::PARAM_FIELD]])
                         && ($this->types[$aField[self::PARAM_FIELD]]) == 'checkbox';
@@ -981,60 +1018,60 @@ class Form implements Interfaces\Form{
                         && ($this->types[$aField[self::PARAM_FIELD]]) == 'mselect';
                     if ($isCheckbox) {
                         $input.= $this->checkbox(
-                            $aField[self::PARAM_FIELD]
-                            , $aField[self::PARAM_FIELD]
-                            , $data
-                            , $dataPosted
+                            $aField[self::PARAM_FIELD],
+                            $aField[self::PARAM_FIELD],
+                            $data,
+                            $dataPosted
                         );
-                    } else if ($isRadio) {
+                    } elseif ($isRadio) {
                         $input.= $this->radio(
-                            $aField[self::PARAM_FIELD]
-                            , $aField[self::PARAM_FIELD]
-                            , $data
-                            , $dataPosted
+                            $aField[self::PARAM_FIELD],
+                            $aField[self::PARAM_FIELD],
+                            $data,
+                            $dataPosted
                         );
-                    } else if ($isMselect) {
+                    } elseif ($isMselect) {
                         $input.= $this->mselect(
-                            $aField[self::PARAM_FIELD]
-                            , $aField[self::PARAM_FIELD]
-                            , $data
-                            , $dataPosted
+                            $aField[self::PARAM_FIELD],
+                            $aField[self::PARAM_FIELD],
+                            $data,
+                            $dataPosted
                         );
                     } else {
                         $input.= $this->select(
-                            $aField[self::PARAM_FIELD]
-                            , $aField[self::PARAM_FIELD]
-                            , $data
-                            , $dataPosted
+                            $aField[self::PARAM_FIELD],
+                            $aField[self::PARAM_FIELD],
+                            $data,
+                            $dataPosted
                         );
                     }
                 }
-                $input .= ($needSection && ($countField === $counterSection)) 
-                    ? $sectionStop 
+                $input .= ($needSection && ($countField === $counterSection))
+                    ? $sectionStop
                     : '';
-                $extra = ($this->hasExtra($aField[self::PARAM_FIELD])) 
-                    ? $this->getExtra($aField[self::PARAM_FIELD]) 
+                $extra = ($this->hasExtra($aField[self::PARAM_FIELD]))
+                    ? $this->getExtra($aField[self::PARAM_FIELD])
                     : '';
                 $input .= $extra;
             }
-            $input .= $this->getSection($fieldName,'stop');
+            $input .= $this->getSection($fieldName, 'stop');
         }
         $fillBreaker = ($this->mode != 'readonly') ? self::FORM_BREAK : '';
-        $mandatoryMention = (empty($this->mode) && !$this->disableLabel) 
-            ? $fillBreaker . self::FORM_MANDATORY_FIELD_MENTIONS 
+        $mandatoryMention = (empty($this->mode) && !$this->disableLabel)
+            ? $fillBreaker . self::FORM_MANDATORY_FIELD_MENTIONS
             : '';
-        $buttons =  '<div class="form-element-wrapper col-sm-12">' 
-            . $this->getButtons() 
+        $buttons =  '<div class="form-element-wrapper col-sm-12">'
+            . $this->getButtons()
             . '</div>';
-        $buttons .= ($this->enableButtons) 
+        $buttons .= ($this->enableButtons)
             ? $fillBreaker . $this->submit($this->validLabelButton)
-                . $this->clean(self::CLEAN_LABEL) 
+                . $this->clean(self::CLEAN_LABEL)
             : '';
-        $buttons .= ($this->enableResetButton) 
-            ? $this->resetWizzard('Réinitialiser les filtres')               
+        $buttons .= ($this->enableResetButton)
+            ? $this->resetWizzard('Réinitialiser les filtres')
             : '';
         $buttons .= $fillBreaker;
-        $formClasses = ($this->formClass) ? $this->formClass : 'form';    
+        $formClasses = ($this->formClass) ? $this->formClass : 'form';
         $defaultOptions = array(
             self::PARAM_CLASS => $formClasses
             , 'id' => $formId
@@ -1044,74 +1081,80 @@ class Form implements Interfaces\Form{
             , 'target' => $this->formTarget
             , 'enctype' => $this->getEncType()
         );
-        $formOptions = ($this->options) 
-            ? array_merge($defaultOptions, $this->options) 
+        $formOptions = ($this->options)
+            ? array_merge($defaultOptions, $this->options)
             : $defaultOptions;
         $formDecorator = new decorator(
-            'form'
-            ,  $input . $buttons . $mandatoryMention
-            , $formOptions
+            'form',
+            $input . $buttons . $mandatoryMention,
+            $formOptions
         );
         $formDecorator->render();
         $form = (string) $formDecorator;
         unset($formDecorator);
-        $wrappedForm = ($this->formWrapperId) 
-            ? $this->getFormWrapper($form) 
-            : $form;      
+        $wrappedForm = ($this->formWrapperId)
+            ? $this->getFormWrapper($form)
+            : $form;
         return $this->getSearchWrapper($wrappedForm);
     }
     
     /**
      * render
-     * 
+     *
      */
-    public function render() {
+    public function render()
+    {
         $this->form = $this->get();
     }
 
     /**
      * isRequired returns true if a validator is setted
-     * 
+     *
      * @param string $name
-     * @return boolean 
+     * @return boolean
      */
-    protected function isRequired($name) {
+    protected function isRequired($name)
+    {
         return (isset($this->validators[$name]));
     }
     
     /**
      * getValidators
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getValidators() {
+    public function getValidators()
+    {
         return $this->validators;
     }
     
     /**
      * getValidators
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function hasValidator($field) {
+    public function hasValidator($field)
+    {
         return isset($this->validators[$field]);
     }
     /**
      * setValidator
-     * 
+     *
      * @param string $field
-     * @param string $validator 
+     * @param string $validator
      */
-    public function setValidator($field, $validator) {
+    public function setValidator($field, $validator)
+    {
         $this->validators[$field] = $validator;
     }
     
     /**
      * setValidators
-     * 
-     * @param array $validators 
+     *
+     * @param array $validators
      */
-    public function setValidators($validators) {
+    public function setValidators($validators)
+    {
         foreach ($validators as $name => $validator) {
             $this->setValidator($name, $validator);
         }
@@ -1119,19 +1162,21 @@ class Form implements Interfaces\Form{
     
     /**
      * unsetValidator
-     * 
-     * @param string $field 
+     *
+     * @param string $field
      */
-    public function unsetValidator($field){
+    public function unsetValidator($field)
+    {
         unset($this->validators[$field]);
     }
     
     /**
      * unsetValidators
-     * 
-     * @param array $validators 
+     *
+     * @param array $validators
      */
-    public function unsetValidators($validators) {
+    public function unsetValidators($validators)
+    {
         foreach ($validators as $name => $validator) {
             $this->unsetValidator($name);
         }
@@ -1139,21 +1184,23 @@ class Form implements Interfaces\Form{
     
     /**
      * setError
-     * 
+     *
      * @param string $field
-     * @param string $message 
+     * @param string $message
      */
-    protected function setError($field, $message) {
+    protected function setError($field, $message)
+    {
         $this->errors[$field] =  $message ;
     }
 
     
     /**
      * setErrors
-     * 
+     *
      * @param array $errors
      */
-    protected function setErrors($errors) {
+    protected function setErrors($errors)
+    {
         foreach ($errors as $name => $error) {
             $this->setError($name, $error);
         }
@@ -1161,20 +1208,21 @@ class Form implements Interfaces\Form{
     
     /**
      * getValidIcon
-     * 
+     *
      * @param string $error
-     * @return string 
+     * @return string
      */
-    private function getValidIcon($name) {
+    private function getValidIcon($name)
+    {
         $icon = '';
         $error = (isset($this->errors[$name])) ? $this->errors[$name] : '';
         $linkError = $this->getLinkError($name);
         if ($this->isPost) {
-            $icon = (!empty($error)) 
+            $icon = (!empty($error))
                 ? $linkError . $this->getIcon(self::FORM_FIELD_FAILED_ICON, $error)
                 : $this->getIcon(
-                    self::FORM_FIELD_VALID_ICON
-                    , self::FORM_FIELD_VALID_ICON_MESSAGE
+                    self::FORM_FIELD_VALID_ICON,
+                    self::FORM_FIELD_VALID_ICON_MESSAGE
                 );
         } else {
             $icon = '';
@@ -1184,20 +1232,22 @@ class Form implements Interfaces\Form{
     
     /**
      * getLinkError
-     * 
+     *
      * @param string $name
-     * @return string 
+     * @return string
      */
-    private function getLinkError($name) {
+    private function getLinkError($name)
+    {
         return '<a class="linkError" name="error_' . $name . '"></a>';
     }
     
     /**
      * getIcon
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getIcon($filename, $title) {
+    private function getIcon($filename, $title)
+    {
         $iconPath = $this->baseUrl . DIRECTORY_SEPARATOR .  self::FORM_ICON_PATH;
         return '<img'
             . ' title="' . $title . '"'
@@ -1209,18 +1259,19 @@ class Form implements Interfaces\Form{
 
     /**
      * getError
-     * 
+     *
      * @param string $name
-     * @return string 
+     * @return string
      */
-    protected function getError($name) {
+    protected function getError($name)
+    {
         $isError = (isset($this->errors[$name]));
         $message = '';
         $isXcsrf = ($name == self::FORM_XCSRF);
         $checkedIcon = (!$isXcsrf) ? $this->getValidIcon('') : '';
         if ($this->hasValidator($name)) {
-            $message = ($isError) 
-                ? $this->getValidIcon($name) 
+            $message = ($isError)
+                ? $this->getValidIcon($name)
                 : $checkedIcon;
         }
         return $message;
@@ -1228,101 +1279,114 @@ class Form implements Interfaces\Form{
     
     /**
      * getErrors
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
 
     /**
      * setLabel
-     * 
+     *
      * @param string $name
-     * @param string $label 
+     * @param string $label
      */
-    protected function setLabel($name, $label) {
+    protected function setLabel($name, $label)
+    {
         $this->labels[$name] = $label;
         return $this;
     }
     
     /**
      * setLabels
-     * 
-     * @param array $params 
+     *
+     * @param array $params
      */
-    public function setLabels($labels) {
+    public function setLabels($labels)
+    {
         $this->labels = $labels;
         return $this;
-    }      
+    }
  
     /**
      * setMode
-     * 
-     * @param string $mode 
+     *
+     * @param string $mode
      */
-    public function setMode($mode = '') {
+    public function setMode($mode = '')
+    {
         switch ($mode) {
-            case 'readonly': $this->mode = 'readonly="readonly"';
+            case 'readonly':
+                $this->mode = 'readonly="readonly"';
                 break;
-            case 'hidden': $this->mode = 'style="hidden"';
+            case 'hidden':
+                $this->mode = 'style="hidden"';
                 break;
-            case 'disabled': $this->mode = 'disabled="disabled"';
+            case 'disabled':
+                $this->mode = 'disabled="disabled"';
                 break;
-            default:$this->mode = $mode;
+            default:
+                $this->mode = $mode;
                 break;
         }
     }
 
     /**
      * Setsectionsize
-     * 
-     * @param int $sectionSize 
+     *
+     * @param int $sectionSize
      */
-    public function Setsectionsize($sectionSize = '') {
-        $this->sectionSize = $sectionSize;    
-    } 
+    public function Setsectionsize($sectionSize = '')
+    {
+        $this->sectionSize = $sectionSize;
+    }
  
     /**
      * setType
-     * 
+     *
      * @param string $fieldname
-     * @param string $value 
+     * @param string $value
      */
-    public function setType($fieldname, $value) {
+    public function setType($fieldname, $value)
+    {
         $this->types[$fieldname] = $value;
     }
     
     /**
      * setTypes
-     * 
-     * @param array $params 
+     *
+     * @param array $params
      */
-    public function setTypes($params) {
+    public function setTypes($params)
+    {
         foreach ($params as $fieldname => $value) {
             $this->setType($fieldname, $value);
-        }      
+        }
     }
     /**
      * getLabel
-     * 
+     *
      * @param string $name
-     * @return string 
+     * @return string
      */
-    protected function getLabel($name, $label) {
-        $label = (isset($this->labels[$name])) 
-            ? $this->labels[$name] 
+    protected function getLabel($name, $label)
+    {
+        $label = (isset($this->labels[$name]))
+            ? $this->labels[$name]
             : $label;
         return (!$this->disableLabel) ? $label : '';
-        }
+    }
     
     /**
      * setValues
-     * 
-     * @param array $params 
+     *
+     * @param array $params
      */
-    public function setValues($params) {
+    public function setValues($params)
+    {
         foreach ($params as $name => $value) {
             $this->setValue($name, $value);
         }
@@ -1330,32 +1394,35 @@ class Form implements Interfaces\Form{
     
     /**
      * setValue
-     * 
+     *
      * @param string $name
-     * @param string $value 
+     * @param string $value
      */
-    public function setValue($name, $value) {
+    public function setValue($name, $value)
+    {
         $this->posted[$name] = $value;
     }
     
     
     /**
      * setData
-     * 
+     *
      * @param string $name
-     * @param string $value 
+     * @param string $value
      */
-    public function setData($name, $value) {
+    public function setData($name, $value)
+    {
         $this->data[$name] = $value;
     }
     
     /**
      * setAction
-     * 
+     *
      * @param string $name
-     * @param string $value 
+     * @param string $value
      */
-    public function setAction($name) {
+    public function setAction($name)
+    {
         $this->action = $name;
         return $this;
     }
@@ -1363,9 +1430,10 @@ class Form implements Interfaces\Form{
 
     /**
      * isValid
-     * 
+     *
      */
-    public function isValid() {
+    public function isValid()
+    {
         foreach ($this->validators as $key => $value) {
             $validatorParams = [];
             $hasValidatorData = isset($this->posted[$key]);
@@ -1380,59 +1448,60 @@ class Form implements Interfaces\Form{
                 }
                 $callBack = array(self::FORM_VALIDATOR_CLASS, $value);
                 $initialValue = $validatorParams[0];
-                $initialLength = (is_array($initialValue)) 
-                    ? count($initialValue) 
+                $initialLength = (is_array($initialValue))
+                    ? count($initialValue)
                     : strlen($initialValue);
                 $validate = call_user_func_array(
-                    $callBack
-                    , $validatorParams
+                    $callBack,
+                    $validatorParams
                 );
             }
             if (!$validate) {
                 $errorMessagePrefix = 'Saisir ';
                 $validatorName = strtolower($value);
                 switch ($validatorName) {
-                    case 'isshortdate': 
+                    case 'isshortdate':
                         $errorMessage =  $errorMessagePrefix .'une date valide.';
-                        break;                   
-                    case 'isrequired': 
+                        break;
+                    case 'isrequired':
                         $errorMessage =  $errorMessagePrefix .'une valeur.';
                         break;
-                    case 'isnumeric': 
+                    case 'isnumeric':
                         $errorMessage =  $errorMessagePrefix .'un nombre.';
                         break;
-                    case 'isnumericnotrequired': 
+                    case 'isnumericnotrequired':
                         $errorMessage =  $errorMessagePrefix .'un nombre.';
                         break;
-                    case 'isboolnotrequired': 
+                    case 'isboolnotrequired':
                         $errorMessage =  $errorMessagePrefix .'un booléen.';
                         break;
-                    case 'isbool': 
+                    case 'isbool':
                         $errorMessage =  $errorMessagePrefix .'un booléen.';
                         break;
-                    case 'isemail': 
+                    case 'isemail':
                         $errorMessage = $errorMessagePrefix . 'une adresse email.';
                         break;
-                    case 'isminlen': 
+                    case 'isminlen':
                         $errorMessage = $errorMessagePrefix . 'taille &gt; ' . $expl[1]. ', ici ' . $initialLength;
-                        break;                   
-                    case 'ismaxlen': 
+                        break;
+                    case 'ismaxlen':
                         $errorMessage = $errorMessagePrefix . 'taille &lt; ' . $expl[1]. ', ici ' . $initialLength;
                         break;
-                    case 'islenbetween': 
-                        $errorMessage = $errorMessagePrefix . 'longueur entre ' 
+                    case 'islenbetween':
+                        $errorMessage = $errorMessagePrefix . 'longueur entre '
                             . str_replace('_', ' et ', $expl[1]) . ', ici ' . $initialLength;
                         break;
-                     case 'ispassword': 
-                        $errorMessage = $errorMessagePrefix . 'combinaison alpha numeric et longueur entre ' 
-                            . str_replace('_', ' et ', $expl[1]) ;
+                    case 'ispassword':
+                        $errorMessage = $errorMessagePrefix . 'combinaison alpha numeric et longueur entre '
+                           . str_replace('_', ' et ', $expl[1]) ;
                         break;
-                     case 'validxcsrf': 
+                    case 'validxcsrf':
                         $errorMessage = 'Cross-site request forgery attempt.';
                         break;
-                    default : $errorMessage =  'Erreur validateur ' . $validatorName .'.';
+                    default:
+                        $errorMessage =  'Erreur validateur ' . $validatorName .'.';
                 }
-                $this->setError($key,$errorMessage);
+                $this->setError($key, $errorMessage);
             }
         }
         $isValid = (count($this->errors) == 0);
@@ -1444,17 +1513,19 @@ class Form implements Interfaces\Form{
     /**
      * Affiche du formulaire
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->form;
     }
     
     /**
      * setGroup
-     * 
+     *
      * @param string $name
-     * @param array $values 
+     * @param array $values
      */
-    public function setGroup($name, $values) {
+    public function setGroup($name, $values)
+    {
         if (is_array($values)) {
             $this->groups[$name] = $values;
         }
@@ -1462,87 +1533,93 @@ class Form implements Interfaces\Form{
     
     /**
      * getGroup
-     * 
+     *
      * @param string $name
-     * @return array 
+     * @return array
      */
-    private function getGroup($name) {
+    private function getGroup($name)
+    {
         return $this->groups[$name];
     }
     
     /**
      * setClass
-     * 
+     *
      * @param string $name
-     * @param string $class 
+     * @param string $class
      */
-    public function setClass($name, $class) {
+    public function setClass($name, $class)
+    {
         $this->classes[$name] = $class;
     }
     
     /**
      * setExtra
-     * 
+     *
      * @param string $after
-     * @param string $extras 
+     * @param string $extras
      */
-    public function setExtra($field, $extras, $options = []) {
+    public function setExtra($field, $extras, $options = [])
+    {
         $this->extras[$field] = $extras;
         if (isset($options['class'])) {
             $this->extras_class[$field] = $options['class'];
         }
-        
     }
     
     /**
      * getExtraClasses
-     * 
+     *
      * @param string $field
-     * @return string 
+     * @return string
      */
-    private function getExtraClasses($field) {
+    private function getExtraClasses($field)
+    {
         return (isset($this->extras_class[$field])) ? $this->extras_class : '';
     }
 
 
     /**
      * setExtras
-     * 
+     *
      * @param array $extras
      */
-    public function setExtras($extras) {
-        foreach($extras as $k => $v) {
+    public function setExtras($extras)
+    {
+        foreach ($extras as $k => $v) {
             $this->setExtra($k, $v);
         }
     }
     
     /**
      * unsetExtra
-     * 
-     * @param string $field 
+     *
+     * @param string $field
      */
-    public function unsetExtra($field) {
+    public function unsetExtra($field)
+    {
         if ($this->hasExtra($field)) {
             unset($this->extras[$field]);
-        } 
+        }
     }
     
     /**
      * getExtra
-     * 
+     *
      * @param string $field
-     * @return string 
+     * @return string
      */
-    private function getExtra($field, $options = []) {
+    private function getExtra($field, $options = [])
+    {
         $extra = '';
         if ($this->hasExtra($field)) {
             $extra = $this->extras[$field];
             if (isset($this->extras_class[$field])) {
                 $options = array('class' => $this->extras_class[$field]);
                 $extra = (string) new decorator(
-                    'div'
-                    , $extra
-                    , $options
+                    'div',
+                    $extra,
+                    $options
                 );
             }
         }
@@ -1551,52 +1628,57 @@ class Form implements Interfaces\Form{
     
     /**
      * hasExtra
-     * 
+     *
      * @param string $field
-     * @return boolean 
+     * @return boolean
      */
-    private function hasExtra($field) {
+    private function hasExtra($field)
+    {
         return isset($this->extras[$field]);
     }
     
     /**
      * setOperator
-     * 
+     *
      * @param string $name
-     * @param string $type 
+     * @param string $type
      */
-    public function setOperator($name, $value) {
+    public function setOperator($name, $value)
+    {
         $this->operators[$name] = $value;
     }
     
     /**
      * getOperator
-     * 
+     *
      * @param string $name
      * @return string || false
      */
-    private function getOperator($name) {
+    private function getOperator($name)
+    {
         return $this->hasOperator($name) ? $this->operators[$name] : false;
     }
 
 
     /**
      * setOperator
-     * 
+     *
      * @param string $name
-     * @param string $type 
+     * @param string $type
      */
-    private function hasOperator($name) {
-        return isset($this->operators[$name]); 
+    private function hasOperator($name)
+    {
+        return isset($this->operators[$name]);
     }
     
     /**
      * getOperatorElement
-     * 
+     *
      * @param type $name
-     * @return type 
+     * @return type
      */
-    private function getOperatorElement($name, $value) {
+    private function getOperatorElement($name, $value)
+    {
         $operatorType = array('=', '!=', 'in', '!in','>','<');
         $operatorLabel = array('=', '&ne;', '&sub;', '&nsub;', '&gt;','&lt;');
         $operatorData = array_combine($operatorType, $operatorLabel);
@@ -1605,83 +1687,91 @@ class Form implements Interfaces\Form{
 
     /**
      * getFields
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getFields() {
+    public function getFields()
+    {
         return $this->getFieldsname($this->fieldList);
     }
     
     /**
      * getFieldsname
-     * 
+     *
      * @param array $fieldList
-     * @return array 
+     * @return array
      */
-    private function getFieldsname($fieldList) {
+    private function getFieldsname($fieldList)
+    {
         $callBack = array($this, 'getFieldname');
         return array_map($callBack, $fieldList);
     }
     
     /**
      * getFieldname
-     * 
+     *
      * @param array $field
-     * @return string 
+     * @return string
      */
-    private static function getFieldname($field) {
+    private static function getFieldname($field)
+    {
         return $field[self::PARAM_FIELD];
     }
     
     /**
      * setElementOptions
-     * 
+     *
      * @param string $fieldName
-     * @param array $options 
+     * @param array $options
      */
-    public function setElementOptions($fieldName, $options) {
+    public function setElementOptions($fieldName, $options)
+    {
         $this->elementsOptions[$fieldName] = $options;
     }
     
     /**
      * setElementsOptions
-     * 
+     *
      * @param string $fieldName
-     * @param array $options 
+     * @param array $options
      */
-    public function setElementsOptions($options) {
+    public function setElementsOptions($options)
+    {
         $this->elementsOptions = $options;
     }
     
     /**
      * getElementOptions
-     * 
+     *
      * @param string $fieldName
-     * @return array 
+     * @return array
      */
-    public function getElementOptions($fieldName) {
-        return ($this->hasElementOptions($fieldName)) 
-            ? $this->elementsOptions[$fieldName] 
+    public function getElementOptions($fieldName)
+    {
+        return ($this->hasElementOptions($fieldName))
+            ? $this->elementsOptions[$fieldName]
             : [];
     }
     
     /**
      * hasElementOptions
-     * 
+     *
      * @param string $fieldName
-     * @return boolean 
+     * @return boolean
      */
-    private function hasElementOptions($fieldName) {
+    private function hasElementOptions($fieldName)
+    {
         return isset($this->elementsOptions[$fieldName]);
     }
     
     /**
      * renderElementOptions
-     * 
+     *
      * @param string $fieldName
-     * @return string 
+     * @return string
      */
-    private function renderElementOptions($fieldName) {
+    private function renderElementOptions($fieldName)
+    {
         $render = '';
         $options = $this->getElementOptions($fieldName);
         foreach ($options as $key => $value) {
@@ -1693,30 +1783,33 @@ class Form implements Interfaces\Form{
     
     /**
      * setEnableButtons
-     * 
-     * @param boolean $value 
+     *
+     * @param boolean $value
      */
-    public function setEnableButtons($value) {
+    public function setEnableButtons($value)
+    {
         $this->enableButtons = $value;
     }
     
     /**
      * setSize
-     * 
+     *
      * @param string $name
-     * @param string $value 
+     * @param string $value
      */
-    public function setSize($name, $value) {
+    public function setSize($name, $value)
+    {
         $this->size[$name] = $value;
     }
     
     /**
      * setSizes
-     * 
+     *
      * @param array $values
-     * @param string $value 
+     * @param string $value
      */
-    public function setSizes($values) {
+    public function setSizes($values)
+    {
         foreach ($values as $k => $v) {
             $this->setSize($k, $v);
         }
@@ -1724,92 +1817,101 @@ class Form implements Interfaces\Form{
     
     /**
      * setExcludes
-     * 
-     * @param array $excludes 
+     *
+     * @param array $excludes
      */
-    public function setExcludes($excludes) {
-        $this->fieldExclude = $excludes;      
+    public function setExcludes($excludes)
+    {
+        $this->fieldExclude = $excludes;
     }
     
     /**
      * setFormClass
-     * 
-     * @param string $formClass 
+     *
+     * @param string $formClass
      */
-    public function setFormClass($formClass) {
+    public function setFormClass($formClass)
+    {
         $this->formClass = $formClass;
     }
     
     /**
      * setFormId
-     * 
-     * @param string $formId 
+     *
+     * @param string $formId
      */
-    public function setFormId($formId) {
+    public function setFormId($formId)
+    {
         $this->formId = $formId;
     }
     
     /**
      * setFormTarget
-     * 
-     * @param string $target 
+     *
+     * @param string $target
      */
-    public function setFormTarget($target) {
+    public function setFormTarget($target)
+    {
         $this->formTarget = $target;
     }
 
     /**
      * setFormWrapperId
-     * 
-     * @param string $id 
+     *
+     * @param string $id
      */
-    public function setFormWrapperId($id) {
-        $this->formWrapperId = $id;   
+    public function setFormWrapperId($id)
+    {
+        $this->formWrapperId = $id;
     }
     
     /**
      * setEnableTranslate
-     * 
-     * @param boolean $enable 
+     *
+     * @param boolean $enable
      */
-    public function setEnableTranslate($enable) {
+    public function setEnableTranslate($enable)
+    {
         $this->enableTranslate = $enable;
     }
 
     /**
      * setValidLabelButton
-     * 
-     * @param string $label 
+     *
+     * @param string $label
      */
-    public function setValidLabelButton($label) {
+    public function setValidLabelButton($label)
+    {
         $this->validLabelButton = $label;
     }
     
     /**
      * setSearchMode
-     * 
-     * @param boolean $enable 
+     *
+     * @param boolean $enable
      */
-    public function setSearchMode($enable) {
+    public function setSearchMode($enable)
+    {
         $this->isSearch = $enable;
     }
     
     /**
      * getSearchWrapper
-     * 
+     *
      * @param type $content
-     * @return type 
+     * @return type
      */
-    public function getSearchWrapper($content) {
+    public function getSearchWrapper($content)
+    {
         $advancedId = 'advanced-' . $this->formId;
         $script = '$j(\'#' . $advancedId . '\').toggle();'
             . '$j(this).toggleClass(\'form_active\');'
             . '$j(\'#iconCriteria\').toggleClass(\'glyphicon-chevron-down\',\'glyphicon-chevron-up\')';
-        $wrapper = (!$this->isSearch) 
-            ? $content 
-            : '<div id="criteriaFilterWrapper" class="row-fluid">' 
+        $wrapper = (!$this->isSearch)
+            ? $content
+            : '<div id="criteriaFilterWrapper" class="row-fluid">'
             . '<span id="criteriaFilter" onclick="' . $script . '">'
-            . 'Critères'                       
+            . 'Critères'
             . '<i id="iconCriteria" class="glyphicon glyphicon-chevron-down"> </i>'
             . '</span>' . PHP_EOL
             . '<div id="' . $advancedId . '" style="display:none">'
@@ -1821,20 +1923,21 @@ class Form implements Interfaces\Form{
 
     /**
      * setEnableResetButton
-     * 
-     * @param boolean $enable 
+     *
+     * @param boolean $enable
      */
-    public function setEnableResetButton($enable) {
+    public function setEnableResetButton($enable)
+    {
         $this->enableResetButton = $enable;
     }
 
     /**
      * getFormWrapper
-     * 
-     * @param type $param 
+     *
+     * @param type $param
      */
-    private function getFormWrapper($content) {
+    private function getFormWrapper($content)
+    {
         return '<div id="' . $this->formWrapperId . '">' . $content . '</div>';
     }
-
 }

@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Description of interface AppInterface
+ * Description of interface Pimvc\Interfaces\App
  *
  * @author pierrefromager
  */
 
 namespace Pimvc\Interfaces;
 
-interface App {
+interface App
+{
 
     const APP_APP = 'app';
     const APP_REQUEST = 'request';
@@ -22,14 +23,24 @@ interface App {
 
     public function __construct(\Pimvc\Config $config);
 
+    public function setRoutes();
+
+    public function setRouter();
+
+    public function setResponse();
+
+    public function setView();
+
+    public function setController();
+
     public function setTranslator();
 
     public function getTranslator();
-    
+
     public function getLogger();
-    
+
     public function setLogger();
-    
+
     public function setMiddleware();
 
     public function setLocale($locale);
@@ -37,7 +48,7 @@ interface App {
     public function getLocale();
 
     public function setPath($path);
-    
+
     public function getPath();
 
     public function getRouter();
@@ -53,7 +64,7 @@ interface App {
     public function getController();
 
     public function getConfig();
-    
+
     public function getStorage();
 
     public function run();

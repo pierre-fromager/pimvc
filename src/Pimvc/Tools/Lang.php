@@ -1,7 +1,7 @@
 <?php
 /**
  * Description of Pimvc\Tools\Lang
- * 
+ *
  */
 
 namespace Pimvc\Tools;
@@ -9,19 +9,20 @@ namespace Pimvc\Tools;
 use Pimvc\File\Csv\Parser as csvParser;
 use Pimvc\Tools\Translate\Adapter\Csv as csvTranslateAdapter;
 
-class Lang {
-    
+class Lang
+{
     const CSV_EXT = '.csv';
     const CSV_PATH = '../public/lang';
 
     /**
      * import
-     * 
+     *
      * @param string $lang
      * @param string $filenameOrData
      * @return boolean
      */
-    public static function import($lang, $filenameOrData) {
+    public static function import($lang, $filenameOrData)
+    {
         $lang = str_replace(
             DIRECTORY_SEPARATOR,
             '',
@@ -39,7 +40,7 @@ class Lang {
             foreach ($filenameOrData as $fields) {
                 fputcsv($fp, $fields);
             }
-            fclose($fp);            
+            fclose($fp);
             $filenameOrData = $temp_file;
             $unlinkafter = true;
         }
@@ -59,12 +60,13 @@ class Lang {
     
     /**
      * isValidParsing
-     * 
+     *
      * @param csvParser $csv
      * @param mixed $filenameOrData
      * @return boolean
      */
-    private function isValidParsing(csvParser $csv,$filenameOrData) {
+    private function isValidParsing(csvParser $csv, $filenameOrData)
+    {
         $isValid =  (
             $csv->auto($filenameOrData) //parsed
             && count($csv->data) //hasdata
@@ -78,11 +80,12 @@ class Lang {
 
     /**
      * export
-     * 
+     *
      * @param string $lang
      * @return boolean
      */
-    public static function export($lang) {
+    public static function export($lang)
+    {
         $csv = new csvParser($lang);
         if (!$csv->auto(self::getLangPath($lang))) {
             return false;
@@ -93,11 +96,12 @@ class Lang {
 
     /**
      * getData
-     * 
+     *
      * @param string $lang
      * @return boolean
      */
-    public static function getData($lang) {
+    public static function getData($lang)
+    {
         $csv = new csvParser($lang);
         if (!$csv->auto(self::getLangPath($lang))) {
             return false;
@@ -107,16 +111,16 @@ class Lang {
     
     /**
      * getLangPath
-     * 
+     *
      * @param string $lang
      * @return string
      */
-    private static function getLangPath($lang) {
-        $lang = substr($lang,0,2);
+    private static function getLangPath($lang)
+    {
+        $lang = substr($lang, 0, 2);
         $appPath = \Pimvc\App::getInstance()->getPath();
-        $langPath =  $appPath . self::CSV_PATH . DIRECTORY_SEPARATOR 
+        $langPath =  $appPath . self::CSV_PATH . DIRECTORY_SEPARATOR
             . $lang . self::CSV_EXT;
         return $langPath;
     }
 }
-

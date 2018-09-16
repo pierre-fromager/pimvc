@@ -8,9 +8,8 @@
 
 namespace Pimvc\Interfaces;
 
-
-interface Form {
-
+interface Form
+{
     const SUBMIT_LABEL = 'Valider';
     const CLEAN_LABEL = 'Effacer';
     const FORM_ELEMENT_ID_PREFIX = 'field_';

@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers\Toolbar\Interfaces;
 
-interface Glyph {
-
+interface Glyph
+{
     const IMG_EDIT_TITLE = 'Editer';
     const IMG_EDIT_FILE = 'pencil';
     const IMG_EDIT_CLASS = 'btn-warning';
@@ -101,5 +101,4 @@ interface Glyph {
     public function __construct($params, $controler, $exclude = [], $actionPrefix = '', $actionSuffix = '');
     public function __destruct();
     public function __toString();
-
 }

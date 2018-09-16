@@ -8,7 +8,8 @@
 
 namespace Pimvc\Model\Mysql\Domain;
 
-class Keycolumnusages extends \Pimvc\Db\Model\Domain {
+class Keycolumnusages extends \Pimvc\Db\Model\Domain
+{
 
     /**
      * @var string $constraint_catalog .
@@ -81,5 +82,4 @@ class Keycolumnusages extends \Pimvc\Db\Model\Domain {
      * @length 64
      */
     public $referenced_column_name;
-
 }

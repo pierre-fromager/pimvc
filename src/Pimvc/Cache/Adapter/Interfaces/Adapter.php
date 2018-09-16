@@ -8,8 +8,8 @@
 
 namespace Pimvc\Cache\Adapter\Interfaces;
 
-interface Adapter {
-
+interface Adapter
+{
     public static function getInstance($name, $ttl);
 
     public function get($key);

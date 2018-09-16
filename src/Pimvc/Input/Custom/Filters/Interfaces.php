@@ -8,8 +8,8 @@
 
 namespace Pimvc\Input\Custom\Filters;
 
-interface Interfaces {
-
+interface Interfaces
+{
     const MIN_RANGE = 'min_range';
     const MAX_RANGE = 'max_range';
     const STEP = 'step';

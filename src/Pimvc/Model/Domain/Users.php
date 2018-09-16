@@ -8,7 +8,8 @@
 
 namespace Pimvc\Model\Domain;
 
-class Users extends \Pimvc\Db\Model\Domain {
+class Users extends \Pimvc\Db\Model\Domain
+{
 
     /**
     * @var int $id desc
@@ -114,17 +115,17 @@ class Users extends \Pimvc\Db\Model\Domain {
     */
     public $password;
     
-   /**
-    * @var string token (comments)
-    * @name token
-    * @type String
-    * @pdo 2
-    * @length 32
-    * @index 0
-    * @pk 0
-    * @ft null
-    * @fk null
-    */
+    /**
+     * @var string token (comments)
+     * @name token
+     * @type String
+     * @pdo 2
+     * @length 32
+     * @index 0
+     * @pk 0
+     * @ft null
+     * @fk null
+     */
     public $token;
 
     /**
@@ -282,6 +283,4 @@ class Users extends \Pimvc\Db\Model\Domain {
     * @fk null
     */
     public $ip;
-
 }
-

@@ -10,8 +10,8 @@ namespace Pimvc\Views\Helpers;
 
 use \Pimvc\Html\Element\Decorator;
 
-class Css {
-
+class Css
+{
     const PARAM_TAG = 'link';
     const PARAM_CONTENT = 'content';
     const PARAM_BASEURL = 'baseUrl';
@@ -28,10 +28,11 @@ class Css {
 
     /**
      * __construct
-     * 
-     * @return \Helper_Css 
+     *
+     * @return \Helper_Css
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->media = self::PARAM_SCREEN;
         $this->rel = self::PARAM_REL;
         $this->type = self::PARAM_TYPE;
@@ -41,10 +42,11 @@ class Css {
     
     /**
      * getNew
-     * 
-     * @return \this 
+     *
+     * @return \this
      */
-    public function getNew($href, $external = false) {
+    public function getNew($href, $external = false)
+    {
         $instance = new $this;
         $instance->setHref($href, $external);
         return $instance;
@@ -52,78 +54,85 @@ class Css {
     
     /**
      * setBaseUrl
-     * 
+     *
      * @param type $baseUrl
      */
-    public function setBaseUrl($baseUrl) {
+    public function setBaseUrl($baseUrl)
+    {
         $this->baseUrl = $baseUrl;
         return $this;
     }
     
     /**
      * setMedia
-     * 
+     *
      * @param string $media
-     * @return \Helper_Css 
+     * @return \Helper_Css
      */
-    public function setMedia($media) {
+    public function setMedia($media)
+    {
         $this->media = $media;
         return $this;
     }
     
     /**
      * setRel
-     * 
+     *
      * @param string $rel
-     * @return \Helper_Css 
+     * @return \Helper_Css
      */
-    public function setRel($rel) {
+    public function setRel($rel)
+    {
         $this->rel = $rel;
         return $this;
     }
     
     /**
      * setType
-     * 
+     *
      * @param string $type
-     * @return \Helper_Css 
+     * @return \Helper_Css
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
         return $this;
     }
 
     /**
      * setHref
-     * 
+     *
      * @param type $href
-     * @return \Helper_Css 
+     * @return \Helper_Css
      */
-    public function setHref($href, $external) {
+    public function setHref($href, $external)
+    {
         $this->href = ($external) ? $href : $this->baseUrl . $href;
         return $this;
     }
     
     /**
      * render
-     * 
+     *
      */
-    public function render() {
+    public function render()
+    {
         $this->content = (string) new decorator(
-            self::PARAM_TAG
-            , ''
-            , $this->getProperties()
+            self::PARAM_TAG,
+            '',
+            $this->getProperties()
         );
         return $this;
     }
 
     /**
      * renderElementOptions
-     * 
+     *
      * @param string $fieldName
-     * @return string 
+     * @return string
      */
-    private function getProperties() {
+    private function getProperties()
+    {
         $options = get_object_vars($this);
         unset($options[self::PARAM_CONTENT]);
         unset($options[self::PARAM_BASEURL]);
@@ -132,10 +141,11 @@ class Css {
     
     /**
      * __toString
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return (string) $this->content;
     }
 }

@@ -10,8 +10,8 @@ namespace Pimvc\Cache\Adapter;
 
 use Pimvc\Cache\adapter\interfaces\adapter as cacheInterface;
 
-class Memcache implements cacheInterface {
-    
+class Memcache implements cacheInterface
+{
     const CACHE_ADAPTER_TTL = 300;
     const CACHE_ADAPTER_EXTENSION = 'memcache';
     const CACHE_ADAPTER_HOST = 'localhost';
@@ -24,10 +24,11 @@ class Memcache implements cacheInterface {
     
     /**
      * @see __construct
-     * 
-     * @param type $ttl 
+     *
+     * @param type $ttl
      */
-    private function __construct($ttl = self::CACHE_ADAPTER_TTL) {
+    private function __construct($ttl = self::CACHE_ADAPTER_TTL)
+    {
         self::$_ttl = $ttl;
         $loadError = (!extension_loaded(self::CACHE_ADAPTER_EXTENSION))
             ? dl(self::CACHE_ADAPTER_EXTENSION.'.so')
@@ -37,8 +38,8 @@ class Memcache implements cacheInterface {
         if (!self::$_error && self::$_memobj == null) {
             self::$_memobj = new Memcache;
             self::$_memobj->connect(
-                self::CACHE_ADAPTER_HOST
-                , self::CACHE_ADAPTER_PORT
+                self::CACHE_ADAPTER_HOST,
+                self::CACHE_ADAPTER_PORT
             );
         } else {
             throw new \Exception;
@@ -48,17 +49,20 @@ class Memcache implements cacheInterface {
     /**
      * @see  __clone
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
     
     /**
      * getInstance
-     * 
+     *
      * @param int $ttl
-     * @return \Lib_Cache_Adapter_Memcache 
+     * @return \Lib_Cache_Adapter_Memcache
      */
-    public static function getInstance($name = '', $ttl = self::CACHE_ADAPTER_TTL) {
-        if (!(self::$_instance instanceof Lib_Cache_Adapter_Memcache)){
-             self::$_instance = new Lib_Cache_Adapter_Memcache();
+    public static function getInstance($name = '', $ttl = self::CACHE_ADAPTER_TTL)
+    {
+        if (!(self::$_instance instanceof Lib_Cache_Adapter_Memcache)) {
+            self::$_instance = new Lib_Cache_Adapter_Memcache();
         }
         return self::$_instance;
     }
@@ -66,21 +70,23 @@ class Memcache implements cacheInterface {
     /**
      * get data from cache server
 
-     * 
-     * @param string $key 
+     *
+     * @param string $key
      * @return mixed
      */
-    public function get($key) {
+    public function get($key)
+    {
         return self::$_memobj->get($key);
     }
     
     /**
      * expired
-     * 
+     *
      * @param string $key
-     * @return boolean 
+     * @return boolean
      */
-    public function expired($key) {
+    public function expired($key)
+    {
         $exist = $this->exists($key);
         $expired = !$exist;
         if (!empty($key) && $exist) {
@@ -95,58 +101,63 @@ class Memcache implements cacheInterface {
     
     /**
      * exists
-     * 
+     *
      * @param string $key
-     * @return boolean 
+     * @return boolean
      */
-    public function exists($key) {
+    public function exists($key)
+    {
         return (self::$_memobj->get($key) !== false);
     }
 
     /**
      * set saves data to cache server
-     * 
+     *
      * @param string $key
      * @param mixed $value
-     * @return boolean 
+     * @return boolean
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         return self::$_memobj->set($key, $value, MEMCACHE_COMPRESSED, self::$_ttl);
     }
     
     /**
      * delete data from cache server
-     * 
+     *
      * @param type $key
-     * @return boolean 
+     * @return boolean
      */
-    public function delete($key) {
+    public function delete($key)
+    {
         return self::$_memobj->delete($key);
     }
     
     
     /**
      * getVersion
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         return self::$_memobj->getVersion();
     }
      
     
     /**
      * getExpirations
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    private function getExpirations($key = '') {
+    private function getExpirations($key = '')
+    {
         $list = [];
         $allSlabs = self::$_memobj->getExtendedStats('slabs');
         $serverDsn = self::CACHE_ADAPTER_HOST . ':' . self::CACHE_ADAPTER_PORT;
         foreach ($allSlabs as $server => $slabs) {
-            foreach ($slabs AS $slabId => $slabMeta) {
-                if (is_numeric($slabId)) {                
+            foreach ($slabs as $slabId => $slabMeta) {
+                if (is_numeric($slabId)) {
                     $cdump = self::$_memobj->getExtendedStats('cachedump', (int) $slabId);
                     if (isset($cdump[$serverDsn]) && is_array($cdump[$serverDsn])) {
                         $entries = $cdump[$serverDsn];
@@ -162,5 +173,4 @@ class Memcache implements cacheInterface {
         unset($list);
         return $result;
     }
-
 }

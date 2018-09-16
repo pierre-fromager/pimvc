@@ -4,10 +4,10 @@ namespace Pimvc;
 
 /**
  * controller
- * 
+ *
  */
-class Controller implements Interfaces\Controller {
-
+class Controller implements Interfaces\Controller
+{
     private $app;
     private $name = null;
     private $action = null;
@@ -30,12 +30,13 @@ class Controller implements Interfaces\Controller {
 
     /**
      * __construct
-     * 
+     *
      * @param app $app
      * @param type $name
      * @param type $action
      */
-    public function __construct(App $app = null) {
+    public function __construct(App $app = null)
+    {
         $this->app = $app;
         $this->errors = [];
         return $this;
@@ -43,80 +44,89 @@ class Controller implements Interfaces\Controller {
 
     /**
      * setClassPrefix
-     * 
+     *
      * @param string $prefix
      */
-    public function setClassPrefix($prefix) {
+    public function setClassPrefix($prefix)
+    {
         $this->classPrefix = $prefix;
     }
 
     /**
      * getApp
-     * 
+     *
      * @return app
      */
-    public function getApp() {
+    public function getApp()
+    {
         return $this->app;
     }
 
     /**
      * setName
-     * 
+     *
      * @param string $name
      * @return $this
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
 
     /**
      * setAction
-     * 
+     *
      * @param string $action
      * @return $this
      */
-    public function setAction($action) {
+    public function setAction($action)
+    {
         $this->action = $action;
         return $this;
     }
 
     /**
      * setForbidden
-     * 
+     *
      * @return $this
      */
-    public function setForbidden() {
+    public function setForbidden()
+    {
         $this->addError(7);
         return $this;
     }
 
     /**
      * getPath
-     * 
+     *
      * @return string
      */
-    public function getPath() {
-        return $this->app->path . self::_namespace . DIRECTORY_SEPARATOR 
+    public function getPath()
+    {
+        return $this->app->path . self::_namespace . DIRECTORY_SEPARATOR
             . str_replace('\\', '/', $this->name) . self::phpExt;
     }
 
     /**
      * check
-     * 
+     *
      * @param string $className
      */
-    public function check($className) {
+    public function check($className)
+    {
         $passed = true;
         if (!$this->isError() && $fileExist = file_exists($this->getPath())) {
-            include_once ($this->getPath());
+            include_once($this->getPath());
             $classExists = class_exists($className, false);
             $methodExists = method_exists($className, $this->action);
             if (!$methodExists || !$classExists) {
-                if (!$classExists)
+                if (!$classExists) {
                     $this->addError(2);
-                if (!$methodExists)
+                }
+                if (!$methodExists) {
                     $this->addError(3);
+                }
                 $passed = false;
             }
         } else {
@@ -128,10 +138,11 @@ class Controller implements Interfaces\Controller {
 
     /**
      * setDefault
-     * 
+     *
      * @return $this
      */
-    public function setDefault() {
+    public function setDefault()
+    {
         list($this->name, $this->action) = [
             ucfirst(self::error),
             ucfirst(self::defaultAction)
@@ -141,10 +152,11 @@ class Controller implements Interfaces\Controller {
 
     /**
      * run
-     * 
+     *
      * @return $this
      */
-    public function run() {
+    public function run()
+    {
         if ($this->getApp()->getRequest()->isHome()) {
             $this->name = ucfirst(self::defaultController);
             $this->action = ucfirst(self::defaultAction);
@@ -154,8 +166,8 @@ class Controller implements Interfaces\Controller {
         }
         if ($matches = $this->app->getRouter()->compile()) {
             @list($this->name, $this->action, $this->params) = $matches;
-            $this->name = ($this->isModuleController()) 
-                ? $this->getModuleControllerNs() 
+            $this->name = ($this->isModuleController())
+                ? $this->getModuleControllerNs()
                 : ucfirst($this->name);
             $this->action = ($this->action) ? $this->action : self::defaultAction;
             $this->action = ucfirst($this->action);
@@ -190,20 +202,22 @@ class Controller implements Interfaces\Controller {
     
     /**
      * isModuleController
-     * 
+     *
      * @return boolean
      */
-    private function isModuleController() {
+    private function isModuleController()
+    {
         $isModule = (strpos($this->name, '/') > 0);
         return $isModule;
     }
     
     /**
      * getModuleControllerNs
-     * 
+     *
      * @return boolean
      */
-    private function getModuleControllerNs() {
+    private function getModuleControllerNs()
+    {
         $parts =  array_map('ucfirst', explode('/', $this->name));
         $ctrlNs = implode('\\', $parts);
         return $ctrlNs;
@@ -211,9 +225,10 @@ class Controller implements Interfaces\Controller {
 
     /**
      * dispatch
-     * 
+     *
      */
-    public function dispatch() {
+    public function dispatch()
+    {
         $className = @get_class($this->result);
         if ($className) {
             switch (get_class($this->result)) {
@@ -229,28 +244,31 @@ class Controller implements Interfaces\Controller {
 
     /**
      * getParams
-     * 
+     *
      * @return array
      */
-    public function getParams($key = '') {
+    public function getParams($key = '')
+    {
         return ($key) ? $this->params[$key] : $this->params;
     }
 
     /**
      * getAction
-     * 
+     *
      * @return string
      */
-    public function getAction() {
+    public function getAction()
+    {
         return $this->action;
     }
 
     /**
      * setError
-     * 
+     *
      * @param int $errorCode
      */
-    private function addError($errorCode) {
+    private function addError($errorCode)
+    {
         $this->errorCode = $errorCode;
         $this->errorMessage = $this->errorsMessage[$this->errorCode];
         $this->errors[] = [
@@ -261,19 +279,21 @@ class Controller implements Interfaces\Controller {
 
     /**
      * isError
-     * 
+     *
      * @return type
      */
-    private function isError() {
+    private function isError()
+    {
         return $this->errors;
     }
 
     /**
      * getNamespacedClass
-     * 
+     *
      * @return string
      */
-    private function getNamespacedClass() {
+    private function getNamespacedClass()
+    {
         $prefixable = ($this->classPrefix) ? self::baskSlash . $this->classPrefix : '';
         $namespace = $prefixable . self::baskSlash . self::_namespace
             . self::baskSlash . $this->name;
@@ -282,19 +302,19 @@ class Controller implements Interfaces\Controller {
 
     /**
      * execute
-     * 
+     *
      */
-    private function execute() {
+    private function execute()
+    {
         $controllerNs = $this->getNamespacedClass();
         $controllerInstance = new $controllerNs($this->app, $this->params);
         $methodExist = method_exists($controllerInstance, $this->action);
         $isCallable = is_callable(array($controllerInstance, $this->action));
         if ($methodExist && $isCallable) {
             $this->result = call_user_func_array(
-                [$controllerInstance, $this->action], 
+                [$controllerInstance, $this->action],
                 is_array($this->params) ? $this->params : []
             );
         }
     }
-
 }

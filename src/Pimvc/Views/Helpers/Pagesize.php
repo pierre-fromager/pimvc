@@ -8,42 +8,45 @@
 
 namespace Pimvc\Views\Helpers;
 
-class Pagesize {
-    
+class Pagesize
+{
     protected static $pagesizes = array(10, 25, 50, 75, 100);
 
     /**
      * get
-     * 
+     *
      * @param int $code
-     * @return string 
+     * @return string
      */
-    public static function get($code) {
+    public static function get($code)
+    {
         return self::$pagesizes[$code];
     }
     
     /**
      * getData
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public static function getData() {
+    public static function getData()
+    {
         return self::$pagesizes;
     }
     
     /**
      * getCombo
-     * 
+     *
      * @param string $curent
-     * @return string 
+     * @return string
      */
-    public static function getCombo($url, $curent) {
+    public static function getCombo($url, $curent)
+    {
         $pageSizes = array_combine(self::getData(), self::getData());
         $selector = Urlselector::get(
-            'pageSize'
-            , $url
-            , $pageSizes
-            , $curent
+            'pageSize',
+            $url,
+            $pageSizes,
+            $curent
         );
         /*
         $selector = new Helper_Select(
@@ -57,4 +60,3 @@ class Pagesize {
         return $result;
     }
 }
-

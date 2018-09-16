@@ -11,25 +11,28 @@ namespace Pimvc\Controller;
 use Pimvc\App;
 use Pimvc\Http\Response as httpResponse;
 
-abstract class Response extends Request implements Interfaces\Response{
+abstract class Response extends Request implements Interfaces\Response
+{
     
     /**
      * __construct
-     * 
+     *
      * @param App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = []) {
+    public function __construct(\Pimvc\App $app, $params = [])
+    {
         parent::__construct($app, $params);
     }
     
     /**
      * redirect
-     * 
+     *
      * @param string $url
      * @return Pimvc\Http\Response
      */
-    public function redirect($url) {
+    public function redirect($url)
+    {
         return $this->getApp()
             ->getResponse()
             ->setContent('')
@@ -40,14 +43,15 @@ abstract class Response extends Request implements Interfaces\Response{
        
     /**
      * getHtmlResponse
-     * 
+     *
      * @param string|View $view
      * @param string $cookieName
      * @param string $cookieValue
      * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '', $httpCode = 200) {
+    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '', $httpCode = 200)
+    {
         $response = $this->getApp()
             ->getResponse()
             ->setContent($view)
@@ -61,17 +65,17 @@ abstract class Response extends Request implements Interfaces\Response{
 
     /**
      * getJsonResponse
-     * 
+     *
      * @param mixed $content
      * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getJsonResponse($content, $httpCode = 200) {
+    public function getJsonResponse($content, $httpCode = 200)
+    {
         return $this->getApp()
             ->getResponse()
             ->setContent($content)
             ->setType(httpResponse::TYPE_JSON)
             ->setHttpCode($httpCode);
     }
-
 }

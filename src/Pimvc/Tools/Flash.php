@@ -10,8 +10,8 @@ namespace Pimvc\Tools;
 
 use Pimvc\Tools\Session as sessionTools;
 
-class Flash {
-
+class Flash
+{
     const FLASH_SESSION_KEY = 'flashdata';
     const FLASH_ERROR = 'error';
     const FLASH_WARNING = 'warning';
@@ -20,38 +20,42 @@ class Flash {
     
     /**
      * addInfo
-     * 
-     * @param string $message 
+     *
+     * @param string $message
      */
-    public static function addInfo($message) {
+    public static function addInfo($message)
+    {
         self::add(self::FLASH_INFO, $message);
     }
     
     /**
      * addWarning
-     * 
-     * @param string $message 
+     *
+     * @param string $message
      */
-    public static function addWarning($message) {
+    public static function addWarning($message)
+    {
         self::add(self::FLASH_WARNING, $message);
     }
 
     /**
      * addError
-     * 
-     * @param string $message 
+     *
+     * @param string $message
      */
-    public static function addError($message) {
+    public static function addError($message)
+    {
         self::add(self::FLASH_ERROR, $message);
     }
 
     /**
      * add
-     * 
+     *
      * @param string $type
-     * @param string $message 
+     * @param string $message
      */
-    public static function add($type, $message) {
+    public static function add($type, $message)
+    {
         if (!empty($type) && !empty($message)) {
             $flash = new \stdClass();
             $flash->type = $type;
@@ -62,10 +66,11 @@ class Flash {
     
     /**
      * render
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public static function render($helperName = '\Pimvc\Views\Helpers\Bootstrap\Flash') {
+    public static function render($helperName = '\Pimvc\Views\Helpers\Bootstrap\Flash')
+    {
         $flashes = self::get();
         $helperRender = '';
         if ($flashes) {
@@ -80,56 +85,61 @@ class Flash {
 
     /**
      * set
-     * 
-     * @param stdClass $flash 
+     *
+     * @param stdClass $flash
      */
-    private static function set($flash) {
-        $flashes = array_merge(self::get(),array($flash));
+    private static function set($flash)
+    {
+        $flashes = array_merge(self::get(), array($flash));
         sessionTools::set(self::FLASH_SESSION_KEY, $flashes);
     }
     
     /**
      * clean
-     * 
+     *
      */
-    private static function clean() {
+    private static function clean()
+    {
         if (self::has()) {
             sessionTools::set(self::FLASH_SESSION_KEY, []);
         }
     }
 
-        /**
+    /**
      * has
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    private static function has() {
+    private static function has()
+    {
         return sessionTools::has(self::FLASH_SESSION_KEY);
     }
     
     /**
      * get
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    private static function get() {
-        return (self::has()) 
-            ? sessionTools::get(self::FLASH_SESSION_KEY) 
+    private static function get()
+    {
+        return (self::has())
+            ? sessionTools::get(self::FLASH_SESSION_KEY)
             : [];
     }
     
     /**
      * isRedirect
-     * 
+     *
      */
-    private static function isRedirect() {
+    private static function isRedirect()
+    {
         $redirect = false;
-        foreach(headers_list() as $header) {
-            if ($header == 'Status:302 Found'){
-                $redirect = true;break;
+        foreach (headers_list() as $header) {
+            if ($header == 'Status:302 Found') {
+                $redirect = true;
+                break;
             };
         }
         return $redirect;
     }
 }
-

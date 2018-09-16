@@ -7,6 +7,7 @@ namespace Pimvc\Type;
  *
  * @author pierrefromager
  */
-class String extends \int{
+class String extends \int
+{
     //put your code here
 }

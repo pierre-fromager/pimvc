@@ -4,6 +4,7 @@ namespace Pimvc\Http\Interfaces;
 
 use \Closure;
 
-interface Layer {
+interface Layer
+{
     public function peel($object, Closure $next);
 }

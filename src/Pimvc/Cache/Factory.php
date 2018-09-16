@@ -10,8 +10,8 @@ namespace Pimvc\Cache;
 
 use \Pimvc\Cache\Adapter\File as fileAdapter;
 
-class Factory {
-    
+class Factory
+{
     const CACHE_ADAPTER_FILE = 'File';
     const CACHE_ADAPTER_APC = 'Apc';
     const CACHE_ADAPTER_MEMCACHE = 'Memcache';
@@ -19,14 +19,15 @@ class Factory {
 
     /**
      * get
-     * 
+     *
      * @param string $type
      * @param string $name
      * @param int $ttl
-     * 
+     *
      * @return mixed
      */
-    public static function get($type, $name = '', $ttl = self::DEFAULT_TTL) {
+    public static function get($type, $name = '', $ttl = self::DEFAULT_TTL)
+    {
         $type = ucfirst($type);
         switch ($type) {
             case self::CACHE_ADAPTER_FILE:
@@ -35,9 +36,8 @@ class Factory {
                 return Lib_Cache_Adapter_Apc::getInstance($name, $ttl);
             case self::CACHE_ADAPTER_MEMCACHE:
                 return Lib_Cache_Adapter_Memcache::getInstance($name, $ttl);
-            default :
+            default:
                 return false;
         }
     }
 }
-

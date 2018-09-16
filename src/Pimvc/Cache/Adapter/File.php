@@ -7,10 +7,10 @@
  */
 namespace Pimvc\Cache\Adapter;
 
-use Pimvc\Cache\Adapter\Interfaces\Adapter as cacheInterface;
+use Pimvc\Cache\Adapter\Interfaces\Adapter as CacheInterface;
 
-class File implements cacheInterface {
-
+class File implements CacheInterface
+{
     const CACHE_ADAPTER_TTL = 300;
     const DEFAULT_CACHE_PATH = '/cache/';
     const DEFAULT_CACHE_EXT = '.tmp';
@@ -27,11 +27,12 @@ class File implements cacheInterface {
 
     /**
      * __construct
-     * 
-     * @param string $name 
-     * @param int $ttl 
+     *
+     * @param string $name
+     * @param int $ttl
      */
-    private function __construct($name, $ttl = self::CACHE_ADAPTER_TTL){
+    private function __construct($name, $ttl = self::CACHE_ADAPTER_TTL)
+    {
         $this->setPath(APP_PATH . self::DEFAULT_CACHE_PATH);
         $this->setName($name);
         self::$_ttl = $ttl;
@@ -40,45 +41,50 @@ class File implements cacheInterface {
     /**
      * __clone
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     /**
      * getInstance
-     * 
+     *
      * @return \Lib_Cache_Adapter_File
      */
-    public static function getInstance($name, $ttl = self::CACHE_ADAPTER_TTL) {
+    public static function getInstance($name, $ttl = self::CACHE_ADAPTER_TTL)
+    {
         self::$_path = APP_PATH . self::DEFAULT_CACHE_PATH;
         self::$_name = $name;
         self::$_ttl = $ttl;
         if (self::DEBUG) {
             $this->logger = Logger::getInstance(APP_PATH . LOG_DIR, Logger::DEBUG);
         }
-        if (!self::$_instance){
-             self::$_instance = new self($name, $ttl);
+        if (!self::$_instance) {
+            self::$_instance = new self($name, $ttl);
         }
         return self::$_instance;
     }
     
     /**
      * exist return true if file or directory exists.
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    protected function exist($filename) {
+    protected function exist($filename)
+    {
         return file_exists($filename);
     }
 
     /**
      * expired return true if cache file date is greater than now minus expiration.
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    public function expired() {
+    public function expired()
+    {
         $filename = $this->getFilename();
         $expirationDate = time() - self::$_ttl;
-        $fileDate = ($this->exist($filename)) 
-            ? filemtime($filename) 
+        $fileDate = ($this->exist($filename))
+            ? filemtime($filename)
             : false;
         return $expirationDate > $fileDate;
     }
@@ -86,16 +92,18 @@ class File implements cacheInterface {
     /**
      * load cache file content.
      */
-    protected function load() {
+    protected function load()
+    {
         $this->cache = unserialize(file_get_contents($this->getFilename()));
     }
     
     /**
      * get loads and returns cache content
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function get($key = '') {
+    public function get()
+    {
         if (self::DEBUG) {
             $this->logger->logDebug(__METHOD__, basename($this->getFilename()));
         }
@@ -105,20 +113,21 @@ class File implements cacheInterface {
 
     /**
      * getFilename
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getFilename() {
+    private function getFilename()
+    {
         return self::$_path . self::$_name;
     }
     
     /**
      * set
-     * 
+     *
      */
-    public function set($key = '', $value) {
+    public function set($value)
+    {
         $filename = $this->getFilename();
-        //echo $filename;
         if (self::DEBUG) {
             $this->logger->logDebug(__METHOD__, basename($filename));
         }
@@ -133,47 +142,46 @@ class File implements cacheInterface {
     }
     
     /**
-     * delete
-     * 
-     */
-    public function delete($key) {
- 
-    }
-    
-    /**
      * setName
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         self::$_name = $name  . self::DEFAULT_CACHE_EXT;
     }
     
     /**
      * getName
-     * 
-     * @return string $name 
+     *
+     * @return string $name
      */
-    public function getName() {
+    public function getName()
+    {
         return self::$_name;
     }
     
     /**
      * setPath
-     * 
-     * @param string $path 
+     *
+     * @param string $path
      */
-    public function setPath($path) {
+    public function setPath($path)
+    {
         self::$_path = $path;
     }
     
     /**
      * getPath
-     * 
-     * @return string $path 
+     *
+     * @return string $path
      */
-    public function getPath() {
+    public function getPath()
+    {
         return self::$_path;
     }
 
+    public function delete($key)
+    {
+    }
 }

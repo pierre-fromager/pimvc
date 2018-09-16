@@ -11,13 +11,15 @@ namespace Pimvc\Views\Helpers\Widgets;
 use Pimvc\Views\Helpers\Widget as widgetHelper;
 use Pimvc\Views\Helpers\Widgets\Interfaces\Standart as widgetInterface;
 
-class Standart extends widgetHelper implements widgetInterface {
+class Standart extends widgetHelper implements widgetInterface
+{
 
     /**
      * __construct
-     * 
+     *
      */
-    public function __construct() {
+    public function __construct()
+    {
         return parent::__construct()
                 ->setTitleDecorator('h3')
                 ->setSectionDecorator(self::PARAM_SECTION)
@@ -28,5 +30,4 @@ class Standart extends widgetHelper implements widgetInterface {
                 ->setTitleOptions()
                 ->render();
     }
-
 }

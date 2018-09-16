@@ -7,8 +7,8 @@
  */
 namespace Pimvc\Db\Generate;
 
-class Domain {
-
+class Domain
+{
     const PARAM_NAME = 'name';
     const PARAM_TYPE = 'type';
     const PARAM_TABLE_NAME = 'table_name';
@@ -38,7 +38,8 @@ class Domain {
      * @param string $tableName
      * @return string
      */
-    private static function getClassLine($tableName) {
+    private static function getClassLine($tableName)
+    {
         return self::GENERATE_MODEL_NAMESPACE . "\n" . self::TYPE_CLASS . ' ' . self::GENERATE_MODEL_PREFIX
             . ucfirst(str_replace('_', '', strtolower($tableName))) . self::GENERATE_PLURAL
             . ' ' . self::GENERATE_EXTENDS . ' ' . self::GENERATE_MODEL_SUFFIX
@@ -51,18 +52,20 @@ class Domain {
      * @param array $array
      * @return boolean
      */
-    private static function isAssoc($array) {
+    private static function isAssoc($array)
+    {
         $array = array_keys($array);
         return ($array !== array_keys($array));
     }
 
     /**
      * getDocBlock
-     * 
+     *
      * @param string $name
-     * @return string 
+     * @return string
      */
-    private static function getDocBlock($column, $indexes, $relations) {
+    private static function getDocBlock($column, $indexes, $relations)
+    {
         $name = strtolower($column[self::PARAM_NAME]);
         $types = explode('&nbsp;', $column[self::PARAM_TYPE]);
         $typeCode = $types[1];
@@ -77,7 +80,7 @@ class Domain {
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @var ' . strtolower($type) . ' ' .$name . ' (comments)'. PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @name ' . $name . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @type ' . $type . PHP_EOL
-            . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @pdo ' . $typePdo . PHP_EOL 
+            . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @pdo ' . $typePdo . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @length ' . $length . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @index ' . $index . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_DOCBLOCK_L . ' @pk ' . $pk . PHP_EOL
@@ -88,20 +91,22 @@ class Domain {
 
     /**
      * isIndex
-     * 
+     *
      * @param string $columnName
-     * @return boolean 
+     * @return boolean
      */
-    private static function isIndex($columnName) {
+    private static function isIndex($columnName)
+    {
         return in_array($columnName, self::$indexes);
     }
     
     /**
      * setIndexes
-     * 
-     * @param array $indexes 
+     *
+     * @param array $indexes
      */
-    private static function setIndexes($indexes) {
+    private static function setIndexes($indexes)
+    {
         foreach ($indexes as $k => $v) {
             self::$indexes[] = $v[1];
         }
@@ -109,40 +114,44 @@ class Domain {
     
     /**
      * isPk
-     * 
+     *
      * @param string $columnName
-     * @return boolean 
+     * @return boolean
      */
-    private static function isPk($columnName) {
+    private static function isPk($columnName)
+    {
         return isset(self::$relations[$columnName]);
     }
     
     /**
      * getFt
-     * 
+     *
      * @param string $columnName
-     * @return string 
+     * @return string
      */
-    private static function getFt($columnName) {
+    private static function getFt($columnName)
+    {
         return self::$relations[$columnName][self::PARAM_TABLE_NAME];
     }
     
     /**
      * getFk
-     * 
+     *
      * @param string $columnName
-     * @return string 
+     * @return string
      */
-    private static function getFk($columnName) {
+    private static function getFk($columnName)
+    {
         return self::$relations[$columnName][self::PARAM_COLUMN_NAME];
     }
     
     /**
      * setRelations
-     * 
-     * @param array $indexes 
+     *
+     * @param array $indexes
      */
-    private static function setRelations($relations) {
+    private static function setRelations($relations)
+    {
         foreach ($relations as $k => $v) {
             $name = $v[0];
             self::$relations[$name] = array(
@@ -158,7 +167,8 @@ class Domain {
      *
      * @param string $tableName
      */
-    private static function getVars($columns, $indexes, $relations) {
+    private static function getVars($columns, $indexes, $relations)
+    {
         $vars = '';
         self::setIndexes($indexes);
         self::setRelations($relations);
@@ -176,14 +186,13 @@ class Domain {
      * @param string $tableName
      * @param array $colomns
      */
-    public static function get($tableName, $columns, $indexes, $relations) {
+    public static function get($tableName, $columns, $indexes, $relations)
+    {
         self::$indexes = [];
         self::$relations = [];
-        $result = '<font size="1">' . str_replace('style="color: "', '' , highlight_string(self::TYPE_PHP_START . PHP_EOL
+        $result = '<font size="1">' . str_replace('style="color: "', '', highlight_string(self::TYPE_PHP_START . PHP_EOL
             . self::getClassLine($tableName) . self::getVars($columns, $indexes, $relations)
             . self::GENERATE_C_BRACKET, true)) . '</font>';
         return $result;
     }
-
 }
-

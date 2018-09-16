@@ -8,8 +8,8 @@
 
 namespace Pimvc\Http\Interfaces;
 
-interface Routes {
-
+interface Routes
+{
     const URI_SEPARATOR = '/';
     const REQUEST_URI = 'REQUEST_URI';
     const BAD_ROUTE_COLLECTION = 'Bad routes collection';

@@ -8,8 +8,8 @@
 
 namespace Pimvc\Model\Interfaces;
 
-interface Users {
-    
+interface Users
+{
     const PARAM_ID = 'id';
     const PARAM_NAME = 'name';
     const PARAM_EMAIL = 'email';

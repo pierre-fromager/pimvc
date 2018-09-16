@@ -7,7 +7,8 @@
  */
 namespace Pimvc;
 
-class Logger implements Interfaces\Logger{
+class Logger implements Interfaces\Logger
+{
 
     /**
      * Current status of the log file
@@ -84,7 +85,8 @@ class Logger implements Interfaces\Logger{
      * @param integer $severity     One of the pre-defined severity constants
      * @return KLogger
      */
-    public static function getFileInstance($logDirectory = false, $severity = false, $adapter = self::LOG_ADAPTER_FILE) {
+    public static function getFileInstance($logDirectory = false, $severity = false, $adapter = self::LOG_ADAPTER_FILE)
+    {
         self::$adapter = $adapter;
         if ($severity === false) {
             $severity = self::$_defaultSeverity;
@@ -102,9 +104,9 @@ class Logger implements Interfaces\Logger{
         }
 
         self::$fileInstances[$logDirectory] = new self(
-            $logDirectory
-            , $severity
-            , $adapter
+            $logDirectory,
+            $severity,
+            $adapter
         );
 
         return self::$fileInstances[$logDirectory];
@@ -112,29 +114,29 @@ class Logger implements Interfaces\Logger{
     
     /**
      * getDbInstance
-     * 
+     *
      * @param string $name
      * @param string $severity
-     * @return \logger 
+     * @return \logger
      */
     public static function getDbInstance(
-        $name
-        , $severity = false
-        , $adapter = self::LOG_ADAPTER_DB
+        $name,
+        $severity = false,
+        $adapter = self::LOG_ADAPTER_DB
     ) {
         self::$adapter = $adapter;
         if (count(self::$dbInstances) > 0) {
             $isInstanciated = (in_array($name, self::$dbInstances));
-            if ($isInstanciated) {    
+            if ($isInstanciated) {
                 return self::$dbInstances[$name];
             }
         }
         self::$dbInstances[$name] = new self(
-            $name
-            , ($severity === false) 
-                ? self::$_defaultSeverity 
-                : $severity
-            , self::$adapter
+            $name,
+            ($severity === false)
+                ? self::$_defaultSeverity
+                : $severity,
+            self::$adapter
         );
         return self::$dbInstances[$name];
     }
@@ -146,9 +148,10 @@ class Logger implements Interfaces\Logger{
      * @param integer $severity     One of the pre-defined severity constants
      * @return void
      */
-    private function __construct($logDirectory = '', $severity, $adapter) {
-        self::$remoteAddr = (php_sapi_name() === 'cli') 
-            ? 'localhost' 
+    private function __construct($logDirectory = '', $severity, $adapter)
+    {
+        self::$remoteAddr = (php_sapi_name() === 'cli')
+            ? 'localhost'
             : $_SERVER['REMOTE_ADDR'];
         if ($severity === self::OFF) {
             return;
@@ -185,7 +188,8 @@ class Logger implements Interfaces\Logger{
     /**
      * Class destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->_fileHandle) {
             fclose($this->_fileHandle);
         }
@@ -197,7 +201,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logDebug($line, $args = self::NO_ARGUMENTS) {
+    public function logDebug($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::DEBUG, $args);
     }
 
@@ -205,15 +210,17 @@ class Logger implements Interfaces\Logger{
      * Returns (and removes) the last message from the queue.
      * @return string
      */
-    public function getMessage() {
-        return array_pop($this->_messageQueue); 
+    public function getMessage()
+    {
+        return array_pop($this->_messageQueue);
     }
 
     /**
      * Returns the entire message queue (leaving it intact)
      * @return array
      */
-    public function getMessages() {
+    public function getMessages()
+    {
         return $this->_messageQueue;
     }
 
@@ -221,16 +228,18 @@ class Logger implements Interfaces\Logger{
      * Empties the message queue
      * @return void
      */
-    public function clearMessages() {
+    public function clearMessages()
+    {
         $this->_messageQueue = [];
     }
 
     /**
      * Sets the date format used by all instances of KLogger
-     * 
+     *
      * @param string $dateFormat Valid format string for date()
      */
-    public static function setDateFormat($dateFormat) {
+    public static function setDateFormat($dateFormat)
+    {
         self::$_dateFormat = $dateFormat;
     }
 
@@ -241,7 +250,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logInfo($line, $args = self::NO_ARGUMENTS) {
+    public function logInfo($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::INFO, $args);
     }
 
@@ -252,19 +262,21 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logNotice($line, $args = self::NO_ARGUMENTS) {
+    public function logNotice($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::NOTICE, $args);
     }
 
     /**
      * Writes a $line to the log with a severity level of WARN. Generally
-     * corresponds to E_WARNING, E_USER_WARNING, E_CORE_WARNING, or 
+     * corresponds to E_WARNING, E_USER_WARNING, E_CORE_WARNING, or
      * E_COMPILE_WARNING
      *
      * @param string $line Information to log
      * @return void
      */
-    public function logWarn($line, $args = self::NO_ARGUMENTS) {
+    public function logWarn($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::WARN, $args);
     }
 
@@ -275,7 +287,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logError($line, $args = self::NO_ARGUMENTS) {
+    public function logError($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::ERR, $args);
     }
 
@@ -287,7 +300,8 @@ class Logger implements Interfaces\Logger{
      * @return void
      * @deprecated Use logCrit
      */
-    public function logFatal($line, $args = self::NO_ARGUMENTS) {
+    public function logFatal($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::FATAL, $args);
     }
 
@@ -297,7 +311,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logAlert($line, $args = self::NO_ARGUMENTS) {
+    public function logAlert($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::ALERT, $args);
     }
 
@@ -307,7 +322,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logCrit($line, $args = self::NO_ARGUMENTS) {
+    public function logCrit($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::CRIT, $args);
     }
 
@@ -317,7 +333,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Information to log
      * @return void
      */
-    public function logEmerg($line, $args = self::NO_ARGUMENTS) {
+    public function logEmerg($line, $args = self::NO_ARGUMENTS)
+    {
         $this->log($line, self::EMERG, $args);
     }
 
@@ -327,21 +344,21 @@ class Logger implements Interfaces\Logger{
      * @param string  $line     Text to add to the log
      * @param integer $severity Severity level of log message (use constants)
      */
-    public function log($line, $severity, $args = self::NO_ARGUMENTS) {
+    public function log($line, $severity, $args = self::NO_ARGUMENTS)
+    {
         if ($this->_severityThreshold >= $severity) {
             $status = $this->_getTimeLine($severity);
-            if (self::$adapter == self::LOG_ADAPTER_FILE) {           
+            if (self::$adapter == self::LOG_ADAPTER_FILE) {
                 $line = "$status $line";
                 if ($args !== self::NO_ARGUMENTS) {
                     $line = $line . ';' . str_replace(
-                        ["\n", ' '], 
-                        '', 
+                        ["\n", ' '],
+                        '',
                         var_export($args, true)
                     );
                 }
                 $this->writeFreeFormLine($line . PHP_EOL);
-            } elseif (
-                    $this->isDbAdapter(self::$adapter) 
+            } elseif ($this->isDbAdapter(self::$adapter)
                     && !$this->isLan()
                 ) {
                 $logModel = new Model_Logs();
@@ -365,11 +382,12 @@ class Logger implements Interfaces\Logger{
     
     /**
      * isDbAdapter
-     * 
+     *
      * @param string $adapterPool
-     * @return boolean 
+     * @return boolean
      */
-    private function isDbAdapter($adapterPool) {
+    private function isDbAdapter($adapterPool)
+    {
         $dbAdaptersPool = array(
             self::LOG_ADAPTER_DB
             , self::LOG_ADAPTER_DB1
@@ -383,13 +401,14 @@ class Logger implements Interfaces\Logger{
 
     /**
      * isLan
-     * 
-     * @return type 
+     *
+     * @return type
      */
-    private function isLan() {
+    private function isLan()
+    {
         return false;
-        return (self::LOG_LAN_ANY) 
-            ? false 
+        return (self::LOG_LAN_ANY)
+            ? false
             : (strpos($_SERVER['REMOTE_ADDR'], self::LOG_LAN_PREFIX) !== false);
     }
 
@@ -399,7 +418,8 @@ class Logger implements Interfaces\Logger{
      * @param string $line Line to write to the log
      * @return void
      */
-    public function writeFreeFormLine($line) {
+    public function writeFreeFormLine($line)
+    {
         if ($this->_logStatus == self::STATUS_LOG_OPEN
                 && $this->_severityThreshold != self::OFF) {
             if (fwrite($this->_fileHandle, $line) === false) {
@@ -410,11 +430,12 @@ class Logger implements Interfaces\Logger{
 
     /**
      * _getTimeLine
-     * 
+     *
      * @param type $level
-     * @return type 
+     * @return type
      */
-    private function _getTimeLine($level) {
+    private function _getTimeLine($level)
+    {
         $time = self::$remoteAddr . ' ; ' . date(self::$_dateFormat) . ' ; ';
         switch ($level) {
             case self::EMERG:
@@ -439,5 +460,4 @@ class Logger implements Interfaces\Logger{
                 return $time . 'LOG;';
         }
     }
-
 }

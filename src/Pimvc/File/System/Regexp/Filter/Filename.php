@@ -9,16 +9,16 @@ namespace Pimvc\File\System\Regexp\Filter;
 
 use Pimvc\File\System\Regexp\Filter as fsFilter;
 
-class Filename extends fsFilter {
+class Filename extends fsFilter
+{
 
     /**
      * accept
-     * 
+     *
      * @return boolean
      */
-    public function accept() {
+    public function accept()
+    {
         return (!$this->isFile() || preg_match($this->regexp, $this->getFilename()));
     }
-
 }
-

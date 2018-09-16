@@ -8,11 +8,12 @@
 
 namespace Pimvc\Controller\Interfaces;
 
-interface Basic extends View{
+interface Basic extends View
+{
 
     /**
      * __construct
-     * 
+     *
      * @param \Pimvc\App $app
      * @param array $params
      */

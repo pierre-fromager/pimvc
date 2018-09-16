@@ -10,11 +10,12 @@ namespace Pimvc\Controller\Interfaces;
 
 use Pimvc\App;
 
-interface Response extends Request {
+interface Response extends Request
+{
 
     /**
      * __construct
-     * 
+     *
      * @param \Pimvc\App $app
      * @param array $params
      */
@@ -22,14 +23,14 @@ interface Response extends Request {
 
     /**
      * redirect
-     * 
+     *
      * @param string $url
      */
     public function redirect($url);
     
     /**
      * getHtmlResponse
-     * 
+     *
      * @param Pimv\View $view
      * @param string $cookieName
      * @param string $cookieValue
@@ -38,7 +39,7 @@ interface Response extends Request {
 
     /**
      * getJsonReponse
-     * 
+     *
      * @param mixed $content
      */
     public function getJsonResponse($content);

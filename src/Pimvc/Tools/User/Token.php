@@ -7,16 +7,18 @@
  */
 namespace Pimvc\Tools\User;
 
-class Token {
+class Token
+{
     
     /**
      * get
-     * 
+     *
      * @param string $email
      * @param string $password
-     * @return string 
+     * @return string
      */
-    public static function get($email, $password) {
+    public static function get($email, $password)
+    {
         return md5($email . $password);
     }
 }

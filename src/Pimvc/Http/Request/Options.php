@@ -10,29 +10,31 @@ namespace Pimvc\Http\Request;
 
 use Pimvc\Http\Interfaces\Request\Options as requestOptionsInterface;
 
-class Options implements requestOptionsInterface {
-
+class Options implements requestOptionsInterface
+{
     private $config;
     public $scheme;
     public $hostname;
 
     /**
      * __construct
-     * 
+     *
      * @return $this
      */
-    public function __construct() {
+    public function __construct()
+    {
         return $this;
     }
 
     /**
      * load
-     * 
+     *
      * @param \Pimvc\Config $config
      * @return $this
      * @throws Exception
      */
-    public function load(\Pimvc\Config $config) {
+    public function load(\Pimvc\Config $config)
+    {
         if ($config->hasEntry(self::OPTIONS_REQUEST)) {
             $this->config = $config->getSettings(self::OPTIONS_REQUEST);
             $this->apply();
@@ -43,11 +45,11 @@ class Options implements requestOptionsInterface {
 
     /**
      * apply
-     * 
+     *
      */
-    private function apply() {
+    private function apply()
+    {
         $this->hostname = $this->config[self::OPTIONS_HOSTNAME];
         $this->scheme = $this->config[self::OPTIONS_SCHEME];
     }
-
 }

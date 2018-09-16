@@ -8,8 +8,8 @@
 
 namespace Pimvc\Interfaces;
 
-interface Controller {
-
+interface Controller
+{
     const error = 'error';
     const _namespace = 'Controller';
     const defaultController = 'Home';

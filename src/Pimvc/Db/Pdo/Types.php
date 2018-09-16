@@ -8,8 +8,8 @@
 
 namespace Pimvc\Db\Pdo;
 
-class Types {
-    
+class Types
+{
     const TYPE_BOOLEAN = 1;
     const TYPE_BOOLEAN_LABEL = 'boolean';
     const TYPE_INTEGER = 3;
@@ -37,11 +37,12 @@ class Types {
     
     /**
      * getPdo returns the pdo binding's type for a given 4d type
-     * 
+     *
      * @param int $Type4d
      * @return int
      */
-    public static function getPdo($type4d) {
+    public static function getPdo($type4d)
+    {
         $intTypes = array(self::TYPE_INTEGER, self::TYPE_LONGINT);
         $isInt = in_array($type4d, $intTypes);
         $pdo = ($isInt) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
@@ -52,11 +53,12 @@ class Types {
     
     /**
      * getLabel
-     * 
+     *
      * @param int $type4d
-     * @return string 
+     * @return string
      */
-    public static function getLabel($type4d) {
+    public static function getLabel($type4d)
+    {
         $types = array(
             self::TYPE_BOOLEAN => self::TYPE_BOOLEAN_LABEL
             , self::TYPE_INTEGER => self::TYPE_INTEGER_LABEL
@@ -68,18 +70,19 @@ class Types {
             , self::TYPE_LOB => self::TYPE_LOB_LABEL
         );
         $numericValue = '&nbsp;(' . $type4d . ')' ;
-        return (isset($types[$type4d])) 
+        return (isset($types[$type4d]))
             ? ucfirst($types[$type4d]) . $numericValue
             : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }
     
     /**
      * getPdoLabel
-     * 
+     *
      * @param int $type4d
-     * @return string 
+     * @return string
      */
-    public static function getPdoLabel($typePdo) {
+    public static function getPdoLabel($typePdo)
+    {
         $types = array(
             \PDO::PARAM_NULL => self::TYPE_NULL_LABEL
             , \PDO::PARAM_INT => self::TYPE_INTEGER_LABEL
@@ -89,19 +92,20 @@ class Types {
             , \PDO::PARAM_BOOL => self::TYPE_BOOLEAN_LABEL
         );
         $numericValue = '&nbsp;(' . $typePdo . ')';
-        return (isset($types[$typePdo])) 
-            ? ucfirst($types[$typePdo]) . $numericValue 
+        return (isset($types[$typePdo]))
+            ? ucfirst($types[$typePdo]) . $numericValue
             : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }
 
     /**
      * get returns 4d types, 4d lenghts , Pdo type
-     * 
+     *
      * @param string $tableName
      * @param string $columnName
-     * @return array 
+     * @return array
      */
-    public static function get($tableName) {
+    public static function get($tableName)
+    {
         $output = [];
         $typeModel = new Model_4d_Columns();
         $typeResults = $typeModel->getByTableName($tableName);
@@ -119,20 +123,21 @@ class Types {
     }
     
     /**
-     * getIndexTypeLabel returns 4d index types label 
+     * getIndexTypeLabel returns 4d index types label
      * for a given 4d index type value
-     * 
+     *
      * @param int $indexTypeValue
-     * @return string 
+     * @return string
      */
-    public static function getIndexTypeLabel($indexTypeValue) {
+    public static function getIndexTypeLabel($indexTypeValue)
+    {
         $types = array(
             self::TYPE_4D_INDEX_BTREE => self::TYPE_4D_INDEX_BTREE_LABEL
             , self::TYPE_4D_INDEX_CLUSTER_BTREE => self::TYPE_4D_INDEX_CLUSTER_BTREE_LABEL
         );
         $numericValue = '&nbsp;(' . $indexTypeValue . ')';
-        return (isset($types[$indexTypeValue])) 
-            ? ucfirst($types[$indexTypeValue]) . $numericValue 
+        return (isset($types[$indexTypeValue]))
+            ? ucfirst($types[$indexTypeValue]) . $numericValue
             : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }
 }

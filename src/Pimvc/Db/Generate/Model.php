@@ -7,8 +7,8 @@
 
 namespace Pimvc\Db\Generate;
 
-class Model {
-
+class Model
+{
     const TYPE_PHP_START = '<?php';
     const TYPE_ADAPTER = 'Pdo4d';
     const MYSQL_ADAPTER = 'PdoMysql';
@@ -32,7 +32,7 @@ class Model {
     const GENERATE_ARRAY = 'array';
     const GENERATE_PLURAL = 's';
     const ADAPTER_4D = 'Pdo4d';
-    
+
     protected static $indexes = [];
     protected static $relations = [];
     protected static $dependentModels = '';
@@ -46,22 +46,23 @@ class Model {
      * @param string $tableName
      * @param array $colomns
      */
-    public static function get($adapter = '', $tableName, $indexes, $relations = []) {
-        self::$adapter = (empty($adapter)) 
-            ? self::DEFAULT_ADAPTER 
+    public static function get($adapter, $tableName, $indexes, $relations = [])
+    {
+        self::$adapter = (empty($adapter))
+            ? self::DEFAULT_ADAPTER
             : $adapter;
-        self::$modelSuffix = (self::$adapter == self::ADAPTER_4D) 
-            ? self::GENERATE_MODEL_PREFIX . 'Proscope_' 
+        self::$modelSuffix = (self::$adapter == self::ADAPTER_4D)
+            ? self::GENERATE_MODEL_PREFIX . 'Proscope_'
             : self::GENERATE_MODEL_PREFIX;
         self::$tableName = $tableName;
         self::$indexes = [];
         self::$relations = [];
-        $formatedClass = self::TYPE_PHP_START . PHP_EOL 
-            . self::getClassLine($tableName) 
-            . self::getVars($indexes, $relations) 
+        $formatedClass = self::TYPE_PHP_START . PHP_EOL
+            . self::getClassLine($tableName)
+            . self::getVars($indexes, $relations)
             . self::GENERATE_C_BRACKET;
-        $result = '<font size="1">' 
-            . str_replace('style="color: "', '' , highlight_string($formatedClass, true)) 
+        $result = '<font size="1">'
+            . str_replace('style="color: "', '', highlight_string($formatedClass, true))
             . '</font>';
         return $result;
     }
@@ -72,7 +73,8 @@ class Model {
      * @param string $tableName
      * @return string
      */
-    private static function getClassLine($tableName) {
+    private static function getClassLine($tableName)
+    {
         return self::GENERATE_MODEL_NAMESPACE . "\n" . self::TYPE_CLASS . ' ' . self::$modelSuffix
             . ucfirst(str_replace('_', '', strtolower($tableName))) . self::GENERATE_PLURAL
             . ' ' . self::GENERATE_EXTENDS . ' ' . self::GENERATE_MODEL_SUFFIX
@@ -85,7 +87,8 @@ class Model {
      * @param array $array
      * @return boolean
      */
-    private static function isAssoc($array) {
+    private static function isAssoc($array)
+    {
         $array = array_keys($array);
         return ($array !== array_keys($array));
     }
@@ -93,61 +96,67 @@ class Model {
 
     /**
      * isIndex
-     * 
+     *
      * @param string $columnName
-     * @return boolean 
+     * @return boolean
      */
-    private static function isIndex($columnName) {
+    private static function isIndex($columnName)
+    {
         return in_array($columnName, self::$indexes);
     }
-    
+
     /**
      * setIndexes
-     * 
-     * @param array $indexes 
+     *
+     * @param array $indexes
      */
-    private static function setIndexes($indexes) {
+    private static function setIndexes($indexes)
+    {
         foreach ($indexes as $k => $v) {
             self::$indexes[] = $v[1];
         }
     }
-    
+
     /**
      * isPk
-     * 
+     *
      * @param string $columnName
-     * @return boolean 
+     * @return boolean
      */
-    private static function isPk($columnName) {
+    private static function isPk($columnName)
+    {
         return isset(self::$relations[$columnName]);
     }
-    
+
     /**
      * getFt
-     * 
+     *
      * @param string $columnName
-     * @return string 
+     * @return string
      */
-    private static function getFt($columnName) {
+    private static function getFt($columnName)
+    {
         return self::$relations[$columnName]['table_name'];
     }
-    
+
     /**
      * getModelClassname
-     * 
+     *
      * @param string $tableName
-     * @return string 
+     * @return string
      */
-    private static function getModelClassname($tableName) {
+    private static function getModelClassname($tableName)
+    {
         return ucfirst(strtolower(str_replace('_', '', $tableName)));
     }
 
     /**
      * getFts
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    private static function getFts() {
+    private static function getFts()
+    {
         $fts = [];
         foreach (self::$relations as $k => $v) {
             $fts[] = self::getFt($k) . self::GENERATE_PLURAL;
@@ -156,24 +165,26 @@ class Model {
         $fts = array_map(__CLASS__ . '::getModelClassname', $fts);
         return $fts;
     }
-    
-    
+
+
     /**
      * getFk
-     * 
+     *
      * @param string $columnName
-     * @return string 
+     * @return string
      */
-    private static function getFk($columnName) {
+    private static function getFk($columnName)
+    {
         return self::$relations[$columnName]['column_name'];
     }
-    
+
     /**
      * setRelations
-     * 
-     * @param array $indexes 
+     *
+     * @param array $indexes
      */
-    private static function setRelations($relations) {
+    private static function setRelations($relations)
+    {
         foreach ($relations as $k => $v) {
             $name = $v[0];
             self::$relations[$name] = array(
@@ -182,36 +193,39 @@ class Model {
             );
         }
     }
-    
+
     /**
      * getDeclarationVar
-     * 
+     *
      * @param string $type
      * @param string $name
      * @param string $value
-     * @return string 
+     * @return string
      */
-    private static function getDeclarationVar($type, $name, $value, $withQuote = true) {
+    private static function getDeclarationVar($type, $name, $value, $withQuote = true)
+    {
         $quote = ($withQuote) ? self::GENERATE_QUOTE : '';
         return self::GENERATE_TAB
-            . $type . ' ' . $name . ' = ' . $quote . $value . $quote 
+            . $type . ' ' . $name . ' = ' . $quote . $value . $quote
             . self::GENERATE_COMA . PHP_EOL;
     }
-    
+
     /**
      * quoteWrapper is a callback function quote mapper
      * @param string $value
      */
-    private static function quoteMapper($value) {
+    private static function quoteMapper($value)
+    {
         return self::GENERATE_QUOTE . $value . self::GENERATE_QUOTE;
     }
-        
+
     /**
      * getdependentModels
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getRefmap() {
+    private static function getRefmap()
+    {
         $refmap = [];
         foreach (self::$relations as $key => $value) {
             $local = $key;
@@ -226,88 +240,94 @@ class Model {
             );
         }
         return self::getDeclarationVar(
-            self::GENERATE_PROTECTED
-            , '$_refMap'
-            , var_export($refmap, true)
-            , false
+            self::GENERATE_PROTECTED,
+            '$_refMap',
+            var_export($refmap, true),
+            false
         );
     }
-    
+
     /**
      * getName
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getName() {
+    private static function getName()
+    {
         return self::getDeclarationVar(
-            self::GENERATE_PROTECTED
-            , '$_name'
-            , self::$tableName
+            self::GENERATE_PROTECTED,
+            '$_name',
+            self::$tableName
         );
     }
-    
+
     /**
      * getPrimary
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getPrimary() {
+    private static function getPrimary()
+    {
         return self::getDeclarationVar(
-            self::GENERATE_PROTECTED
-            , '$_primary'
-            , self::$indexes[0]
+            self::GENERATE_PROTECTED,
+            '$_primary',
+            self::$indexes[0]
         );
     }
-    
+
     /**
      * getAdapter
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getAdapter() {
+    private static function getAdapter()
+    {
         return self::getDeclarationVar(
-            self::GENERATE_PROTECTED
-            , '$_adapter'
-            , self::$adapter
+            self::GENERATE_PROTECTED,
+            '$_adapter',
+            self::$adapter
         );
     }
-    
+
     /**
      * getAlias
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getAlias() {
+    private static function getAlias()
+    {
         $alias = strtolower(str_replace('_', '', self::$tableName));
         return self::getDeclarationVar(
-            self::GENERATE_PROTECTED
-            , '$_alias'
-            , $alias
+            self::GENERATE_PROTECTED,
+            '$_alias',
+            $alias
         );
     }
-    
+
     /**
      * getDeclarationFunction
-     * 
+     *
      * @param string $type
      * @param string $name
      * @param string $value
-     * @return string 
+     * @return string
      */
-    private static function getDeclarationFunction($type, $name, $params, $lines) {
+    private static function getDeclarationFunction($type, $name, $params, $lines)
+    {
         return PHP_EOL . self::GENERATE_TAB
-            . $type . ' '. self::GENERATE_FUNCTION . ' ' . $name . '(' . $params . ')' 
+            . $type . ' '. self::GENERATE_FUNCTION . ' ' . $name . '(' . $params . ')'
             . self::GENERATE_O_BRACKET . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_TAB . $lines . PHP_EOL
             . self::GENERATE_TAB . self::GENERATE_C_BRACKET . PHP_EOL;
     }
-    
+
     /**
      * getContructor
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private static function getContructor() {
+    private static function getContructor()
+    {
         $name = self::GENERATE_CONSTRUCT;
         $params = '$config = []';
         $lines = 'parent::__construct($config);';
@@ -320,10 +340,11 @@ class Model {
      *
      * @param string $tableName
      */
-    private static function getVars($indexes, $relations) {
+    private static function getVars($indexes, $relations)
+    {
         self::setIndexes($indexes);
         self::setRelations($relations);
-        return PHP_EOL . self::getName() 
+        return PHP_EOL . self::getName()
             . self::getPrimary()
             . self::getAlias()
             . self::getAdapter()

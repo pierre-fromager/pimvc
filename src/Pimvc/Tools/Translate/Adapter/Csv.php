@@ -1,15 +1,15 @@
 <?php
 /**
  * Description of Pimvc\Tools\Translate\Adapter\Csv
- * 
+ *
  */
 
 namespace Pimvc\Tools\Translate\Adapter;
 
 use Pimvc\Tools\Lang as langTools;
 
-class Csv {
-
+class Csv
+{
     const NEED_TRANSLATION_MESSAGE = '(translation required)';
     const LANG_SRC = 'langsrc';
     const LANG_DST = 'langdst';
@@ -19,19 +19,21 @@ class Csv {
 
     /**
      * @see __construct
-     * 
-     * @param string $locale 
+     *
+     * @param string $locale
      */
-    public function __construct($locale) {
+    public function __construct($locale)
+    {
         $this->_locale = $locale;
     }
 
     /**
      * getTranslationData
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getTranslationData() {
+    public function getTranslationData()
+    {
         $data = langTools::getData($this->_locale);
         if (!$data) {
             return [];
@@ -45,10 +47,11 @@ class Csv {
 
     /**
      * addTranslationItem
-     * 
-     * @param string $msg 
+     *
+     * @param string $msg
      */
-    public function addTranslationItem($msg) {
+    public function addTranslationItem($msg)
+    {
         $data = langTools::getData($this->_locale);
         $data[] = [
             self::LANG_SRC => $msg
@@ -60,12 +63,11 @@ class Csv {
 
     /**
      * getLocale
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function getLocale() {
+    public function getLocale()
+    {
         return $this->_locale;
     }
-
 }
-

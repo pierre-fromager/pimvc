@@ -8,13 +8,13 @@
 
 namespace Pimvc\Controller\Interfaces;
 
-interface View extends Response {
-
+interface View extends Response
+{
     const VIEW_PATH = '/Views/';
 
     /**
      * __construct
-     * 
+     *
      * @param \Pimvc\App $app
      * @param array $params
      */
@@ -22,7 +22,7 @@ interface View extends Response {
  
     /**
      * getView
-     * 
+     *
      * @param array $params
      * @param string $viewPath
      */

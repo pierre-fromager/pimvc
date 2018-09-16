@@ -8,8 +8,8 @@
 
 namespace Pimvc\Model\Mysql;
 
-class Constraints extends \Pimvc\Db\Model\Orm {
-    
+class Constraints extends \Pimvc\Db\Model\Orm
+{
     protected $_schema = 'information_schema';
     protected $_name = 'table_constraints';
     protected $_primary = 'table_name';
@@ -18,20 +18,22 @@ class Constraints extends \Pimvc\Db\Model\Orm {
 
     /**
      * @see __construct
-     * 
-     * @param type $config 
+     *
+     * @param type $config
      */
-    public function __construct($config = []) {
+    public function __construct($config = [])
+    {
         parent::__construct($config);
     }
 
     /**
      * getByTableName
-     * 
+     *
      * @param string $tableName
-     * @return array 
+     * @return array
      */
-    public function getByTableName($tableName) {
+    public function getByTableName($tableName)
+    {
         $what = [];
         $where = array($this->getPrimary() => $tableName);
         $this->find($what, $where);
@@ -40,15 +42,15 @@ class Constraints extends \Pimvc\Db\Model\Orm {
     
     /**
      * getBySchema
-     * 
+     *
      * @param string $schema
-     * @return array 
+     * @return array
      */
-    public function getBySchema($schema) {
+    public function getBySchema($schema)
+    {
         $what = [];
         $where = array('table_schema' => $schema);
         $this->find($what, $where);
         return $this->getRowsetAsArray();
     }
 }
-

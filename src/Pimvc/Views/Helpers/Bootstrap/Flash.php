@@ -10,8 +10,8 @@ namespace Pimvc\Views\Helpers\Bootstrap;
 
 use \Pimvc\Views\Helpers\Glyph as glyphHelper;
 
-class Flash {
-
+class Flash
+{
     const PARAM_A = 'a';
     const PARAM_DIV = 'div';
     const PARAM_P = 'p';
@@ -33,11 +33,12 @@ class Flash {
     
     /**
      * get
-     * 
+     *
      * @param array $flashes
-     * @return string 
+     * @return string
      */
-    public static function get($flashes) {
+    public static function get($flashes)
+    {
         $content = '';
         foreach ($flashes as $flash) {
             $content .= self::getFlash($flash->type, $flash->message);
@@ -47,20 +48,21 @@ class Flash {
         
     /**
      * getFlash
-     * 
+     *
      * @param string $type
      * @param string $message
-     * @return string 
+     * @return string
      */
-    private static function getFlash($type, $message) {
+    private static function getFlash($type, $message)
+    {
         $bsClass = self::getMappedBsClass($type);
         $classes = self::BS_ALTER . ' ' . $bsClass;
-        $text = self::getIco($type) . ucfirst($type) 
+        $text = self::getIco($type) . ucfirst($type)
             . self::BS_DESCR . ucfirst($message);
         $closeLink = new \Pimvc\Html\Element\Decorator(
-            self::PARAM_A
-            , '<small>' . glyphHelper::get(glyphHelper::eye_close) . '</small>'
-            , array(
+            self::PARAM_A,
+            '<small>' . glyphHelper::get(glyphHelper::eye_close) . '</small>',
+            array(
                 self::PARAM_CLASS => self::PARAM_CLOSE
                 , self::PARAM_HREF => self::DASH
                 , self::PARAM_DATA_DISMISS => self::BS_ALTER
@@ -69,26 +71,27 @@ class Flash {
             )
         );
         $flashMessage = (string) new \Pimvc\Html\Element\Decorator(
-            self::PARAM_P
-            , $text
-            , []
+            self::PARAM_P,
+            $text,
+            []
         );
         return (string) new \Pimvc\Html\Element\Decorator(
-            self::PARAM_DIV
-            , $closeLink . $flashMessage
-            , array(
-                self::PARAM_CLASS => $classes 
+            self::PARAM_DIV,
+            $closeLink . $flashMessage,
+            array(
+                self::PARAM_CLASS => $classes
             )
         );
     }
     
     /**
      * getMappedBsClass
-     * 
+     *
      * @param string $type
-     * @return string 
+     * @return string
      */
-    private static function getMappedBsClass($type) {
+    private static function getMappedBsClass($type)
+    {
         $type= trim($type);
         $alertPrefix = self::BS_ALTER . self::BS_CLASS_SEP;
         $defaultClass = $alertPrefix . self::PARAM_INFO;
@@ -100,18 +103,19 @@ class Flash {
             , self::PARAM_ERROR => $alertPrefix . self::PARAM_DANGER
         );
         $isMapped = (isset($mappedBsClass[$type]));
-        return ($isMapped) 
+        return ($isMapped)
             ? $mappedBsClass[$type]
             : $defaultClass;
     }
 
     /**
      * getIco
-     * 
+     *
      * @param string $type
-     * @return string 
+     * @return string
      */
-    private static function getIco($type) {
+    private static function getIco($type)
+    {
         $defaultIcon = glyphHelper::get(glyphHelper::info_sign);
         $icoTypes = array(
             self::PARAM_INFO => $defaultIcon
@@ -120,9 +124,8 @@ class Flash {
             , self::PARAM_DANGER => glyphHelper::get(glyphHelper::thumbs_down)
             , self::PARAM_ERROR => glyphHelper::get(glyphHelper::thumbs_down)
         );
-        return (isset($icoTypes[$type])) 
-            ? $icoTypes[$type] 
+        return (isset($icoTypes[$type]))
+            ? $icoTypes[$type]
             : $defaultIcon;
     }
 }
-

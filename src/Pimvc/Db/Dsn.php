@@ -2,14 +2,14 @@
 
 /**
  * Lib_Db_Dsn
- * 
+ *
  * Class management to build dsn for a given adapter or slot
  */
 
 namespace Pimvc\Db;
 
-class Dsn {
-
+class Dsn
+{
     const PARAM_CONFIG = 'Config';
     const ADAPTER_PDO_MYSQL = 'PdoMysql';
     const ADAPTER_PDO_PGSQL = 'PdoPgsql';
@@ -29,11 +29,12 @@ class Dsn {
 
     /**
      * __construct
-     * 
+     *
      * @param string $adapter
      * @param string $slot
      */
-    public function __construct($config, $slot) {
+    public function __construct($config, $slot)
+    {
         //echo print_r($config, true);
         //die;
         $adapterReady = (!empty($adapter)) && in_array($adapter, $this->getAllowedAdapters());
@@ -57,47 +58,52 @@ class Dsn {
 
     /**
      * setDbname
-     * 
-     * @param string $value 
+     *
+     * @param string $value
      */
-    public function setSchema($value) {
+    public function setSchema($value)
+    {
         $this->set('dbname', $value);
     }
 
     /**
      * getSchema
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function getSchema() {
+    public function getSchema()
+    {
         return $this->dsn['dbname'];
     }
 
     /**
      * get
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function get() {
+    public function get()
+    {
         return $this->dsn;
     }
 
     /**
      * set
-     * 
+     *
      * @param string $param
-     * @param string $value 
+     * @param string $value
      */
-    private function set($param, $value) {
+    private function set($param, $value)
+    {
         $this->dsn[$param] = $value;
     }
 
     /**
      * getAllowedAdapters
-     * 
-     * @return type 
+     *
+     * @return type
      */
-    private function getAllowedAdapters() {
+    private function getAllowedAdapters()
+    {
         return array(
             self::ADAPTER_PDO_4D
             , self::ADAPTER_PDO_MYSQL
@@ -108,29 +114,31 @@ class Dsn {
 
     /**
      * adapterExists
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    private function adapterExists() {
+    private function adapterExists()
+    {
         return in_array($this->adapter, $this->getAllowedAdapters());
     }
 
     /**
      * slotExists
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    private function slotExists() {
-
+    private function slotExists()
+    {
         return ($this->slot) ? isset($this->appConf->{$this->slot}) : true;
     }
 
     /**
      * build
-     * 
-     * @return type 
+     *
+     * @return type
      */
-    private function build() {
+    private function build()
+    {
         if ($this->slotExists() && $this->adapterExists()) {
             switch ($this->adapter) {
                 case self::ADAPTER_PDO_MYSQL:
@@ -183,5 +191,4 @@ class Dsn {
             return $dsn;
         }
     }
-
 }

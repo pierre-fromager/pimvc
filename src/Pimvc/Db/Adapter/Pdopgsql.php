@@ -2,62 +2,68 @@
 
 /**
  * pdopgsql returns Pgsql Pdo instance
- * 
+ *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
 namespace Pimvc\Db\Adapter;
 
-class Pdopgsql
+use Pimvc\Db\Adapter\Interfaces\Adapter as IAdapter;
+
+class Pdopgsql implements IAdapter
 {
-    const prefix = 'pgsql:';
-    const userPrefix = 'user=';
-    const passwordPrefix = 'password=';
-    const hostPrefix = 'host=';
-    const defaultPort = 5432;
-    const portPrefix = 'port=';
-    const dbNamePrefix = 'dbname=';
-    const errorConnectFailed = 'Connexion échouée : ';
+    const PREFIX = 'pgsql:';
+    const USER_PREFIX = 'user=';
+    const PASSWORD_PREFIX = 'password=';
+    const HOST_PREFIX = 'host=';
+    const PORT_PREFIX = 'port=';
+    const DB_NAME_PREFIX = 'dbname=';
+    const ERR_CON_FAIL = 'Connexion échouée : ';
 
     protected static $dsn = null;
     protected static $params = null;
     protected static $_instance = null;
-    private function __construct(){}
-    private function __clone(){}
+    private function __construct()
+    {
+    }
+    private function __clone()
+    {
+    }
 
     /**
      * setDsn : returns dsn string
      * @param array $params
      */
-    private static function setDsn() {
-        $port = (isset(self::$params['port'])) 
-            ? self::$params['port'] 
-            : self::defaultPort;
-        self::$dsn = self::prefix . self::dbNamePrefix . self::$params['name'] 
-            . ';' . self::hostPrefix . self::$params['host']
-            . ';' . self::portPrefix . $port
-            . ';' . self::userPrefix . self::$params['user']
-            . ';' . self::passwordPrefix . self::$params['password'];    
+    private static function setDsn()
+    {
+        $port = (isset(self::$params[self::_PORT])) ? self::$params[self::_PORT] : 5432;
+        self::$dsn = self::prefix . self::dbNamePrefix . self::$params[self::_NAME]
+            . ';' . self::HOST_PREFIX . self::$params[self::_HOST]
+            . ';' . self::PORT_PREFIX . $port
+            . ';' . self::USER_PREFIX . self::$params[self::_USER]
+            . ';' . self::PASSWORD_PREFIX . self::$params[self::_PASSWORD];
     }
 
     /**
      * getInstance : returns Mysql Pdo Instance
      * @param array $params
      */
-    public static function getInstance($params) {
+    public static function getInstance($params)
+    {
         $options = self::getOptions();
         self::$params = $params;
         self::setDsn();
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(
-                    self::$dsn
-                    , $params['user']
-                    , $params['password']
-                    , $options
+                    self::$dsn,
+                    $params[self::_USER],
+                    $params[self::_PASSWORD],
+                    $options
                 );
             } catch (\PDOException $e) {
-                echo self::errorConnectFailed . $e->getMessage();die;
+                echo self::ERR_CON_FAIL . $e->getMessage();
+                die;
             }
         }
         return self::$_instance;
@@ -65,10 +71,11 @@ class Pdopgsql
     
     /**
      * getOptions
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    private static function getOptions() {
+    private static function getOptions()
+    {
         return array(
             //\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . self::charset
             \PDO::ATTR_PERSISTENT => false

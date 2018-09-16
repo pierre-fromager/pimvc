@@ -10,8 +10,8 @@ namespace Pimvc\Helper\Format;
 
 use Pimvc\Html\Element\Decorator;
 
-abstract class Db implements Interfaces\Db {
-
+abstract class Db implements Interfaces\Db
+{
     protected $_name = '';
     protected $domainName = '';
     private $domainInstance = '';
@@ -31,13 +31,18 @@ abstract class Db implements Interfaces\Db {
     protected $link = '';
     protected $app;
 
-    protected function pre() {}
-    protected function post() {}
+    protected function pre()
+    {
+    }
+    protected function post()
+    {
+    }
 
     /**
      * @see  __construct
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->app = \Pimvc\App::getInstance();
         $this->pre();
         $this->expiration = ($this->expiration) ? $this->expiration : self::Model_Expiraton;
@@ -52,19 +57,21 @@ abstract class Db implements Interfaces\Db {
     
     /**
      * process
-     * 
+     *
      */
-    private function process() {
+    private function process()
+    {
         if ($this->isValid()) {
             $this->modelInstance->find($this->getWhat(), $this->getWhere());
             $results = $this->modelInstance->getRowsetAsArray();
             foreach ($results as $result) {
                 $k = $result[$this->keySearch];
                 $v = $result[$this->keyValue];
-                $aggregation = ($this->keyAggregate) 
+                $aggregation = ($this->keyAggregate)
                     ? $this->aggregateSeparator . $this->getAggregateValues(
-                        $result, $this->keyAggregate
-                    ) 
+                        $result,
+                        $this->keyAggregate
+                    )
                     : '';
                 $this->data[$k] = $v . $aggregation;
             }
@@ -76,31 +83,34 @@ abstract class Db implements Interfaces\Db {
     
     /**
      * errorKey
-     * 
+     *
      * @throws Exception
      */
-    private function errorKey() {
+    private function errorKey()
+    {
         $message = 'Invalid Keys in Helper Db : ' . $this->domainName
             . ' for fields ' . $this->keySearch . ' with value ' . $this->keyValue
-            . ' from ' . implode(' ',$this->allowedKeys);
+            . ' from ' . implode(' ', $this->allowedKeys);
         throw new Exception($message);
     }
 
     /**
      * isValid
-     * 
+     *
      * @return boolean
      */
-    private function isValid() {
+    private function isValid()
+    {
         return ($this->isAllowed($this->keySearch) && $this->isAllowed($this->keyValue));
     }
     
     /**
      * getWhat
-     * 
+     *
      * @return array
      */
-    private function getWhat() {
+    private function getWhat()
+    {
         $what = array($this->keySearch, $this->keyValue);
         if ($this->keyAggregate) {
             $what = array_merge($what, $this->keyAggregate);
@@ -110,41 +120,45 @@ abstract class Db implements Interfaces\Db {
 
     /**
      * getWhere
-     * 
+     *
      * @return array
      */
-    private function getWhere() {
-        return ($this->filter) 
-            ? [ $this->keySearch . self::SEARCH_IN => $this->getFilterString() ] 
+    private function getWhere()
+    {
+        return ($this->filter)
+            ? [ $this->keySearch . self::SEARCH_IN => $this->getFilterString() ]
             : [];
     }
     
     /**
      * getFilterString
-     * 
+     *
      * @return string
      */
-    private function getFilterString() {
+    private function getFilterString()
+    {
         return self::O_BRACE . implode(self::COMA, $this->filter) . self::C_BRACE;
     }
 
     /**
      * getModelOptions
-     * 
+     *
      * @return array
      */
-    private function getModelOptions() {
+    private function getModelOptions()
+    {
         return $this->app->getConfig()->getSettings(self::DB_POOL);
     }
 
     /**
      * getAggregateValues
-     * 
+     *
      * @param array $result
      * @param array $aggregateKeys
-     * @return string 
+     * @return string
      */
-    private function getAggregateValues($result, $aggregateKeys) {
+    private function getAggregateValues($result, $aggregateKeys)
+    {
         $aggregateArrayValues = array();
         foreach ($aggregateKeys as $aggregateKey) {
             if ($this->isAllowed($aggregateKey)) {
@@ -157,37 +171,40 @@ abstract class Db implements Interfaces\Db {
 
     /**
      * isAllowed
-     * 
+     *
      * @param string $keyName
-     * @return boolean 
+     * @return boolean
      */
-    protected function isAllowed($keyName) {
+    protected function isAllowed($keyName)
+    {
         return in_array($keyName, $this->allowedKeys);
     }
 
     /**
      * getData
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getData() {
+    public function getData()
+    {
         return $this->data;
     }
 
     /**
      * getLink
-     * 
+     *
      * @param int $key
-     * @return string 
+     * @return string
      */
-    private function getLink($key) {
+    private function getLink($key)
+    {
         $baseUrl = $this->app->getRequest()->getBaseUrl();
         return new Decorator(
-            'a', 
+            'a',
             $this->data[$key],
             [
                 'class' => self::LINK_CLASS,
-                'href' => $baseUrl . $this->link . DIRECTORY_SEPARATOR . self::PARAM_ID 
+                'href' => $baseUrl . $this->link . DIRECTORY_SEPARATOR . self::PARAM_ID
                 . DIRECTORY_SEPARATOR . $key
             ]
         );
@@ -195,11 +212,12 @@ abstract class Db implements Interfaces\Db {
 
     /**
      * get
-     * 
+     *
      * @param mixed $key
-     * @return string 
+     * @return string
      */
-    public function get($key) {
+    public function get($key)
+    {
         if (!isset($this->data[$key])) {
             throw new \Exception(self::Model_Value_Unknown . $key);
         }
@@ -208,11 +226,11 @@ abstract class Db implements Interfaces\Db {
 
     /**
      * setLink
-     * 
+     *
      * @param string $link
      */
-    public function setLink($link) {
+    public function setLink($link)
+    {
         $this->link = $link;
     }
-
 }

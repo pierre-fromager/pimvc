@@ -8,11 +8,12 @@
 
 namespace Pimvc\Controller\Interfaces;
 
-interface Request extends Base {
+interface Request extends Base
+{
 
     /**
      * __construct
-     * 
+     *
      * @param \Pimvc\App $app
      * @param array $params
      */
@@ -20,14 +21,14 @@ interface Request extends Base {
 
     /**
      * getParams
-     * 
+     *
      * @return array
      */
     public function getParams($key = '');
 
     /**
      * hasValue
-     * 
+     *
      * @param string $param
      * @return mixed
      */
@@ -35,7 +36,7 @@ interface Request extends Base {
 
     /**
      * forward
-     * 
+     *
      * @param string $controller
      * @param string $action
      * @param array $params

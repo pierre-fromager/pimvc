@@ -8,24 +8,27 @@
 
 namespace Pimvc\File\System;
 
-use Pimvc\File\System\Indexer\_abstract as abstractIndexer;
+use Pimvc\File\System\Indexer\Common as CommonIndexer;
 
-class Indexer extends abstractIndexer{
+class Indexer extends CommonIndexer
+{
     
     /**
      * __construct
-     * 
-     * @param strig $filename 
+     *
+     * @param strig $filename
      */
-    public function __construct($filename) {
+    public function __construct($filename)
+    {
         parent::__construct($filename);
     }
     
     /**
      * __destruct
-     * 
+     *
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         parent::__destruct();
     }
 }

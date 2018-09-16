@@ -8,12 +8,13 @@
 
 namespace Pimvc\Http\Interfaces;
 
-interface Response {
-    
+interface Response
+{
     const HTML = 'html';
     const TYPE_HTML = 'text/html';
     const TYPE_JSON = 'application/json';
     const TYPE_XML = 'application/xml';
+    const TYPE_TEXT = 'text/plain';
     const CONTENT_TYPE = 'Content-Type: ';
     const HTTP_1 = 'HTTP/1.0 ';
     const HEADER_CACHE_CONTROL = 'Cache-Control: no-cache, must-revalidate';

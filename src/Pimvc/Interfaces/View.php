@@ -8,8 +8,8 @@
 
 namespace Pimvc\Interfaces;
 
-interface View {
-
+interface View
+{
     const deserializer = 'wddx';
     const VIEW_ERROR_MISSING = 'View filename not found : ';
 

@@ -8,13 +8,13 @@
 
 namespace Pimvc\Http\Interfaces;
 
-interface Router {
-
+interface Router
+{
     const URI_SEPARATOR = '/';
     const REQUEST_URI = 'REQUEST_URI';
 
     public function __construct(
-        \Pimvc\Http\Routes $routes, 
+        \Pimvc\Http\Routes $routes,
         \Pimvc\Http\Request $request
     );
 

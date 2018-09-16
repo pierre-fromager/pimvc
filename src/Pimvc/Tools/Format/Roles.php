@@ -7,9 +7,9 @@
 
 namespace Pimvc\Tools\Format;
 
-class Roles implements Interfaces\Roles{
-    
-     static $roles = [
+class Roles implements Interfaces\Roles
+{
+    public static $roles = [
         'Anonymes' => self::ACL_ROLE_ANONYMOUS
         , 'En attente' => self::ACL_ROLE_WAITING
         , 'Utilisateurs' => self::ACL_ROLE_USER
@@ -19,21 +19,22 @@ class Roles implements Interfaces\Roles{
 
     /**
      * get
-     * 
+     *
      * @param int $code
-     * @return string 
+     * @return string
      */
-    public static function get($code) {
+    public static function get($code)
+    {
         return  self::$roles[$code];
     }
     
     /**
      * getList
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public static function getList() {
+    public static function getList()
+    {
         return self::$roles;
     }
 }
-

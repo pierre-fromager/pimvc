@@ -5,12 +5,13 @@
  *
  * @author pierrefromager
  */
+
 namespace Pimvc\Helper;
 
 use Pimvc\Html\Element\Decorator as glyphDecorator;
 
-class Fonts {
-    
+class Fonts
+{
     const PARAM_CLASS = 'class';
     const PARAM_HREF = 'href';
     const GLYPH_TAG = 'span';
@@ -19,63 +20,71 @@ class Fonts {
     const GLYPH_TAG_CONTENT = '&nbsp;';
     const LINK_DECORATOR = 'a';
     const DEFAULT_LINKED_CLASS = 'linkedIcon';
-    const HELPER_GLYPH = 'Helper_Glyph';
-    
+    const HELPER_GLYPH = 'Pimvc\Views\Helpers\Glyph';
+    const HELPER_FA = 'Pimvc\Views\Helpers\Fa';
+    const HELPER_CLASSES = [
+      self::HELPER_GLYPH => self::GLYPH_TAG_GLYPHICON_CLASS,
+      self::HELPER_FA => self::GLYPH_TAG_AWESOME_CLASS
+    ];
+
     /**
      * get
-     * 
+     *
      * @param string $glyph
      * @param array $params
      * @param string $tag
-     * @return string 
+     * @return string
      */
-    public static function get($glyph, $params = [], $tag = self::GLYPH_TAG) {
+    public static function get($glyph, $params = [], $tag = self::GLYPH_TAG)
+    {
         $defaultAttribs = array(
-            self::PARAM_CLASS => self::getFontClass() . $glyph
+          self::PARAM_CLASS => self::getFontClass() . $glyph
         );
-        $attribs = self::mergeArrayAttributes($defaultAttribs,$params);
+        $attribs = self::mergeArrayAttributes($defaultAttribs, $params);
         $html = new glyphDecorator(
-            $tag
-            , self::GLYPH_TAG_CONTENT
-            , $attribs
+            $tag,
+            self::GLYPH_TAG_CONTENT,
+            $attribs
         );
         $html->render();
         $glyphContent = (string) $html;
         unset($html);
         return $glyphContent;
     }
-    
+
     /**
      * getLinked
-     * 
+     *
      * @param string $glyph
      * @param string $url
      * @param array $options
-     * @return string 
+     * @return string
      */
-    public static function getLinked($glyph, $url, $options = []) {
-        $defaultAttribs = array(          
-            self::PARAM_CLASS => self::DEFAULT_LINKED_CLASS
-            , self::PARAM_HREF => $url
+    public static function getLinked($glyph, $url, $options = [])
+    {
+        $defaultAttribs = array(
+          self::PARAM_CLASS => self::DEFAULT_LINKED_CLASS
+          , self::PARAM_HREF => $url
         );
         $attribs = self::mergeArrayAttributes($defaultAttribs, $options);
         $linkDecorator = new glyphDecorator(
-            self::LINK_DECORATOR
-            , self::get($glyph)
-            , $attribs
+            self::LINK_DECORATOR,
+            self::get($glyph),
+            $attribs
         );
         $linkDecorator->render();
         $glyphLinkedContent = (string) $linkDecorator;
         unset($linkDecorator);
         return $glyphLinkedContent;
     }
-    
+
     /**
      * getConstants
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public static function getConstants() {
+    public static function getConstants()
+    {
         $rc = new ReflectionClass(get_called_class());
         $constants = array_reverse($rc->getConstants());
         // Forget 9 first local constants
@@ -84,34 +93,28 @@ class Fonts {
         unset($rc);
         return $constants;
     }
-    
+
     /**
      * mergeArrayAttributes
-     * 
+     *
      * @param array $attrArray1
      * @param array $attrArray2
-     * @return array 
+     * @return array
      */
-    private static function mergeArrayAttributes($attrArray1, $attrArray2) {
+    private static function mergeArrayAttributes($attrArray1, $attrArray2)
+    {
         return array_combine(
-            array_merge(
-                array_keys($attrArray1)
-                , array_keys($attrArray2)
-            ), 
-            array_merge(
-                array_values($attrArray1)
-                , array_values($attrArray2)
-            )
+            array_merge(array_keys($attrArray1), array_keys($attrArray2)),
+            array_merge(array_values($attrArray1), array_values($attrArray2))
         );
     }
-    
+
     /**
      * getFontClass
-     * 
+     *
      */
-    private static function getFontClass() {
-        return (get_called_class() == self::HELPER_GLYPH) 
-            ? self::GLYPH_TAG_GLYPHICON_CLASS 
-            : self::GLYPH_TAG_AWESOME_CLASS;
+    private static function getFontClass()
+    {
+        return self::HELPER_CLASSES[get_called_class()];
     }
 }

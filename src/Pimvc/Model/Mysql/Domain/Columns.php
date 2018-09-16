@@ -8,7 +8,8 @@
 
 namespace Pimvc\Model\Mysql\Domain;
 
-class Columns extends \Pimvc\Db\Model\Domain {
+class Columns extends \Pimvc\Db\Model\Domain
+{
 
     /**
      * @var string $table_catalog .
@@ -20,7 +21,7 @@ class Columns extends \Pimvc\Db\Model\Domain {
      * @var string $table_schema .
      * @length 64
      */
-    public $table_schema;	
+    public $table_schema;
     
     /**
      * @var string $table_name .
@@ -123,7 +124,4 @@ class Columns extends \Pimvc\Db\Model\Domain {
      * @length 255
      */
     public $column_comment;
-
-
 }
-

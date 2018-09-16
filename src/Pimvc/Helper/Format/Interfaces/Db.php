@@ -8,8 +8,8 @@
 
 namespace Pimvc\Helper\Format\Interfaces;
 
-interface Db {
-
+interface Db
+{
     const Model_Expiraton = 30000;
     const Model_Value_Unknown = 'Unknown';
     const LINK_CLASS = 'format-link';

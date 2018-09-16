@@ -8,8 +8,8 @@
 
 namespace Pimvc\Model\Mysql;
 
-class Keycolumnusages extends \Pimvc\Db\Model\Orm {
-
+class Keycolumnusages extends \Pimvc\Db\Model\Orm
+{
     protected $_schema = 'information_schema';
     protected $_name = 'key_column_usage';
     protected $_primary = 'column_name';
@@ -19,26 +19,28 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
 
     /**
      * @see __construct
-     * 
-     * @param type $config 
+     *
+     * @param type $config
      */
-    public function __construct($config = []) {
+    public function __construct($config = [])
+    {
         parent::__construct($config);
     }
 
     /**
      * getByTableName
-     * 
+     *
      * @param string $tableName
-     * @return array 
+     * @return array
      */
-    public function getByTableName($tableName) {
+    public function getByTableName($tableName)
+    {
         $what = array('*');
         $defaultSchema = $this->getDefaultSchema();
         $where = array(
             'table_name' => $tableName
             ,'constraint_schema' => $defaultSchema
-            , 'table_schema' => $defaultSchema         
+            , 'table_schema' => $defaultSchema
         );
         $this->find($what, $where);
         return $this->getRowsetAsArray();
@@ -46,11 +48,12 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
     
     /**
      * getBySchema
-     * 
+     *
      * @param int $tableId
-     * @return array 
+     * @return array
      */
-    public function getBySchema($schema) {
+    public function getBySchema($schema)
+    {
         $what = [];
         $where = array(
             'constraint_schema' => $schema
@@ -61,6 +64,4 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm {
         $this->find($what, $where, $order);
         return $this->getRowsetAsArray();
     }
-    
 }
-

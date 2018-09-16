@@ -8,8 +8,8 @@
 
 namespace Pimvc\Db\Model\Interfaces;
 
-interface Orm {
-        
+interface Orm
+{
     const MODEL_DEBUG = false;
     const MODEL_TRACE = false;
     //const MODEL_FETCH_MODE = PDO::FETCH_ASSOC;

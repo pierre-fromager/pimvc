@@ -10,8 +10,8 @@ namespace Pimvc\File\System\Indexer;
 
 use Pimvc\File\System\Indexer\Filter as indexerFilter;
 
-class _abstract {
-    
+class Common
+{
     const INDEXER_PROCESSOR = 'egrep';
     const INDEXER_OPTIONS = ' -E ';
     const INDEXER_DEBUG = false;
@@ -24,10 +24,11 @@ class _abstract {
 
     /**
      * __construct
-     * 
-     * @param string $filename 
+     *
+     * @param string $filename
      */
-    public function __construct($filename) {
+    public function __construct($filename)
+    {
         $this->filename = $filename;
         $this->search = '';
         $this->results = [];
@@ -37,10 +38,11 @@ class _abstract {
 
     /**
      * run
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    public function run() {
+    public function run()
+    {
         $returnCode = 0;
         exec($this->search(), $this->results, $returnCode);
         $this->countResults = count($this->results);
@@ -49,29 +51,32 @@ class _abstract {
     
     /**
      * getResults
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getResults() {
+    public function getResults()
+    {
         return $this->results;
     }
     
     /**
      * count
-     * 
-     * @return integer 
+     *
+     * @return integer
      */
-    public function count() {
+    public function count()
+    {
         return $this->countResults;
     }
 
 
     /**
      * getHashedResults
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getHashedResults() {
+    public function getHashedResults()
+    {
         $callback = array($this, 'hashedResult');
         $hashesResult = array_map($callback, $this->getResults());
         return $hashesResult;
@@ -79,11 +84,12 @@ class _abstract {
     
     /**
      * hashedResult
-     * 
+     *
      * @param string $value
-     * @return stdClass 
+     * @return stdClass
      */
-    private function hashedResult($value) {
+    private function hashedResult($value)
+    {
         $hash = new stdClass();
         $hash->filename = $value;
         $hash->hash = md5($value);
@@ -92,37 +98,41 @@ class _abstract {
 
     /**
      * __destruct
-     * 
+     *
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         unset($this->filter);
     }
     
     /**
      * addFilter
-     * 
+     *
      * @param string $name
-     * @param string $value 
+     * @param string $value
      */
-    public function addFilter($name, $value, $order = '') {
-       $this->filter->add($name, $value, $order = '');
+    public function addFilter($name, $value, $order = '')
+    {
+        $this->filter->add($name, $value, $order = '');
     }
     
     /**
      * removeFilter
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
-    public function removeFilter($name) {
-       $this->filter->remove($name);
+    public function removeFilter($name)
+    {
+        $this->filter->remove($name);
     }
     
     /**
      * search
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function search() {
+    private function search()
+    {
         $regex = $this->filter->getRegex();
         $this->search = self::INDEXER_PROCESSOR
             . self::INDEXER_OPTIONS
@@ -134,4 +144,3 @@ class _abstract {
         return $this->search;
     }
 }
-

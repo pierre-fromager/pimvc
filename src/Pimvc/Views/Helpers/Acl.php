@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers;
 
-class Acl {
-
+class Acl
+{
     const ACL_ICONS_PATH = 'public/img/acl/';
     const CR = "\n";
     const MAX_ACL_ACTION = 4;
@@ -23,10 +23,11 @@ class Acl {
 
     /**
      * @see __construct
-     * 
-     * @param array $ressources 
+     *
+     * @param array $ressources
      */
-    public function __construct($ressources) {
+    public function __construct($ressources)
+    {
         $this->ressources = $ressources;
         $this->baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
         $this->toggleUrl = $this->baseUrl . DIRECTORY_SEPARATOR . self::ACL_CONTROLLER_ACTION;
@@ -35,11 +36,12 @@ class Acl {
 
     /**
      * process
-     * 
+     *
      */
-    protected function process() {
+    protected function process()
+    {
         $this->content = '<div class="acl-manager">';
-        $this->content .= '<h2>' . '<span class="fa fa-lock">&nbsp;</span>&nbsp;' 
+        $this->content .= '<h2>' . '<span class="fa fa-lock">&nbsp;</span>&nbsp;'
             . self::ACL_TITLE . '</h2>';
         foreach ($this->ressources as $controllerName => $actions) {
             $shortCrtl = $this->getClassnameFromNamespace($controllerName);
@@ -59,9 +61,9 @@ class Acl {
                         . '<span class="role-acl">' . $roleName . '</span></a>' . self::CR
                         . '</div>' . self::CR // role_header
                         . '<div id="' . $id . '_content" class="role_content">' . self::CR
-                    . '</div>' . self::CR; // role_content                 
+                    . '</div>' . self::CR; // role_content
                 }
-                $this->content .= '</div>' . self::CR; // action_content  
+                $this->content .= '</div>' . self::CR; // action_content
             }
             $this->content .= '</div>' . self::CR; // controler_content
         }
@@ -71,23 +73,25 @@ class Acl {
     
     /**
      * getClassnameFromNamespace
-     * 
+     *
      * @param string $namespace
      * @return string
      */
-    private function getClassnameFromNamespace($namespace) {
+    private function getClassnameFromNamespace($namespace)
+    {
         return str_replace('\\', '_', $namespace);
     }
 
     /**
      * change_key
-     * 
+     *
      * @param type $array
      * @param type $old_key
      * @param type $new_key
      * @return type
      */
-    protected function changeArrayKeys($array, $old_key, $new_key) {
+    protected function changeArrayKeys($array, $old_key, $new_key)
+    {
         if (!array_key_exists($old_key, $array)) {
             return $array;
         }
@@ -98,10 +102,11 @@ class Acl {
 
     /**
      * getScript provides async acl features script
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    protected function getScript() {
+    protected function getScript()
+    {
         $script = '<script type="text/javascript">' . self::CR;
         $script .= "var targetId = '';" . self::CR;
         $script .= "var aclId = '';" . self::CR;
@@ -127,12 +132,11 @@ class Acl {
 
     /**
      * @see __toString
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return (string) $this->content;
     }
-
 }
-

@@ -8,11 +8,12 @@
 
 namespace Pimvc\Model\Mysql\Domain;
 
-class Constraints extends \Pimvc\Db\Model\Domain {
+class Constraints extends \Pimvc\Db\Model\Domain
+{
 
     /**
      * @var string $constraint_catalog .
-     * @length 512 
+     * @length 512
      */
     public $constraint_catalog;
     
@@ -48,6 +49,4 @@ class Constraints extends \Pimvc\Db\Model\Domain {
      * @length 64
      */
     public $constraint_type;
-
 }
-

@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers;
 
-class Table {
-
+class Table
+{
     const HELPER_TITLE_TAG = 'p';
     const HELPER_TABLE_TAG = 'table';
     const HELPER_BODY_TAG = 'tbody';
@@ -39,12 +39,13 @@ class Table {
 
     /**
      * @see __construct
-     * 
+     *
      * @param string $title
      * @param array $header
-     * @param array $data 
+     * @param array $data
      */
-    public function __construct($title = '', $header = [], $data = []) {
+    public function __construct($title = '', $header = [], $data = [])
+    {
         $this->titleOptions = [];
         $this->tableOptions = array(
             'id' => ''
@@ -63,112 +64,122 @@ class Table {
     /**
      *  pre
      */
-    protected function pre() {
-        
+    protected function pre()
+    {
     }
 
     /**
      * post
      */
-    protected function post() {
-        
+    protected function post()
+    {
     }
 
     /**
      * setTitle
-     * 
-     * @param string $title 
+     *
+     * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
         return $this;
     }
     
     /**
      * setId
-     * 
+     *
      * @param string $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->tableOptions['id'] = $id;
         return $this;
     }
 
     /**
      * setClass
-     * 
-     * @param string $class 
+     *
+     * @param string $class
      */
-    public function setClass($class) {
+    public function setClass($class)
+    {
         $this->tableOptions['class'] = $class;
         return $this;
     }
     
     /**
      * setTableOptions
-     * 
-     * @param array $options 
+     *
+     * @param array $options
      */
-    public function setTableOptions($options) {
+    public function setTableOptions($options)
+    {
         $this->tableOptions = $options;
         return $this;
     }
 
     /**
      * setTitleOptions
-     * 
-     * @param string $class 
+     *
+     * @param string $class
      */
-    public function setTitleOptions($options) {
+    public function setTitleOptions($options)
+    {
         $this->titleOptions = $options;
         return $this;
     }
 
     /**
      * setHeader
-     * 
-     * @param array $header 
+     *
+     * @param array $header
      */
-    public function setHeader($header) {
+    public function setHeader($header)
+    {
         $this->header = $header;
         return $this;
     }
 
     /**
      * setData
-     * 
-     * @param array $data 
+     *
+     * @param array $data
      */
-    public function setData($data) {
+    public function setData($data)
+    {
         $this->data = $data;
         return $this;
     }
     
     /**
      * render
-     * 
+     *
      */
-    public function render() {
+    public function render()
+    {
         $this->content = $this->getFormatedTitle();
         $this->content .= $this->_getTable(
-            $this->getFormatedHeader() . $this->getFormatedBody()
-            , $this->tableOptions
+            $this->getFormatedHeader() . $this->getFormatedBody(),
+            $this->tableOptions
         );
     }
     
     /**
      * @see __toString
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->content;
     }
     
     /**
      * @see __destruct
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         foreach ($this as $key => $value) {
             unset($this->$key);
         }
@@ -176,23 +187,25 @@ class Table {
     
     /**
      * getTitle
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getFormatedTitle() {
+    private function getFormatedTitle()
+    {
         return (string) new \Pimvc\Html\Element\Decorator(
-            self::HELPER_TITLE_TAG
-            , $this->title
-            , $this->titleOptions
+            self::HELPER_TITLE_TAG,
+            $this->title,
+            $this->titleOptions
         );
     }
 
     /**
      * getFormatedHeader
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getFormatedHeader() {
+    private function getFormatedHeader()
+    {
         $glue = self::HELPER_TAG_LTC . self::HELPER_TH_TAG . self::HELPER_TAG_X
             . self::HELPER_TH_TAG . self::HELPER_TAG_GT;
         return $this->_getThead(
@@ -204,92 +217,100 @@ class Table {
     
     /**
      * _getTr
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTr($text, $options = []) {
+    private function _getTr($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_TR_TAG, $text, $options);
     }
     
     /**
      * _getTh
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTh($text, $options = []) {
+    private function _getTh($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_TH_TAG, $text, $options);
     }
     
     /**
      * _getTd
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTd($text, $options = []) {
+    private function _getTd($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_TD_TAG, $text, $options);
     }
     
     /**
      * _getTbody
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTbody($text, $options = []) {
+    private function _getTbody($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_BODY_TAG, $text, $options);
     }
     
     /**
      * _getThead
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getThead($text, $options = []) {
+    private function _getThead($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_HEAD_TAG, $text, $options);
     }
     
     /**
      * _getTable
-     * 
+     *
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTable($text, $options = []) {
+    private function _getTable($text, $options = [])
+    {
         return $this->_getTag(self::HELPER_TABLE_TAG, $text, $options);
     }
     
     /**
      * _getTag
-     * 
+     *
      * @param string $tag
      * @param string $text
      * @param array $options
-     * @return string 
+     * @return string
      */
-    private function _getTag($tag, $text, $options = []) {
+    private function _getTag($tag, $text, $options = [])
+    {
         return (string) new \Pimvc\Html\Element\Decorator(
-            $tag
-            , $text
-            , $options
+            $tag,
+            $text,
+            $options
         );
     }
 
     /**
      * getLines
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getLines() {
+    private function getLines()
+    {
         $lines = '';
         $glue = self::HELPER_TAG_LTC . self::HELPER_TD_TAG . self::HELPER_TAG_X
             . self::HELPER_TD_TAG . self::HELPER_TAG_GT;
@@ -302,11 +323,11 @@ class Table {
 
     /**
      * getFormatedBody
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getFormatedBody() {
+    private function getFormatedBody()
+    {
         return $this->_getTbody($this->getLines());
     }
 }
-

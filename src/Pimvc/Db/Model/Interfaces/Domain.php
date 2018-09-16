@@ -8,11 +8,11 @@
 
 namespace Pimvc\Db\Model\Interfaces;
 
-interface Domain {
-
-    const forbidenKeys = '@Bye';
-    const maxColumns = 54;
-    const maxParts = 20;
+interface Domain
+{
+    const FORBIDENKEYS = '@Bye';
+    const MAXCOLUMNS = 54;
+    const MAXPARTS = 20;
     const DEBUG_MODE = false;
     const KEY_NAME = 'name';
     const KEY_VAR = 'var';

@@ -7,24 +7,31 @@
 
 namespace Pimvc\Db\Adapter;
 
-class Pdosqlite {
+use Pimvc\Db\Adapter\Interfaces\Adapter as IAdapter;
 
-    const prefix = 'sqlite:';
-    const errorConnectFailed = 'Connexion échouée : ';
+class Pdosqlite implements IAdapter
+{
+    const PREFIX = 'sqlite:';
+    const ERR_CON_FAIL = 'Connexion échouée : ';
 
     protected static $dsn = null;
     protected static $params = null;
     protected static $_instance = null;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     /**
      * setDsn : returns dsn string
      * @param array $params
      */
-    private static function setDsn() {
+    private static function setDsn()
+    {
         self::$dsn = self::prefix . self::$params['file'];
     }
 
@@ -32,17 +39,17 @@ class Pdosqlite {
      * getInstance : returns Mysql Pdo Instance
      * @param array $params
      */
-    public static function getInstance($params) {
+    public static function getInstance($params)
+    {
         self::$params = $params;
         self::setDsn();
         if (self::$_instance === null) {
             try {
                 self::$_instance = new PDO(self::$dsn);
-            } catch (PDOException $e) {
-                echo self::errorConnectFailed . $e->getMessage();
+            } catch (\PDOException $e) {
+                echo self::ERR_CON_FAIL . $e->getMessage();
             }
         }
         return self::$_instance;
     }
-
 }

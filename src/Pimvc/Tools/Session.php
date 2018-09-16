@@ -2,7 +2,7 @@
 
 /**
  * Description of Pimvc\Tools\Session
- *  
+ *
  * provides methods to get or set session datas.
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
@@ -10,8 +10,8 @@
 
 namespace Pimvc\Tools;
 
-class Session {
-
+class Session
+{
     const SESSION_ADMIN = 'admin';
     const SESSION_MANAGER = 'manager';
     const SESSION_ANONYMOUS = 'anonymous';
@@ -23,9 +23,10 @@ class Session {
 
     /**
      * start
-     * 
+     *
      */
-    public static function start() {
+    public static function start()
+    {
         self::$baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
         session_name(md5(self::$baseUrl));
         session_start();
@@ -33,86 +34,95 @@ class Session {
 
     /**
      * getUid
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    public static function getUid() {
+    public static function getUid()
+    {
         return (isset($_SESSION[self::SESSION_ID])) ? $_SESSION[self::SESSION_ID] : '';
     }
 
     /**
      * isAuth
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    public static function isAuth() {
+    public static function isAuth()
+    {
         $uid = self::getUid();
         return (!empty($uid));
     }
 
     /**
      * getProfil
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public static function getProfil() {
+    public static function getProfil()
+    {
         return (isset($_SESSION[self::SESSION_PROFIL])) ? $_SESSION[self::SESSION_PROFIL] : self::SESSION_ANONYMOUS;
     }
 
     /**
      * getUserInfo
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public static function getUserInfo() {
+    public static function getUserInfo()
+    {
         return (isset($_SESSION[self::SESSION_USER_INFO])) ? $_SESSION[self::SESSION_USER_INFO] : self::SESSION_ANONYMOUS;
     }
 
     /**
      * isAdmin
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    public static function isAdmin() {
+    public static function isAdmin()
+    {
         return (self::isAuth() && self::getProfil() == self::SESSION_ADMIN);
     }
 
     /**
      * isManager
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
-    public static function isManager() {
+    public static function isManager()
+    {
         return (self::isAuth() && self::getProfil() == self::SESSION_MANAGER);
     }
 
     /**
      * getBaseUrl
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public static function getBaseUrl() {
+    public static function getBaseUrl()
+    {
         return self::$baseUrl;
     }
 
     /**
      * isMine
-     * 
+     *
      * @param int $uid
-     * @return boolean 
+     * @return boolean
      */
-    public static function isMine($uid) {
+    public static function isMine($uid)
+    {
         return (self::isAuth() && $uid == self::getUid());
     }
 
     /**
      * set
-     * 
+     *
      * @param string $name
-     * @param mixed $value 
-     * @param string $key 
+     * @param mixed $value
+     * @param string $key
      */
-    public static function set($name, $value, $key = '') {
+    public static function set($name, $value, $key = '')
+    {
         if ($key) {
             $_SESSION[$name][$key] = $value;
         } else {
@@ -122,11 +132,12 @@ class Session {
 
     /**
      * delete
-     * 
+     *
      * @param string $name
-     * @param string $key 
+     * @param string $key
      */
-    public static function delete($name, $key = '') {
+    public static function delete($name, $key = '')
+    {
         if ($key) {
             unset($_SESSION[$name][$key]);
         } else {
@@ -136,12 +147,13 @@ class Session {
 
     /**
      * has
-     * 
+     *
      * @param string $name
      * @param string $key
-     * @return boolean 
+     * @return boolean
      */
-    public static function has($name, $key = '') {
+    public static function has($name, $key = '')
+    {
         $has = false;
         if (empty($key)) {
             $has = (isset($_SESSION[$name]) && !empty($_SESSION[$name]));
@@ -153,12 +165,13 @@ class Session {
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @param string $key
-     * @return mixed 
+     * @return mixed
      */
-    public static function get($name, $key = '') {
+    public static function get($name, $key = '')
+    {
         if (empty($key)) {
             $value = (self::has($name)) ? $_SESSION[$name] : '';
         } else {
@@ -169,9 +182,10 @@ class Session {
 
     /**
      * deAuth
-     * 
+     *
      */
-    public static function deAuth() {
+    public static function deAuth()
+    {
         unset($_SESSION[self::SESSION_ID]);
         unset($_SESSION[self::SESSION_PROFIL]);
         unset($_SESSION[self::SESSION_USER_INFO]);
@@ -184,7 +198,6 @@ class Session {
           self::$instance = new self();
           }
 
-          self::$instance->callStaticMethod($name, $arguments); 
+          self::$instance->callStaticMethod($name, $arguments);
     }*/
-
 }

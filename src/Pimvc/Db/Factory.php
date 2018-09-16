@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Class Db is a factory instanciates a Db connection 
+ * Class Db is a factory instanciates a Db connection
  * for a given Dsn and Adpater
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
- * 
+ *
  */
 
 namespace Pimvc\Db;
 
-class Factory {
-
+class Factory
+{
     const ADAPTER_CLASS_PREFIX = '\Pimvc\Db\Adapter\\';
     const FACTORY_ADAPTER = 'adapter';
     const FACTORY_NAME = 'name';
@@ -19,8 +19,12 @@ class Factory {
 
     protected static $_connections = [];
 
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
+    private function __clone()
+    {
+    }
 
     /**
      * getConnection tries to instanciate Db with Adapter
@@ -28,7 +32,8 @@ class Factory {
      * @throws Exception
      * @return mixed
      */
-    public static function getConnection($params) {
+    public static function getConnection($params)
+    {
         $adapter = $params[self::FACTORY_ADAPTER];
         $instanceName = $adapter . self::FACTORY_SEP . $params[self::FACTORY_NAME];
         if (!isset(self::$_connections[$instanceName])) {
@@ -41,5 +46,4 @@ class Factory {
         }
         return self::$_connections[$instanceName];
     }
-    
 }

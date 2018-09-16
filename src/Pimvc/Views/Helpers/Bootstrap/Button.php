@@ -7,8 +7,8 @@
  */
 namespace Pimvc\Views\Helpers\Bootstrap;
 
-class Button {
-    
+class Button
+{
     const PARAM_CLASS = 'class';
     const PARAM_ID = 'id';
     const PARAM_STYLE = 'style';
@@ -17,10 +17,10 @@ class Button {
     const PARAM_VALUE = 'value';
     const PARAM_ROLE = 'role';
     const PARAM_HREF = 'href';
-    const PARAM_DATALINK = 'data-link';  
+    const PARAM_DATALINK = 'data-link';
     const TAG_BUTTON = 'button';
     const TAG_A = 'a';
-    const TAG_INPUT = 'input';    
+    const TAG_INPUT = 'input';
     const CLASS_BUTTON = 'btn';
     const TYPE_DEFAULT = 'btn-default';
     const TYPE_INFO = 'btn-info';
@@ -37,7 +37,7 @@ class Button {
     const ACTIVE = 'active';
     const DISABLED = 'disabled';
     
-    protected $content;   
+    protected $content;
     protected $tag;
     protected $title;
     protected $id;
@@ -53,12 +53,13 @@ class Button {
 
     /**
      * __construct
-     * 
+     *
      * @param string $id
      * @param string $class
-     * @param string $datalink 
+     * @param string $datalink
      */
-    public function __construct($title) {
+    public function __construct($title)
+    {
         $this->setTag('');
         $this->setTitle($title);
         $this->setId('');
@@ -74,109 +75,121 @@ class Button {
     
     /**
      * setTag
-     * 
-     * @param string $title 
+     *
+     * @param string $title
      */
-    public function setTag($tag) {
+    public function setTag($tag)
+    {
         $this->tag = ($tag) ? $tag : self::TAG_BUTTON;
-    }    
+    }
     
     /**
      * setTitle
-     * 
-     * @param string $title 
+     *
+     * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
     }
     
     /**
      * setType
-     * 
-     * @param string $type 
+     *
+     * @param string $type
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = ($type) ? $type : self::TYPE_DEFAULT;
     }
     
     /**
      * setSize
-     * 
-     * @param string $size 
+     *
+     * @param string $size
      */
-    public function setSize($size) {
+    public function setSize($size)
+    {
         $this->size = ($size) ? $size : self::SIZE_LARGE;
     }
     
     /**
      * setAsBlock
-     * 
-     * @param boolean $size 
+     *
+     * @param boolean $size
      */
-    public function setAsBlock($asBlock) {
+    public function setAsBlock($asBlock)
+    {
         $this->block = ($asBlock) ? self::TYPE_BLOCK : '';
     }
 
 
     /**
      * setId
-     * 
-     * @param string $id 
+     *
+     * @param string $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
     
     /**
      * setExtraClass
-     * 
-     * @param string $class 
+     *
+     * @param string $class
      */
-    public function setExtraClass($extraClass) {
+    public function setExtraClass($extraClass)
+    {
         $this->extraClass = $extraClass;
     }
     
     /**
      * setStyle
-     * 
-     * @param string $style 
+     *
+     * @param string $style
      */
-    public function setStyle($style) {
+    public function setStyle($style)
+    {
         $this->style = $style;
     }
 
     /**
      * setActive
-     * 
-     * @param boolean $disabled 
+     *
+     * @param boolean $disabled
      */
-    public function setActive($active) {
+    public function setActive($active)
+    {
         $this->active = ($active === true) ? self::ACTIVE : '';
     }
     
     /**
      * setDisabled
-     * 
-     * @param boolean $disabled 
+     *
+     * @param boolean $disabled
      */
-    public function setDisabled($disabled) {
+    public function setDisabled($disabled)
+    {
         $this->disabled = ($disabled === true) ? self::DISABLED : '';
     }
 
     /**
      * setDatalink
-     * 
-     * @param string $datalink 
+     *
+     * @param string $datalink
      */
-    public function setDatalink($datalink) {
+    public function setDatalink($datalink)
+    {
         $this->datalink = $datalink;
     }
     
     /**
      * render
-     * 
+     *
      */
-    public function render() {
+    public function render()
+    {
         $this->setClass();
         switch ($this->tag) {
             case self::TAG_BUTTON:
@@ -202,26 +215,28 @@ class Button {
         $options[self::PARAM_CLASS] = $this->class;
         $options[self::PARAM_STYLE] = $this->style;
         $this->content = (string) new \Pimvc\Html\Element\Decorator(
-            $this->tag
-            , $this->title
-            , $options
+            $this->tag,
+            $this->title,
+            $options
         );
     }
     
     /**
      * __toString
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return (string) $this->content;
     }
     
-        /**
+    /**
      * @see __destruct
-     * 
+     *
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         foreach ($this as $key => $value) {
             unset($this->$key);
         }
@@ -229,9 +244,10 @@ class Button {
     
     /**
      * setClass
-     * 
+     *
      */
-    private function setClass() {
+    private function setClass()
+    {
         $this->appendClass(self::CLASS_BUTTON, false);
         $this->appendClass($this->type);
         $this->appendClass($this->block);
@@ -243,11 +259,12 @@ class Button {
     
     /**
      * appendClass
-     * 
+     *
      * @param string $class
-     * @param boolean $withSpace 
+     * @param boolean $withSpace
      */
-    private function appendClass($class, $withSpace = true) {
+    private function appendClass($class, $withSpace = true)
+    {
         if ($class) {
             $space = ($withSpace) ? ' ' : '';
             $this->class .= $space . $class;

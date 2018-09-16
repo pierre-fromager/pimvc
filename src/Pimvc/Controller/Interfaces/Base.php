@@ -9,19 +9,20 @@
 
 namespace Pimvc\Controller\Interfaces;
 
-interface Base {
+interface Base
+{
 
     /**
      * __construct
-     * 
+     *
      * @param \Pimvc\App $app
      */
     public function __construct(\Pimvc\App $app);
 
     /**
      * getApp
-     * 
+     *
      * @return app
      */
     public function getApp();
-  }
+}

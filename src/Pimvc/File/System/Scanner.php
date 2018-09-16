@@ -10,80 +10,78 @@ namespace Pimvc\File\System;
 use Pimvc\File\System\Regexp\Filter\Filename as filterFilename;
 use Pimvc\File\System\Regexp\Filter\Dirname as filterDirname;
 
-class Scanner {
-
+class Scanner
+{
     const FILE_REGEXP_BEGIN = '/\.(?:';
     const FILE_REGEXP_END = ')$/';
     
     const DIR_REGEXP_BEGIN = '/^(?';
     const DIR_REGEXP_END = ')/';
+    const _SPLITTER = '|';
+    const _EMPTY = '';
+    const _NOT = '!';
 
-    protected $path = '';
+    protected $path = self::_EMPTY;
     protected $dirsExclude = [];
     protected $filesAllowed = [];
     protected $showDir = true;
     
-    private $dirsRexep = '';
-    private $filesRexep = '';
-    
+    private $dirsRexep = self::_EMPTY;
+    private $filesRexep = self::_EMPTY;
     public $filesScanned = [];
 
     public function __construct(
-            $path
-            , $dirsExclude = []
-            , $filesAllowed = []
-            , $dirInclude = false
-            , $showDir = true) {
+        $path,
+        $dirsExclude = [],
+        $filesAllowed = [],
+        $dirInclude = false,
+        $showDir = true
+    ) {
         $this->path = $path;
         $this->dirsExclude = $dirsExclude;
         $this->filesAllowed = $filesAllowed;
         $this->showDir = $showDir;
         if (!empty($this->dirsExclude)) {
-            $inverter = ($dirInclude) ? '' : '!';
-            $this->dirsRexep = self::DIR_REGEXP_BEGIN 
+            $inverter = ($dirInclude) ? self::_EMPTY : self::_NOT;
+            $this->dirsRexep = self::DIR_REGEXP_BEGIN
                 . $inverter
-                . implode('|', $this->dirsExclude)
+                . implode(self::_SPLITTER, $this->dirsExclude)
                 . self::DIR_REGEXP_END;
         }
 
         if (!empty($this->filesAllowed)) {
-            $this->filesRexep = self::FILE_REGEXP_BEGIN 
-                . implode('|', $this->filesAllowed) 
+            $this->filesRexep = self::FILE_REGEXP_BEGIN
+                . implode(self::_SPLITTER, $this->filesAllowed)
                 . self::FILE_REGEXP_END;
         }
     }
 
     /**
      * process
-     * 
+     *
      */
-    public function process() {
-        
+    public function process()
+    {
         $result = new \RecursiveDirectoryIterator(
-            $this->path
-            , \RecursiveDirectoryIterator::SKIP_DOTS
+            $this->path,
+            \RecursiveDirectoryIterator::SKIP_DOTS
         );
 
-        $result = (!empty($this->dirsRexep)) 
-            ? new filterDirname($result, $this->dirsRexep) 
-            : $result;
+        if (!empty($this->dirsRexep)) {
+            $result = new filterDirname($result, $this->dirsRexep);
+        }
 
-        $result = (!empty($this->filesRexep)) 
-            ? new filterFilename($result, $this->filesRexep) 
-            : $result;
+        if (!empty($this->filesRexep)) {
+            $result = new filterFilename($result, $this->filesRexep);
+        }
 
-        $options = ($this->showDir) 
-            ? \RecursiveIteratorIterator::CHILD_FIRST 
+        $options = ($this->showDir)
+            ? \RecursiveIteratorIterator::CHILD_FIRST
             : \RecursiveIteratorIterator::LEAVES_ONLY;
         
-        $items = new \RecursiveIteratorIterator(
-            $result
-            , $options
-        );
+        $items = new \RecursiveIteratorIterator($result, $options);
         foreach ($items as $file) {
             $this->filesScanned[] = (string) $file;
         }
     }
-
 }
-

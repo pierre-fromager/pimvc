@@ -6,12 +6,13 @@ use InvalidArgumentException;
 use Closure;
 use Pimvc\Http\Interfaces\Layer as LayerInterface;
 
-class Middleware {
-
+class Middleware
+{
     private static $excMsg =  ' is not a valid onion layer.';
     private $layers;
 
-    public function __construct(array $layers = []) {
+    public function __construct(array $layers = [])
+    {
         $this->layers = $layers;
     }
 
@@ -20,7 +21,8 @@ class Middleware {
      * @param  mixed $layers
      * @return Middleware
      */
-    public function layer($layers) {
+    public function layer($layers)
+    {
         if ($layers instanceof Middleware) {
             $layers = $layers->toArray();
         }
@@ -43,17 +45,18 @@ class Middleware {
      * object through it
      * @param  mixed  $object
      * @param  Closure $core
-     * @return mixed         
+     * @return mixed
      */
-    public function peel($object, \Closure $core) {
+    public function peel($object, \Closure $core)
+    {
         $coreFunction = $this->createCoreFunction($core);
         $layers = array_reverse($this->layers);
         $completeMiddleware = array_reduce(
-            $layers, 
-            function($nextLayer, $layer) {
+            $layers,
+            function ($nextLayer, $layer) {
                 return $this->createLayer($nextLayer, $layer);
-            }
-            , $coreFunction
+            },
+            $coreFunction
         );
         return $completeMiddleware($object);
     }
@@ -62,7 +65,8 @@ class Middleware {
      * Get the layers of this onion, can be used to merge with another onion
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         return $this->layers;
     }
 
@@ -72,8 +76,9 @@ class Middleware {
      * @param  Closure $core the core function
      * @return Closure
      */
-    private function createCoreFunction(\Closure $core) {
-        return function($object) use($core) {
+    private function createCoreFunction(\Closure $core)
+    {
+        return function ($object) use ($core) {
             return $core($object);
         };
     }
@@ -85,10 +90,10 @@ class Middleware {
      * @param  LayerInterface $layer
      * @return Closure
      */
-    private function createLayer($nextLayer, $layer) {
-        return function($object) use($nextLayer, $layer) {
+    private function createLayer($nextLayer, $layer)
+    {
+        return function ($object) use ($nextLayer, $layer) {
             return $layer->peel($object, $nextLayer);
         };
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Pimvc\File\System\Indexer;
 
-class Scanner {
-    
+class Scanner
+{
     const SCANNER_CMD = 'find';
     const SCANNER_SPACE = ' ';
     const SCANNER_REDIRECT = '>';
@@ -20,14 +20,14 @@ class Scanner {
     const SCANNER_INAME = '-iname';
     const SCANNER_QUOTE = '"';
     const SCANNER_OR = '-o';
-    const SCANNER_AND = '-and';   
+    const SCANNER_AND = '-and';
     const SCANNER_NOT = '-not';
     const SCANNER_PATH = '-path';
     const SCANNER_BRACE_O = '\(';
     const SCANNER_BRACE_C = '\)';
     const SCANNER_WILD_QUOTE_O = '"*';
     const SCANNER_WILD_QUOTE_C = '*"';
-    //'"*' .$path.'*"' 
+    //'"*' .$path.'*"'
     const SCANNER_TYPE_OPTION_DEFAULT = self::SCANNER_TYPE_OPTION_FILE;
     
     protected $name;
@@ -39,11 +39,12 @@ class Scanner {
     
     /**
      * __construct
-     * 
+     *
      * @param string $where
-     * @param string $type 
+     * @param string $type
      */
-    public function __construct($name, $where, $type = self::SCANNER_TYPE_OPTION_FILE) {
+    public function __construct($name, $where, $type = self::SCANNER_TYPE_OPTION_FILE)
+    {
         $this->name = $name;
         $this->inames = [];
         $this->where = $where;
@@ -53,10 +54,11 @@ class Scanner {
     
     /**
      * run
-     * 
-     * @return int 
+     *
+     * @return int
      */
-    public function run() {
+    public function run()
+    {
         $returnCode = false;
         exec($this->find(), $this->results, $returnCode);
         return $returnCode;
@@ -64,31 +66,34 @@ class Scanner {
     
     /**
      * addIname
-     * 
-     * @param string $iname 
+     *
+     * @param string $iname
      */
-    public function addIname($iname) {
+    public function addIname($iname)
+    {
         $this->inames[$iname] = $iname;
     }
     
     /**
      * addInames
-     * 
-     * @param array $inames 
+     *
+     * @param array $inames
      */
-    public function addInames($inames) {
+    public function addInames($inames)
+    {
         $this->inames = array_merge(
-            $this->inames
-            , array_combine($inames,$inames)
+            $this->inames,
+            array_combine($inames, $inames)
         );
     }
     
     /**
      * removeIname
-     * 
-     * @param string $iname 
+     *
+     * @param string $iname
      */
-    public function removeIname($iname) {
+    public function removeIname($iname)
+    {
         if ($this->hasIname($iname)) {
             unset($this->inames[$iname]);
         }
@@ -96,84 +101,91 @@ class Scanner {
     
     /**
      * hasIname
-     * 
+     *
      * @param string $iname
-     * @return boolean 
+     * @return boolean
      */
-    public function hasIname($iname) {
+    public function hasIname($iname)
+    {
         return isset($this->inames[$iname]);
     }
     
     /**
      * setType
-     * 
-     * @param string $type 
+     *
+     * @param string $type
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
     
     /**
      * setExcludes
-     * 
+     *
      * set exclude folders
-     * 
-     * @param array $excludes 
+     *
+     * @param array $excludes
      */
-    public function setExcludes($excludes) {
+    public function setExcludes($excludes)
+    {
         $this->excludes = $excludes;
     }
 
     /**
      * getInames
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getInames() {
+    private function getInames()
+    {
         return $this->renderInames();
     }
     
     /**
      * getIname
-     * 
+     *
      * @param string $iname
-     * @return string 
+     * @return string
      */
-    private function getIname($iname) {
-        return self::SCANNER_SPACE 
-            . self::SCANNER_INAME . self::SCANNER_SPACE 
+    private function getIname($iname)
+    {
+        return self::SCANNER_SPACE
+            . self::SCANNER_INAME . self::SCANNER_SPACE
             . self::SCANNER_QUOTE . $iname . self::SCANNER_QUOTE
             . self::SCANNER_SPACE;
     }
     
     /**
      * renderInames
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function renderInames() {
-        $inames = ($this->inames) 
+    private function renderInames()
+    {
+        $inames = ($this->inames)
             ? array_map(
-                array($this, 'getIname')
-                , array_values($this->inames)
-             ) 
+                array($this, 'getIname'),
+                array_values($this->inames)
+            )
             : [];
-        $render =  self::SCANNER_BRACE_O 
-            . implode(self::SCANNER_OR, $inames) 
+        $render =  self::SCANNER_BRACE_O
+            . implode(self::SCANNER_OR, $inames)
             . self::SCANNER_BRACE_C;
         return $render;
     }
 
     /**
      * find
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function find() {
-        $find = self::SCANNER_CMD 
+    private function find()
+    {
+        $find = self::SCANNER_CMD
             . self::SCANNER_SPACE . $this->where . self::SCANNER_SPACE
             . $this->getExcludes() . self::SCANNER_SPACE
-            . self::SCANNER_AND 
+            . self::SCANNER_AND
             . self::SCANNER_SPACE . $this->getInames() . self::SCANNER_SPACE
             . self::SCANNER_TYPE_OPTION . self::SCANNER_SPACE
             . $this->type . self::SCANNER_SPACE
@@ -185,10 +197,11 @@ class Scanner {
         
     /**
      * renderExclude
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function renderExclude() {
+    private function renderExclude()
+    {
         $callback = array($this,'getExcludePath');
         $render = array_map($callback, $this->excludes);
         $glue = self::SCANNER_SPACE . self::SCANNER_OR . self::SCANNER_SPACE;
@@ -198,23 +211,24 @@ class Scanner {
     
     /**
      * getExcludePath
-     * 
+     *
      * @param string $path
-     * @return string 
+     * @return string
      */
-    private static function getExcludePath($path) {
-        return self::SCANNER_SPACE . self::SCANNER_PATH . self::SCANNER_SPACE 
+    private static function getExcludePath($path)
+    {
+        return self::SCANNER_SPACE . self::SCANNER_PATH . self::SCANNER_SPACE
             . self::SCANNER_WILD_QUOTE_O . $path . self::SCANNER_WILD_QUOTE_C
             . self::SCANNER_SPACE;
     }
 
     /**
      * getExcludes
-     * 
-     * @return string 
+     *
+     * @return string
      */
-    private function getExcludes() {
+    private function getExcludes()
+    {
         return $this->renderExclude();
     }
 }
-

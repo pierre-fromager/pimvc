@@ -8,10 +8,11 @@
 
 namespace Pimvc\Interfaces;
 
-interface Logger {
+interface Logger
+{
 
     /**
-     * 
+     *
      * Error severity, from low to high. From BSD syslog RFC, secion 4.1.1
      * @link http://www.faqs.org/rfcs/rfc3164.html
      */

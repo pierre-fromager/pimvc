@@ -2,15 +2,15 @@
 /**
  * class Auth
  * is an auth manager
- * 
+ *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 namespace Pimvc\Tools\User;
 
 use \Pimvc\Model\Users as authModel;
 
-class Auth {
-
+class Auth
+{
     const AUTH_UNKNOW_USER = 'Utilisateur inconnu ou mot de passe incorrect.';
     const AUTH_LINK_PROFIL = 'user/edit/id/';
     const AUTH_LINK_TITLE = 'Accéder à mon profil.';
@@ -36,11 +36,12 @@ class Auth {
 
     /**
      * @see __construct
-     * 
+     *
      * @param string $login
-     * @param string $password 
+     * @param string $password
      */
-    public function __construct($login, $password, $token = '') {
+    public function __construct($login, $password, $token = '')
+    {
         $this->app = \Pimvc\App::getInstance();
         $this->modelConfig = $this->app->getConfig()->getSettings('dbPool');
         $this->authModel = new authModel($this->modelConfig);
@@ -58,9 +59,10 @@ class Auth {
 
     /**
      * process processes authentication
-     * 
+     *
      */
-    protected function process() {
+    protected function process()
+    {
         $this->setAllowed(false);
         if ($result = $this->authModel->getAuth($this->login, $this->password)) {
             $this->setAllowed(true);
@@ -80,12 +82,13 @@ class Auth {
 
     /**
      * setSessionProfile
-     * 
+     *
      * @param int $id
      * @param string $profil
      * @param object $userInfo
      */
-    private function setSessionProfile($id, $profil, $userInfo) {
+    private function setSessionProfile($id, $profil, $userInfo)
+    {
         $this->app->getRequest()->setSession('id', $id);
         $this->app->getRequest()->setSession('profil', $profil);
         $this->app->getRequest()->setSession('userinfo', $userInfo);
@@ -93,9 +96,10 @@ class Auth {
 
     /**
      * processToken
-     * 
+     *
      */
-    private function processToken() {
+    private function processToken()
+    {
         $result = $this->authModel->getAuthByToken($this->token);
         if (!$result) {
             $this->setAllowed(false);
@@ -103,7 +107,7 @@ class Auth {
         } else {
             $this->setAllowed(true);
             $this->id = $result[0]['id'];
-            $this->profil = $result[0]['profil'];      
+            $this->profil = $result[0]['profil'];
             $userInfo = new \stdClass();
             $userInfo->profil = $result[0]['profil'];
             $userInfo->status = $result[0]['status'];
@@ -116,19 +120,20 @@ class Auth {
 
     /**
      * setAllowed
-     * 
-     * @param boolean $allowed 
+     *
+     * @param boolean $allowed
      */
-    private function setAllowed($allowed){
+    private function setAllowed($allowed)
+    {
         $this->isAllowed = $allowed;
     }
 
     /**
      * get error message
-     * 
+     *
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->message;
     }
-
 }

@@ -8,8 +8,8 @@
 
 namespace Pimvc\Views\Helpers\Widgets\Interfaces;
 
-interface Rdash {
-
+interface Rdash
+{
     const PARAM_SECTION = 'div';
     const PARAM_HEADER = 'div';
     const DECORATOR_BODY = 'div';
@@ -17,5 +17,4 @@ interface Rdash {
     const WIDGET_CLASS = 'widget';
     const TITLE_DECORATOR = 'h3';
     const BODY_DECORATOR = 'div';
-
 }
