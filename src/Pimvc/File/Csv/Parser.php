@@ -99,7 +99,7 @@ class Parser
      * @param int $limit
      * @param array $conditions
      */
-    public function __construct($input = null, $offset = null, $limit = null, $conditions = null)
+    public function __construct($input = null, $offset = null, $limit = null, $conditions = [])
     {
         if ($offset !== null) {
             $this->offset = $offset;
@@ -125,7 +125,7 @@ class Parser
      * @param array $conditions
      * @return boolean
      */
-    public function parse($input = null, $offset = null, $limit = null, $conditions = null)
+    public function parse($input = null, $offset = null, $limit = null, $conditions = [])
     {
         if ($input === null) {
             $input = $this->file;
@@ -577,9 +577,6 @@ class Parser
         }
         return false;
     }
-    // ==============================================
-    // ----- [ Internal Functions ] -----------------
-    // ==============================================
 
     /**
      * Validate a row against specified conditions
