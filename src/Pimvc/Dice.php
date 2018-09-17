@@ -1,15 +1,14 @@
 <?php
-
 /* @description Dice - A minimal Dependency Injection Container for PHP *
  * @author Tom Butler tom@r.je *
  * @copyright 2012-2015 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
  * @version 2.0 */
-
 namespace Pimvc;
 
 class Dice
 {
+
     const BACKSLASH = '\\';
     const INHERIT = 'inherit';
     const INSTANCE_OF = 'instanceOf';
@@ -20,7 +19,6 @@ class Dice
     const SHARED = 'shared';
     const SUBSTITUTIONS = 'substitutions';
     const CONSTRUCT_PARAMS = 'constructParams';
-    
 
     /**
      * @var array $rules Rules which have been set using addRule()
@@ -48,11 +46,9 @@ class Dice
      */
     public function addRule($name, array $rule)
     {
-        if (isset($rule[self::INSTANCE_OF])
-                && (
-                    !array_key_exists(self::INHERIT, $rule)
-                    || $rule[self::INHERIT] === true
-                )
+        if (isset($rule[self::INSTANCE_OF]) && (
+            !array_key_exists(self::INHERIT, $rule) || $rule[self::INHERIT] === true
+            )
         ) {
             $rule = array_replace_recursive(
                 $this->getRule($rule[self::INSTANCE_OF]),
@@ -81,20 +77,17 @@ class Dice
         foreach ($this->rules as $key => $rule) {
             // Find a rule which matches the class described in $name where:
             if (empty($rule[self::INSTANCE_OF])     // not a named instance, the rule is applied to a class name
-                    && $key !== self::WILDCARD      // not the default rule
-                    && is_subclass_of($name, $key)  // The rule is applied to a parent class
-                    && (
-                        !array_key_exists(self::INHERIT, $rule)
-                        || $rule[self::INHERIT] === true
-                    )
-                    ) { // And that rule should be inherited to subclasses
+                && $key !== self::WILDCARD      // not the default rule
+                && is_subclass_of($name, $key)  // The rule is applied to a parent class
+                && (
+                !array_key_exists(self::INHERIT, $rule) || $rule[self::INHERIT] === true
+                )
+            ) { // And that rule should be inherited to subclasses
                 return $rule;
             }
         }
         // No rule has matched, return the default rule if it's set
-        return isset($this->rules[self::WILDCARD])
-            ? $this->rules[self::WILDCARD]
-            : [];
+        return isset($this->rules[self::WILDCARD]) ? $this->rules[self::WILDCARD] : [];
     }
 
     /**
@@ -155,9 +148,7 @@ class Dice
             $closure = function (array $args, array $share) use ($class, $name, $constructor, $params) {
                 // Shared instance: create the class without calling the constructor
                 // (and write to \$name and $name, see issue #68)
-                $this->instances[$name] =
-                $this->instances[ltrim($name, self::BACKSLASH)] =
-                $class->newInstanceWithoutConstructor();
+                $this->instances[$name] = $this->instances[ltrim($name, self::BACKSLASH)] = $class->newInstanceWithoutConstructor();
 
                 // Now call this constructor after constructing all the dependencies.
                 // This avoids problems with cyclic references (issue #7)
@@ -216,9 +207,7 @@ class Dice
                         $call[0]
                     ),
                     [
-                            self::SHARE_INSTANCES => isset($rule[self::SHARE_INSTANCES])
-                                ? $rule[self::SHARE_INSTANCES]
-                                : []
+                        self::SHARE_INSTANCES => isset($rule[self::SHARE_INSTANCES]) ? $rule[self::SHARE_INSTANCES] : []
                         ]
                 )->__invoke(
                     $this->expand(isset($call[1]) ? $call[1] : [])
@@ -229,8 +218,7 @@ class Dice
                 }
             }
             return $object;
-        }
-        : $closure;
+        } : $closure;
     }
 
     /**
@@ -257,9 +245,7 @@ class Dice
             } else {
                 return $this->create($param[self::INSTANCE], array_merge($args, $share));
             }
-        }
-        // Recursively search for self::INSTANCE keys in $param
-        elseif (is_array($param)) {
+        } elseif (is_array($param)) { // Recursively search for self::INSTANCE keys in $param
             foreach ($param as $name => $value) {
                 $param[$name] = $this->expand($value, $share);
             }
@@ -304,9 +290,7 @@ class Dice
             if ($share || $hasRuleConstrParam) {
                 $args = array_merge(
                     $args,
-                    ($hasRuleConstrParam)
-                        ? $this->expand($rule[self::CONSTRUCT_PARAMS], $share)
-                        : [],
+                    ($hasRuleConstrParam) ? $this->expand($rule[self::CONSTRUCT_PARAMS], $share) : [],
                     $share
                 );
             }
@@ -322,9 +306,8 @@ class Dice
                         // This if statement actually gives a ~10%
                         // speed increase when $args isn't set
                         if ($class && (
-                                    $arg instanceof $class
-                                    || ($arg === null && $param->allowsNull())
-                                )
+                            $arg instanceof $class || ($arg === null && $param->allowsNull())
+                            )
                         ) {
                             // The argument matched, store it and remove it from
                             // $args so it won't wrongly match another parameter
@@ -337,29 +320,21 @@ class Dice
                 // When nothing from $args matches but a class is type hinted,
                 // create an instance to use, using a substitution if set
                 if ($class) {
-                    $parameters[] = ($sub)
-                        ? $this->expand(
-                            $rule[self::SUBSTITUTIONS][$class],
-                            $share,
-                            true
-                        )
-                        : $this->create($class, [], $share);
-                }
-                // For variadic parameters, provide remaining $args
-                elseif ($param->isVariadic()) {
+                    $parameters[] = ($sub) ? $this->expand(
+                        $rule[self::SUBSTITUTIONS][$class],
+                        $share,
+                        true
+                    ) : $this->create($class, [], $share);
+                } elseif ($param->isVariadic()) { // For variadic parameters, provide remaining $args
                     $parameters = array_merge($parameters, $args);
-                }
-                // There is no type hint, take the next available value from $args
-                // (and remove it from $args to stop it being reused)
-                elseif ($args) {
+                } elseif ($args) {
+                    // There is no type hint, take the next available value from $args
+                    // (and remove it from $args to stop it being reused)
                     $parameters[] = $this->expand(array_shift($args));
-                }
-                // There's no type hint and nothing left in $args,
-                // provide the default value or null
-                else {
-                    $parameters[] = ($param->isDefaultValueAvailable())
-                        ? $param->getDefaultValue()
-                        : null;
+                } else {
+                    // There's no type hint and nothing left in $args,
+                    // provide the default value or null
+                    $parameters[] = ($param->isDefaultValueAvailable()) ? $param->getDefaultValue() : null;
                 }
             }
             // variadic functions will only have one argument.

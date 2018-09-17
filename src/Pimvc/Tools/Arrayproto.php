@@ -8,6 +8,7 @@
  * @author Pierre Fromager <pf@pier-infor.fr>
  * @copyright Pier-Infor
  * @version 1.0
+ * @codingStandardsIgnoreFile
  */
 namespace Pimvc\Tools;
 
@@ -122,7 +123,7 @@ class Arrayproto
     }
     
     /**
-     * array_column
+     * arrayColumn
      *
      * @param type $input
      * @param type $columnKey
