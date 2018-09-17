@@ -10,8 +10,8 @@ namespace Pimvc\Helper\Format\Interfaces;
 
 interface Db
 {
-    const Model_Expiraton = 30000;
-    const Model_Value_Unknown = 'Unknown';
+    const MODEL_EXPIRATION = 30000;
+    const MODEL_VALUE_UNKNOWN = 'Unknown';
     const LINK_CLASS = 'format-link';
     const PARAM_ID = 'id';
     const DB_POOL = 'dbPool';

@@ -1335,11 +1335,11 @@ class Form implements Interfaces\Form
     }
 
     /**
-     * Setsectionsize
+     * setsectionsize
      *
      * @param int $sectionSize
      */
-    public function Setsectionsize($sectionSize = '')
+    public function setsectionsize($sectionSize = '')
     {
         $this->sectionSize = $sectionSize;
     }

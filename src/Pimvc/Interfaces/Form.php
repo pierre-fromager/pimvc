@@ -80,7 +80,7 @@ interface Form
 
     public function setMode($mode = '');
 
-    public function Setsectionsize($sectionSize = '');
+    public function setsectionsize($sectionSize = '');
 
     public function setType($fieldname, $value);
 

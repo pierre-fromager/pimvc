@@ -104,8 +104,8 @@ class Controller implements Interfaces\Controller
      */
     public function getPath()
     {
-        return $this->app->path . self::_namespace . DIRECTORY_SEPARATOR
-            . str_replace('\\', '/', $this->name) . self::phpExt;
+        return $this->app->path . self::_NAMESPACE . DIRECTORY_SEPARATOR
+            . str_replace('\\', '/', $this->name) . self::PHP_EXT;
     }
 
     /**
@@ -144,8 +144,8 @@ class Controller implements Interfaces\Controller
     public function setDefault()
     {
         list($this->name, $this->action) = [
-            ucfirst(self::error),
-            ucfirst(self::defaultAction)
+            ucfirst(self::ERROR),
+            ucfirst(self::DEFAULT_ACTION)
         ];
         return $this;
     }
@@ -158,8 +158,8 @@ class Controller implements Interfaces\Controller
     public function run()
     {
         if ($this->getApp()->getRequest()->isHome()) {
-            $this->name = ucfirst(self::defaultController);
-            $this->action = ucfirst(self::defaultAction);
+            $this->name = ucfirst(self::DEFAULT_CONTROLER);
+            $this->action = ucfirst(self::DEFAULT_ACTION);
             $this->check($this->getNamespacedClass());
             $this->execute();
             return $this;
@@ -169,11 +169,11 @@ class Controller implements Interfaces\Controller
             $this->name = ($this->isModuleController())
                 ? $this->getModuleControllerNs()
                 : ucfirst($this->name);
-            $this->action = ($this->action) ? $this->action : self::defaultAction;
+            $this->action = ($this->action) ? $this->action : self::DEFAULT_ACTION;
             $this->action = ucfirst($this->action);
             $this->params = ($this->params) ? $this->params : [];
             if (isset($this->params[0])) {
-                if ($this->params[0] === self::questionMark) {
+                if ($this->params[0] === self::QMARK) {
                     $this->params = $this->getApp()->getRequest()->getParsedQuery($this->params);
                 }
                 if (isset($this->params[0]) && $this->params[0] === '/') {
@@ -272,8 +272,8 @@ class Controller implements Interfaces\Controller
         $this->errorCode = $errorCode;
         $this->errorMessage = $this->errorsMessage[$this->errorCode];
         $this->errors[] = [
-            self::code => $this->errorCode,
-            self::message => $this->errorMessage
+            self::CODE => $this->errorCode,
+            self::MESSAGE => $this->errorMessage
         ];
     }
 
@@ -294,9 +294,9 @@ class Controller implements Interfaces\Controller
      */
     private function getNamespacedClass()
     {
-        $prefixable = ($this->classPrefix) ? self::baskSlash . $this->classPrefix : '';
-        $namespace = $prefixable . self::baskSlash . self::_namespace
-            . self::baskSlash . $this->name;
+        $prefixable = ($this->classPrefix) ? self::BACKSLASH . $this->classPrefix : '';
+        $namespace = $prefixable . self::BACKSLASH . self::_NAMESPACE
+            . self::BACKSLASH . $this->name;
         return $namespace;
     }
 

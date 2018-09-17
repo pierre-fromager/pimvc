@@ -103,7 +103,7 @@ class View implements Interfaces\View
     {
         if (is_array($this->params)) {
             ob_start();
-            extract($this->params, EXTR_PREFIX_SAME, self::deserializer);
+            extract($this->params, EXTR_PREFIX_SAME, self::DESERIALIZER);
             include($this->filename);
             $this->content = ob_get_contents();
             ob_end_clean();

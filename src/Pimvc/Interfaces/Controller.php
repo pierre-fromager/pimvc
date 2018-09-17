@@ -10,15 +10,15 @@ namespace Pimvc\Interfaces;
 
 interface Controller
 {
-    const error = 'error';
-    const _namespace = 'Controller';
-    const defaultController = 'Home';
-    const defaultAction = 'Index';
-    const baskSlash = '\\';
-    const phpExt = '.php';
-    const code = 'code';
-    const message = 'message';
-    const questionMark = '?';
+    const ERROR = 'error';
+    const _NAMESPACE = 'Controller';
+    const DEFAULT_CONTROLER = 'Home';
+    const DEFAULT_ACTION = 'Index';
+    const BACKSLASH = '\\';
+    const PHP_EXT = '.php';
+    const CODE = 'code';
+    const MESSAGE = 'message';
+    const QMARK = '?';
 
     public function __construct(\Pimvc\App $app = null);
 

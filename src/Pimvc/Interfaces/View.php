@@ -10,7 +10,7 @@ namespace Pimvc\Interfaces;
 
 interface View
 {
-    const deserializer = 'wddx';
+    const DESERIALIZER = 'wddx';
     const VIEW_ERROR_MISSING = 'View filename not found : ';
 
     public function __construct();

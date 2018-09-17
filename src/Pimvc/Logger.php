@@ -148,7 +148,7 @@ class Logger implements Interfaces\Logger
      * @param integer $severity     One of the pre-defined severity constants
      * @return void
      */
-    private function __construct($logDirectory = '', $severity, $adapter)
+    private function __construct($logDirectory, $severity, $adapter)
     {
         self::$remoteAddr = (php_sapi_name() === 'cli')
             ? 'localhost'
