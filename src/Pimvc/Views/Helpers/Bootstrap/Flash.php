@@ -61,14 +61,14 @@ class Flash
             . self::BS_DESCR . ucfirst($message);
         $closeLink = new \Pimvc\Html\Element\Decorator(
             self::PARAM_A,
-            '<small>' . glyphHelper::get(glyphHelper::eye_close) . '</small>',
-            array(
-                self::PARAM_CLASS => self::PARAM_CLOSE
+            '<small>' . glyphHelper::get(glyphHelper::EYE_CLOSE) . '</small>',
+            [
+            self::PARAM_CLASS => self::PARAM_CLOSE
                 , self::PARAM_HREF => self::DASH
                 , self::PARAM_DATA_DISMISS => self::BS_ALTER
                 , self::PARAM_ARIA_LABEL => self::PARAM_CLOSE
                 , self::PARAM_TITLE => self::PARAM_CLOSE
-            )
+            ]
         );
         $flashMessage = (string) new \Pimvc\Html\Element\Decorator(
             self::PARAM_P,
@@ -116,13 +116,13 @@ class Flash
      */
     private static function getIco($type)
     {
-        $defaultIcon = glyphHelper::get(glyphHelper::info_sign);
+        $defaultIcon = glyphHelper::get(glyphHelper::INFO_SIGN);
         $icoTypes = array(
             self::PARAM_INFO => $defaultIcon
-            , self::PARAM_SUCCESS => glyphHelper::get(glyphHelper::ok)
-            , self::PARAM_WARNING => glyphHelper::get(glyphHelper::warning_sign)
-            , self::PARAM_DANGER => glyphHelper::get(glyphHelper::thumbs_down)
-            , self::PARAM_ERROR => glyphHelper::get(glyphHelper::thumbs_down)
+            , self::PARAM_SUCCESS => glyphHelper::get(glyphHelper::OK)
+            , self::PARAM_WARNING => glyphHelper::get(glyphHelper::WARNING_SIGN)
+            , self::PARAM_DANGER => glyphHelper::get(glyphHelper::THUMBS_DOWN)
+            , self::PARAM_ERROR => glyphHelper::get(glyphHelper::THUMBS_DOWN)
         );
         return (isset($icoTypes[$type]))
             ? $icoTypes[$type]
