@@ -42,7 +42,7 @@ class Options
         $this->bubblingMouseEvents = false;
     }
 
-    public function render(): string
+    public function render()
     {
         $that = (object) array_filter((array) $this);
         return \json_encode($that, JSON_PRETTY_PRINT);

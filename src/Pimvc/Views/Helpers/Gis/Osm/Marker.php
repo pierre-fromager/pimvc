@@ -32,7 +32,7 @@ class Marker
      * @param float $lat
      * @param float $lon
      */
-    public function setLatlng(float $lat, float $lon)
+    public function setLatlng($lat, $lon)
     {
         $this->lat = $lat;
         $this->lon = $lon;
@@ -44,7 +44,7 @@ class Marker
      * @param bool $asJson
      * @return string | array
      */
-    public function getLatLng(bool $asJson = false)
+    public function getLatLng($asJson = false)
     {
         $v = [$this->getLat(), $this->getLng()];
         return (!$asJson) ? $v : \json_encode($v);
@@ -55,7 +55,7 @@ class Marker
      *
      * @return float
      */
-    public function getLat(): float
+    public function getLat()
     {
         return $this->lat;
     }
@@ -65,7 +65,7 @@ class Marker
      *
      * @return float
      */
-    public function getLng(): float
+    public function getLng()
     {
         return $this->lon;
     }
@@ -75,7 +75,7 @@ class Marker
      *
      * @return MarkerOptions
      */
-    public function getOptions(): MarkerOptions
+    public function getOptions()
     {
         return $this->options;
     }
@@ -85,7 +85,7 @@ class Marker
      *
      * @param MarkerOptions $options
      */
-    private function init(MarkerOptions $options)
+    private function init($options)
     {
         $this->options = $options;
     }

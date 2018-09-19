@@ -18,7 +18,7 @@ class Center
      * @param array $data as [...[$lat,$lon]]
      * @return array | false
      */
-    public static function getFromAzimuts(array $data): array
+    public static function getFromAzimuts(array $data)
     {
         if (!is_array($data)) {
             return false;
@@ -60,7 +60,7 @@ class Center
      * @param type $rad
      * @return float
      */
-    private static function radToDeg($rad): float
+    private static function radToDeg($rad)
     {
         return $rad * self::HALF_CIRCLE / pi();
     }

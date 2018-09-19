@@ -1,4 +1,8 @@
 <?php
+/**
+ * Pimvc\Views\Helpers\Gis\Osm\Options
+ * 
+ */
 namespace Pimvc\Views\Helpers\Gis\Osm;
 
 class Options
@@ -47,7 +51,7 @@ class Options
      * @param float $latCenter
      * @param float $lonCenter
      */
-    public function __construct(float $latCenter, float $lonCenter)
+    public function __construct($latCenter, $lonCenter)
     {
         $this->latCenter = $latCenter;
         $this->lonCenter = $lonCenter;
@@ -83,10 +87,7 @@ class Options
         $this->tap = true;
         $this->tapTolerance = 15;
         $this->touchZoom = 'center';
-
         $this->bounceAtZoomLimits = true;
-        //$this->crs
-
         $this->zoom = 15;
     }
 
@@ -106,7 +107,7 @@ class Options
      *
      * @return float
      */
-    public function clat(): float
+    public function clat()
     {
         return $this->latCenter;
     }
@@ -116,7 +117,7 @@ class Options
      *
      * @return float
      */
-    public function clon(): float
+    public function clon()
     {
         return $this->lonCenter;
     }

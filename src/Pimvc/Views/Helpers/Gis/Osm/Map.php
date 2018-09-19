@@ -6,13 +6,12 @@
  */
 namespace Pimvc\Views\Helpers\Gis\Osm;
 
-use Marker;
+use Pimvc\Views\Helpers\Gis\Osm\Marker;
 use Pimvc\Views\Helpers\Gis\Osm\Options as MapOptions;
 
 class Map
 {
 
-    //const GMAP_ICON_PIN = '/public/img/gmap/gmap_pin_orange.png';
     const DEFAULT_HEIGHT = 420;
     const TEMPLATE_PATH = '/Template/';
     const TEMPLATE_PARTIAL = 'Osm.php';
@@ -41,7 +40,7 @@ class Map
      * @param Marker[] $markers
      * @return $this
      */
-    public function __construct(string $baseUrl, array $markers, MapOptions $mapOptions)
+    public function __construct($baseUrl, $markers, MapOptions $mapOptions)
     {
         $this->baseUrl = $baseUrl;
         $this->markers = $markers;
@@ -66,7 +65,7 @@ class Map
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return (string) $this->view;
     }
@@ -76,7 +75,7 @@ class Map
      *
      * @return MapOptions
      */
-    public function options(): MapOptions
+    public function options()
     {
         return $this->mapOptions;
     }
@@ -86,7 +85,7 @@ class Map
      *
      * @return array
      */
-    private function params(): array
+    private function params()
     {
         return [
             'mapHeight' => self::DEFAULT_HEIGHT
@@ -102,7 +101,7 @@ class Map
      *
      * @return string
      */
-    private function partialFilename(): string
+    private function partialFilename()
     {
         return __DIR__ . self::TEMPLATE_PATH . self::TEMPLATE_PARTIAL;
     }
