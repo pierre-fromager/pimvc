@@ -1,7 +1,7 @@
 <?php
 /**
  * Pimvc\Views\Helpers\Gis\Osm\Options
- * 
+ *
  */
 namespace Pimvc\Views\Helpers\Gis\Osm;
 

@@ -1155,10 +1155,11 @@ abstract class Orm implements ormInterface
     public function getDependantObjects($key, $value, $deepness = 0)
     {
         $is4d = $this->is4dAdapter();
-        $result = new stdClass();
+        $result = new \stdClass();
         $what = ($is4d)
             ? $this->getDomainInstance()->getVars()
             : [];
+        
         $where = array($key => $value);
         $this->_useCache = false;
         $this->cleanRowset();
@@ -1173,35 +1174,26 @@ abstract class Orm implements ormInterface
             $result->$localAlias = $this->getParts($this, $where);
         }
         if ($result->$localAlias) {
-            $linker = Tools_Array::ota($result->$localAlias);
+            $linker = \Pimvc\Tools\Arrayproto::ota($result->$localAlias);
+            
+
             foreach ($this->_refMap as $ft => $keys) {
                 $pk = $keys['local'];
                 $fk = $keys['foreign'];
-                if (self::MODEL_DEBUG) {
-                    if (!isset($linker[$pk])) {
-                        var_dump($this->_refMap);
-                        $message = 'Broken relation : <i>' . $this->_name . '::'
-                            . $pk . '</i> -> <i>' . $this->_refMap['table'] . '::' . $fk . '</i>'
-                            . '<hr>'
-
-                            . '<pre>'
-                            . print_r($this->_refMap, true)
-                            . '</pre>';
-                        die;
-                    }
-                    $requirements = $pk . ' => ' . $fk . ' = ' . $linker[$pk];
-                    $this->_logger->logInfo(
-                        'Dependancies ' . $ft,
-                        $requirements
-                    );
+                if (!isset($linker[$pk])) {
+                    $message = 'ORM Broken relation : ' . $this->_name . '::'
+                        . $pk . '-> ' . $this->_refMap['table'] . '::' . $fk;
+                    throw new \Exception($message);
                 }
+
                 if (isset($linker[$pk])) {
                     $where = array($fk => $linker[$pk]);
                     $modelOptions = array('useCache' => false);
-                    $ri = new $ft($modelOptions);
+                    $ri = new $ft(
+                        \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool')
+                    );
                     $mi = $ri->getDomainInstance();
-                    $what = ($is4d)
-                        ? $this->get4dPertinentIndexes($mi)
+                    $what = ($is4d) ? $this->get4dPertinentIndexes($mi)
                         : [];
                     $alias = isset($keys['alias'])
                         ? $keys['alias']
