@@ -64,6 +64,11 @@ interface Orm
     const MODEL_BETWEEN = ' BETWEEN ';
     const MODEL_DOMAIN = 'Domain';
     const BACKSLASH = '\\';
+    const _LOCAL = 'local';
+    const _FOREIGN = 'foreign';
+    const _ALIAS = 'alias';
+    const _TABLE = 'table';
+    const _CARDINALITY = 'cardinality';
 
     public function __construct($config = []);
 

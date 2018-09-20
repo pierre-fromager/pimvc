@@ -96,13 +96,6 @@ abstract class Orm implements ormInterface
             ? $this->_metas = $this->describeTable()
             : $this->getDomainFields();
         $this->_columns = $this->getColumns();
-        /*
-        $this->_uid = Tools_Session::getUid();
-        if ($this->_uid  && $this->_adapter == self::MODEL_ADAPTER_4D && $this->_useCache) {
-            $this->_cache = new Cache($this->_uid, Cache::DEFAULT_CACHE_EXPIRATION);
-            $defaultCachePath = $this->_cache->getPath();
-            $this->_cache->setPath($defaultCachePath . self::MODEL_CACHE_SUFFIX);
-        }*/
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
             $this->run('SET NAMES \'UTF-8\'');
@@ -1175,30 +1168,26 @@ abstract class Orm implements ormInterface
         }
         if ($result->$localAlias) {
             $linker = \Pimvc\Tools\Arrayproto::ota($result->$localAlias);
-            
 
             foreach ($this->_refMap as $ft => $keys) {
-                $pk = $keys['local'];
-                $fk = $keys['foreign'];
+                $pk = $keys[self::_LOCAL];
+                $fk = $keys[self::_FOREIGN];
                 if (!isset($linker[$pk])) {
                     $message = 'ORM Broken relation : ' . $this->_name . '::'
-                        . $pk . '-> ' . $this->_refMap['table'] . '::' . $fk;
+                        . $pk . '-> ' . $this->_refMap[self::_TABLE] . '::' . $fk;
                     throw new \Exception($message);
                 }
 
                 if (isset($linker[$pk])) {
                     $where = array($fk => $linker[$pk]);
-                    $modelOptions = array('useCache' => false);
                     $ri = new $ft(
                         \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool')
                     );
                     $mi = $ri->getDomainInstance();
                     $what = ($is4d) ? $this->get4dPertinentIndexes($mi)
                         : [];
-                    $alias = isset($keys['alias'])
-                        ? $keys['alias']
-                        : get_class($mi);
-                    $hasCardinality = (isset($keys['cardinality']));
+                    $alias = isset($keys[self::_ALIAS]) ? $keys[self::_ALIAS] : get_class($mi);
+                    $hasCardinality = (isset($keys[self::_CARDINALITY]));
                     if (!$is4d || $hasCardinality) {
                         $ri->find($what, $where);
                         $rowset = $ri->getRowset();
