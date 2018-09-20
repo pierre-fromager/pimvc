@@ -81,6 +81,21 @@ class Marker
     }
 
     /**
+     * get
+     *
+     * @param bool $asJson
+     * @return mixed
+     */
+    public function get($asJson = true)
+    {
+        $jsonObj = new \stdClass();
+        $jsonObj->lat = $this->getLat();
+        $jsonObj->lon = $this->getLng();
+        $jsonObj->options = $this->options;
+        return ($asJson) ? \json_encode($jsonObj, JSON_PRETTY_PRINT) : $jsonObj;
+    }
+
+    /**
      * init
      *
      * @param MarkerOptions $options

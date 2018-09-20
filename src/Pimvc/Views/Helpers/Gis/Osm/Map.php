@@ -32,6 +32,7 @@ class Map
      * @var Marker[]
      */
     public $markers;
+    private $layer;
 
     /**
      * __construct
@@ -92,8 +93,25 @@ class Map
             , 'baseUrl' => $this->baseUrl
             , 'options' => $this->mapOptions
             , 'markers' => $this->markers
+            , 'markersJson' => $this->getJsonMarkers()
             , 'baseUrl' => $this->baseUrl
+            , 'layer' => $this->layer
         ];
+    }
+
+    private function getJsonMarkers()
+    {
+        $jsonMarker = [];
+        foreach ($this->markers as $marker) {
+            $jsonMarker[] = $marker->get(false);
+        }
+        return \json_encode($jsonMarker, JSON_PRETTY_PRINT);
+    }
+
+    public function setLayer($layer)
+    {
+        $this->layer = $layer;
+        $this->view->setParams($this->params());
     }
 
     /**
