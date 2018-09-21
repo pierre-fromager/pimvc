@@ -39,6 +39,11 @@
         if (polylines.length > 0) {
             for (c = 0; c < polylines.length; c++) {
                 var polyline = new L.Polyline(polylines[c].tupple, polylines[c].options);
+                if (polylines[c].title) {
+                    var color = polylines[c].options.color;
+                    var popupContent = '<h4 style="color:' + color + '">' + polylines[c].title + '</h4>';
+                    polyline.bindPopup(popupContent);
+                }
                 polyline.addTo(map);
             }
         }
