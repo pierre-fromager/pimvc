@@ -16,7 +16,6 @@ class Map
     const TEMPLATE_PATH = '/Template/';
     const TEMPLATE_PARTIAL = 'Osm.php';
 
-    private $baseUrl;
     private $view;
 
     /**
@@ -31,7 +30,8 @@ class Map
      *
      * @var Marker[]
      */
-    public $markers;
+    private $markers;
+    private $polylines;
     private $layer;
 
     /**
@@ -41,14 +41,56 @@ class Map
      * @param Marker[] $markers
      * @return $this
      */
-    public function __construct($baseUrl, $markers, MapOptions $mapOptions)
+    public function __construct()
     {
-        $this->baseUrl = $baseUrl;
-        $this->markers = $markers;
-        $this->mapOptions = $mapOptions;
+        $this->markers = [];
+        $this->polylines = [];
         $this->view = new \Pimvc\View();
-        $this->view->setFilename($this->partialFilename());
-        $this->view->setParams($this->params());
+        $this->view->setFilename($this->templateName());
+        return $this;
+    }
+
+    /**
+     * setLayer
+     *
+     * @param string $layer
+     */
+    public function setLayer($layer)
+    {
+        $this->layer = $layer;
+        return $this;
+    }
+
+    /**
+     * setMarkers
+     *
+     * @param Marker[] $markers
+     */
+    public function setMarkers($markers)
+    {
+        $this->markers = $markers;
+        return $this;
+    }
+
+    /**
+     * setPolylines
+     *
+     * @param Marker[] $polylines
+     */
+    public function setPolylines($polylines)
+    {
+        $this->polylines = $polylines;
+        return $this;
+    }
+
+    /**
+     * setOptions
+     *
+     * @param MapOptions $options
+     */
+    public function setOptions(MapOptions $options)
+    {
+        $this->mapOptions = $options;
         return $this;
     }
 
@@ -58,7 +100,9 @@ class Map
      */
     public function render()
     {
+        $this->view->setParams($this->params());
         $this->view->render();
+        return $this;
     }
 
     /**
@@ -86,20 +130,24 @@ class Map
      *
      * @return array
      */
-    private function params()
+    protected function params()
     {
         return [
             'mapHeight' => self::DEFAULT_HEIGHT
-            , 'baseUrl' => $this->baseUrl
             , 'options' => $this->mapOptions
             , 'markers' => $this->markers
             , 'markersJson' => $this->getJsonMarkers()
-            , 'baseUrl' => $this->baseUrl
+            , 'polylinesJson' => \json_encode($this->polylines, JSON_PRETTY_PRINT)
             , 'layer' => $this->layer
         ];
     }
 
-    private function getJsonMarkers()
+    /**
+     * getJsonMarkers
+     *
+     * @return string
+     */
+    protected function getJsonMarkers()
     {
         $jsonMarker = [];
         foreach ($this->markers as $marker) {
@@ -108,18 +156,12 @@ class Map
         return \json_encode($jsonMarker, JSON_PRETTY_PRINT);
     }
 
-    public function setLayer($layer)
-    {
-        $this->layer = $layer;
-        $this->view->setParams($this->params());
-    }
-
     /**
-     * partialFilename
+     * templateName
      *
      * @return string
      */
-    private function partialFilename()
+    protected function templateName()
     {
         return __DIR__ . self::TEMPLATE_PATH . self::TEMPLATE_PARTIAL;
     }

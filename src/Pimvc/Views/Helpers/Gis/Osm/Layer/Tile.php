@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Pimvc\Views\Helpers\Gis\Osm\Layer\Tile
  */
@@ -18,16 +17,25 @@ class Tile 
     const _OSM_BW = 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png';
     const _OPENRAILWAY_STD = 'https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png';
     const _OPENRAILWAY_SPEED = 'https://{s}.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png';
-    const localLayer = '<?= $baseUrl ?>/metro/lignes/tiles/s/{s}/z/{z}/x/{x}/y/{y}';
     const _PIER_INFOR_OVH = 'http://osm.pier-infor.fr/{z}/{x}/{y}.png';
 
     private $url;
 
+    /**
+     * __construct
+     *
+     * @param string $url
+     */
     public function __construct($url = '')
     {
         $this->url = ($url) ? $url : self::_BASIC;
     }
 
+    /**
+     * getUrl
+     *
+     * @return type
+     */
     public function getUrl()
     {
         return $this->url;
