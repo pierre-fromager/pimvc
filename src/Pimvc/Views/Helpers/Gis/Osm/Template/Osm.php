@@ -2,20 +2,19 @@
 
     var markers = <?= $markersJson ?>;
     var polylines = <?= $polylinesJson ?>;
-
     $j(document).ready(function () {
 
-        var northEast = L.latLng(49.17991, 1.69739);
-        var southWest = L.latLng(48.5516, 3.01025);
-        var bounds = L.latLngBounds(southWest, northEast);
         var mapOpts = {
-            maxBounds: bounds,
             maxZoom: 18,
             minZoom: 9,
             fullscreenControl: {
                 pseudoFullscreen: false
             }
         };
+<?php if ($options->isBound()) : ?>
+            mapOpts.maxBounds = L.latLngBounds(<?= $options->getBoundNorthEast() ?>,<?= $options->getBoundSouthWest() ?>);
+<?php endif; ?>
+
         var map = L.map('map', mapOpts).setView(<?= $options->center(true); ?>,<?= $options->zoom; ?>);
         var layerUrl = '<?= $layer ?>';
 

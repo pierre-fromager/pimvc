@@ -44,6 +44,8 @@ class Options
     public $layers;
     protected $latCenter;
     protected $lonCenter;
+    protected $boundNorthEast = null;
+    protected $boundSouthWest = null;
 
     /**
      * __construct
@@ -89,6 +91,33 @@ class Options
         $this->touchZoom = 'center';
         $this->bounceAtZoomLimits = true;
         $this->zoom = 15;
+    }
+
+    public function setBoundNorthEast(array $boundNorthEast)
+    {
+        $this->boundNorthEast = $boundNorthEast;
+        return $this;
+    }
+
+    public function setBoundSouthWest(array $boundSouthWest)
+    {
+        $this->boundSouthWest = $boundSouthWest;
+        return $this;
+    }
+
+    public function getBoundNorthEast($asJon = true)
+    {
+        return ($asJon) ? \json_encode($this->boundNorthEast) : $this->boundNorthEast;
+    }
+
+    public function getBoundSouthWest($asJon = true)
+    {
+        return ($asJon) ? \json_encode($this->boundSouthWest) : $this->boundSouthWest;
+    }
+
+    public function isBound()
+    {
+        return !(is_null($this->boundNorthEast) && is_null($this->boundSouthWest));
     }
 
     /**

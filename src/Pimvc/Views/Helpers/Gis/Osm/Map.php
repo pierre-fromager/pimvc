@@ -135,7 +135,6 @@ class Map
         return [
             'mapHeight' => self::DEFAULT_HEIGHT
             , 'options' => $this->mapOptions
-            , 'markers' => $this->markers
             , 'markersJson' => $this->getJsonMarkers()
             , 'polylinesJson' => \json_encode($this->polylines, JSON_PRETTY_PRINT)
             , 'layer' => $this->layer
