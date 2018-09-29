@@ -1,6 +1,6 @@
 <?php
 /**
- * Model_Mysql_Keycolumnusages
+ * Pimvc\Model\Mysql\Keycolumnusages
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -13,7 +13,6 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm
     protected $_name = 'key_column_usage';
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
-    //protected $_domainSuffix = 'Mysql_';
     protected $_slot = 'db0';
 
     /**

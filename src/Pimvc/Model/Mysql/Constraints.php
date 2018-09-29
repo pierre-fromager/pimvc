@@ -1,6 +1,6 @@
 <?php
 /**
- * Model_Mysql_Constraints
+ * Pimvc\Model\Mysql\Constraints
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -14,8 +14,6 @@ class Constraints extends \Pimvc\Db\Model\Orm
     protected $_primary = 'table_name';
     protected $_adapter = 'PdoMysql';
     protected $_slot = 'db0';
-
-    //protected $_domainSuffix = 'Mysql_';
 
     /**
      * @see __construct

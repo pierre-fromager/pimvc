@@ -1,6 +1,6 @@
 <?php
 /**
- * Model_Mysql_Columns
+ * Pimvc\Model\Mysql\Columns
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -14,8 +14,6 @@ class Columns extends \Pimvc\Db\Model\Orm
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
     protected $_slot = 'db0';
-
-    //protected $_domainSuffix = 'Mysql_';
 
     /**
      * @see __construct
