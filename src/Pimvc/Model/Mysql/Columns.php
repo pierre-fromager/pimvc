@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Model_Mysql_Columns
  *
@@ -9,11 +8,14 @@ namespace Pimvc\Model\Mysql;
 
 class Columns extends \Pimvc\Db\Model\Orm
 {
+
     protected $_schema = 'information_schema';
     protected $_name = 'columns';
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
-    protected $_domainSuffix = 'Mysql_';
+    protected $_slot = 'db0';
+
+    //protected $_domainSuffix = 'Mysql_';
 
     /**
      * @see __construct
@@ -38,7 +40,7 @@ class Columns extends \Pimvc\Db\Model\Orm
         $this->find($what, $where);
         return $this->getRowsetAsArray();
     }
-    
+
     /**
      * getByTableId
      *

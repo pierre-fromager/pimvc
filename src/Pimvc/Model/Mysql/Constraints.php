@@ -1,20 +1,21 @@
 <?php
-
 /**
  * Model_Mysql_Constraints
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Model\Mysql;
 
 class Constraints extends \Pimvc\Db\Model\Orm
 {
+
     protected $_schema = 'information_schema';
     protected $_name = 'table_constraints';
     protected $_primary = 'table_name';
     protected $_adapter = 'PdoMysql';
-    protected $_domainSuffix = 'Mysql_';
+    protected $_slot = 'db0';
+
+    //protected $_domainSuffix = 'Mysql_';
 
     /**
      * @see __construct
@@ -39,7 +40,7 @@ class Constraints extends \Pimvc\Db\Model\Orm
         $this->find($what, $where);
         return $this->getRowsetAsArray();
     }
-    
+
     /**
      * getBySchema
      *

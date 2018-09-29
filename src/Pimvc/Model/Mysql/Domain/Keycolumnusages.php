@@ -1,11 +1,9 @@
 <?php
-
 /**
- * Model_Domain_Keycolumnusages
+ * Pimvc\Model\Mysql\Domain\Keycolumnusages
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Model\Mysql\Domain;
 
 class Keycolumnusages extends \Pimvc\Db\Model\Domain

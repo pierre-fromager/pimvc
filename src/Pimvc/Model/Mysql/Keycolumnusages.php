@@ -1,20 +1,19 @@
 <?php
-
 /**
  * Model_Mysql_Keycolumnusages
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Model\Mysql;
 
 class Keycolumnusages extends \Pimvc\Db\Model\Orm
 {
+
     protected $_schema = 'information_schema';
     protected $_name = 'key_column_usage';
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoMysql';
-    protected $_domainSuffix = 'Mysql_';
+    //protected $_domainSuffix = 'Mysql_';
     protected $_slot = 'db0';
 
     /**
@@ -39,13 +38,13 @@ class Keycolumnusages extends \Pimvc\Db\Model\Orm
         $defaultSchema = $this->getDefaultSchema();
         $where = array(
             'table_name' => $tableName
-            ,'constraint_schema' => $defaultSchema
+            , 'constraint_schema' => $defaultSchema
             , 'table_schema' => $defaultSchema
         );
         $this->find($what, $where);
         return $this->getRowsetAsArray();
     }
-    
+
     /**
      * getBySchema
      *
