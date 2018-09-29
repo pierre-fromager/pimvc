@@ -17,5 +17,4 @@ class Tables extends \Pimvc\Db\Model\Domain
     public $hasrules;
     public $hastriggers;
     public $rowsecurity;
-
 }

@@ -22,7 +22,6 @@ class Pdomysql implements IAdapter
      */
     private function __construct()
     {
-        
     }
 
     /**
@@ -31,7 +30,6 @@ class Pdomysql implements IAdapter
      */
     private function __clone()
     {
-        
     }
 
     /**
@@ -74,7 +72,10 @@ class Pdomysql implements IAdapter
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(
-                    self::$dsn, self::$params[self::_USER], self::$params[self::_PASSWORD], self::$params[self::_OPTIONS]
+                    self::$dsn,
+                    self::$params[self::_USER],
+                    self::$params[self::_PASSWORD],
+                    self::$params[self::_OPTIONS]
                 );
             } catch (\PDOException $e) {
                 echo self::ERR_CON_FAIL . $e->getMessage();

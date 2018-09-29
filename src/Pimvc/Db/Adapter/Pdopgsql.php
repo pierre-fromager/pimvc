@@ -25,12 +25,10 @@ class Pdopgsql implements IAdapter
 
     private function __construct()
     {
-        
     }
 
     private function __clone()
     {
-        
     }
 
     /**
@@ -59,7 +57,10 @@ class Pdopgsql implements IAdapter
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(
-                    self::$dsn, $params[self::_USER], $params[self::_PASSWORD], $options
+                    self::$dsn,
+                    $params[self::_USER],
+                    $params[self::_PASSWORD],
+                    $options
                 );
             } catch (\PDOException $e) {
                 echo self::ERR_PGSL_CON_FAIL . $e->getMessage();
