@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Helper_Table
+ * Pimvc\Views\Helpers\Table
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */

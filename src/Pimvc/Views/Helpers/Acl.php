@@ -60,8 +60,7 @@ class Acl
                         . '<a title="'.str_replace('-', ' ', $id).' : '.$acl.'" class="ajaxLink '.$acl.'" href="#" id="link' . $id . '">' . self::CR
                         . '<span class="role-acl">' . $roleName . '</span></a>' . self::CR
                         . '</div>' . self::CR // role_header
-                        . '<div id="' . $id . '_content" class="role_content">' . self::CR
-                    . '</div>' . self::CR; // role_content
+                        . '<div id="' . $id . '_content" class="role_content"></div>' . self::CR; // role_content
                 }
                 $this->content .= '</div>' . self::CR; // action_content
             }

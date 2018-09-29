@@ -7,8 +7,9 @@ namespace Pimvc\Db\Adapter\Interfaces;
 
 interface Adapter
 {
+
     const CHARSET = 'utf8';
-    const PREFIX = 'mysql:';
+    const PREFIX_MYSQL = 'mysql:';
     const HOST_PREFIX = 'host=';
     const DB_NAME_PREFIX = 'dbname=';
     const ERR_CON_FAIL = 'Connexion échouée : ';

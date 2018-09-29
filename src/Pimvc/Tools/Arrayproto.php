@@ -1,7 +1,7 @@
 <?php
 
 /**
- * class Tools_Array
+ * class Pimvc\Tools\Arrayproto
  *
  * Tools for array management.
  *

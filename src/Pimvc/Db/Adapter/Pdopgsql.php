@@ -1,33 +1,36 @@
 <?php
-
 /**
  * pdopgsql returns Pgsql Pdo instance
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Db\Adapter;
 
 use Pimvc\Db\Adapter\Interfaces\Adapter as IAdapter;
 
 class Pdopgsql implements IAdapter
 {
-    const PREFIX = 'pgsql:';
+
+    const PREFIX_PGSL = 'pgsql:';
     const USER_PREFIX = 'user=';
     const PASSWORD_PREFIX = 'password=';
-    const HOST_PREFIX = 'host=';
+    const HOST_PREFIX_PGSQL = 'host=';
     const PORT_PREFIX = 'port=';
-    const DB_NAME_PREFIX = 'dbname=';
-    const ERR_CON_FAIL = 'Connexion échouée : ';
+    const DB_NAME_PREFIX_PGSQL = 'dbname=';
+    const ERR_PGSL_CON_FAIL = 'Connexion échouée : ';
 
     protected static $dsn = null;
     protected static $params = null;
     protected static $_instance = null;
+
     private function __construct()
     {
+        
     }
+
     private function __clone()
     {
+        
     }
 
     /**
@@ -37,8 +40,8 @@ class Pdopgsql implements IAdapter
     private static function setDsn()
     {
         $port = (isset(self::$params[self::_PORT])) ? self::$params[self::_PORT] : 5432;
-        self::$dsn = self::prefix . self::dbNamePrefix . self::$params[self::_NAME]
-            . ';' . self::HOST_PREFIX . self::$params[self::_HOST]
+        self::$dsn = self::PREFIX_PGSL . self::DB_NAME_PREFIX_PGSQL . self::$params[self::_NAME]
+            . ';' . self::HOST_PREFIX_PGSQL . self::$params[self::_HOST]
             . ';' . self::PORT_PREFIX . $port
             . ';' . self::USER_PREFIX . self::$params[self::_USER]
             . ';' . self::PASSWORD_PREFIX . self::$params[self::_PASSWORD];
@@ -56,19 +59,16 @@ class Pdopgsql implements IAdapter
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(
-                    self::$dsn,
-                    $params[self::_USER],
-                    $params[self::_PASSWORD],
-                    $options
+                    self::$dsn, $params[self::_USER], $params[self::_PASSWORD], $options
                 );
             } catch (\PDOException $e) {
-                echo self::ERR_CON_FAIL . $e->getMessage();
+                echo self::ERR_PGSL_CON_FAIL . $e->getMessage();
                 die;
             }
         }
         return self::$_instance;
     }
-    
+
     /**
      * getOptions
      *

@@ -1,18 +1,17 @@
 <?php
-
 /**
  * Pimvc\Db\Adapter\Pdomysql
  *
  * returns Mysql Pdo instance
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Db\Adapter;
 
 use Pimvc\Db\Adapter\Interfaces\Adapter as IAdapter;
 
 class Pdomysql implements IAdapter
 {
+
     protected static $dsn = null;
     protected static $params = null;
     protected static $_instance = null;
@@ -23,6 +22,7 @@ class Pdomysql implements IAdapter
      */
     private function __construct()
     {
+        
     }
 
     /**
@@ -31,6 +31,7 @@ class Pdomysql implements IAdapter
      */
     private function __clone()
     {
+        
     }
 
     /**
@@ -39,7 +40,7 @@ class Pdomysql implements IAdapter
      */
     private static function setDsn()
     {
-        self::$dsn = self::PREFIX . self::HOST_PREFIX . self::$params[self::_HOST]
+        self::$dsn = self::PREFIX_MYSQL . self::HOST_PREFIX . self::$params[self::_HOST]
             . ';' . self::DB_NAME_PREFIX . self::$params[self::_NAME];
     }
 
@@ -73,10 +74,7 @@ class Pdomysql implements IAdapter
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(
-                    self::$dsn,
-                    self::$params[self::_USER],
-                    self::$params[self::_PASSWORD],
-                    self::$params[self::_OPTIONS]
+                    self::$dsn, self::$params[self::_USER], self::$params[self::_PASSWORD], self::$params[self::_OPTIONS]
                 );
             } catch (\PDOException $e) {
                 echo self::ERR_CON_FAIL . $e->getMessage();
