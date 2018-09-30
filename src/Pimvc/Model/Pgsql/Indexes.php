@@ -3,6 +3,7 @@
  * Pimvc\Model\Fourd\Indexes
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
+ * @todo https://www.alberton.info/postgresql_meta_info.html
  */
 namespace Pimvc\Model\Pgsql;
 

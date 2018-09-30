@@ -3,6 +3,7 @@
  * Pimvc\Model\Pgsql\Pclass
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
+ * @todo https://www.alberton.info/postgresql_meta_info.html
  */
 namespace Pimvc\Model\Pgsql;
 
@@ -32,30 +33,31 @@ class Pclass extends \Pimvc\Db\Model\Orm
      *
      * @return array
      */
-    public function get()
+    public function getAll()
     {
-        $this->find();
-        return $this->getRowsetAsArray();
+        return $this->find()->getRowsetAsArray();
     }
 
     /**
-     * getByTableName
-     *
+     * indexes
+     * 
      * @param string $tableName
      * @return array
      */
-    public function getByTableName($tableName)
+    public function indexes($tableName)
     {
-        $what = [
-            'ordinal_position',
-            'column_name',
-            'data_type',
-            'column_default',
-            'is_nullable',
-            'character_maximum_length',
-            'numeric_precision'
-        ];
-        $this->find($what, [self::_TABLE_NAME => $tableName]);
-        return $this->getRowsetAsArray();
+        //echo $this->join('pg_index', 'indrelid', $lt, 'oid')
+        $sql = 'SELECT c.relname AS index_name FROM pg_class AS a ' .
+            'JOIN pg_index AS b ON (a.oid = b.indrelid) ' .
+            'JOIN pg_class AS c ON (c.oid = b.indexrelid) ' .
+            " WHERE a.relname = '$tableName';";
+        $this->run($sql);
+        $res = $this->_statement->fetchAll();
+        $indexRes = array_map(
+            function($v) {
+            return $v['index_name'];
+        }, $res);
+
+        return $indexRes;
     }
 }

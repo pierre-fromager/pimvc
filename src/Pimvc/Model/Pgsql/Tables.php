@@ -3,14 +3,17 @@
  * Pimvc\Model\Pgsql\Tables
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
+ * @todo https://www.alberton.info/postgresql_meta_info.html
  */
 namespace Pimvc\Model\Pgsql;
 
 class Tables extends \Pimvc\Db\Model\Orm
 {
 
+    const _TABLENAME = 'tablename';
+
     protected $_name = 'pg_catalog.pg_tables';
-    protected $_primary = 'tablename';
+    protected $_primary = self::_TABLENAME;
     protected $_adapter = 'PdoPgsql';
     protected $_slot = 'db10';
 
@@ -31,8 +34,7 @@ class Tables extends \Pimvc\Db\Model\Orm
      */
     public function get()
     {
-        $this->find();
-        return $this->getRowsetAsArray();
+        return $this->find()->getRowsetAsArray();
     }
 
     /**
@@ -42,12 +44,12 @@ class Tables extends \Pimvc\Db\Model\Orm
      */
     public function getPair()
     {
-        $tables = array();
-        $this->find(array(), array(), array($this->_primary => 'asc'));
+        $tables = [];
+        $this->find([], [], [$this->_primary => self::MODEL_ORDER_ASC]);
         $tablesInfos = $this->getRowsetAsArray();
         foreach ($tablesInfos as $tablesInfo) {
-            $id = $tablesInfo['tablename'];
-            $name = $tablesInfo['tablename'];
+            $id = $tablesInfo[self::_TABLENAME];
+            $name = $tablesInfo[self::_TABLENAME];
             $tables[$name] = $id;
         }
         return $tables;

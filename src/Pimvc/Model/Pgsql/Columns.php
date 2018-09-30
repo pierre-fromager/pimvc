@@ -3,6 +3,7 @@
  * Pimvc\Model\Pgsql\Tables
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
+ * @todo https://www.alberton.info/postgresql_meta_info.html
  */
 namespace Pimvc\Model\Pgsql;
 
@@ -11,8 +12,8 @@ class Columns extends \Pimvc\Db\Model\Orm
 
     const _TABLE_NAME = 'table_name';
 
-    protected $_schema = 'information_schema';
-    protected $_name = 'columns';
+    //protected $_schema = 'information_schema';
+    protected $_name = 'information_schema.COLUMNS';
     protected $_primary = 'column_name';
     protected $_adapter = 'PdoPgsql';
     protected $_slot = 'db10';
