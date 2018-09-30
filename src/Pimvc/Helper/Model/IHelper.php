@@ -44,5 +44,4 @@ interface IHelper
     const PARAM_HTML = 'html';
     const PARAM_NAV = 'nav';
     const VIEW_DATABASE_PATH = 'Views/Database/';
-
 }

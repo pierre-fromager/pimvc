@@ -40,7 +40,7 @@ class Pclass extends \Pimvc\Db\Model\Orm
 
     /**
      * indexes
-     * 
+     *
      * @param string $tableName
      * @return array
      */
@@ -54,9 +54,11 @@ class Pclass extends \Pimvc\Db\Model\Orm
         $this->run($sql);
         $res = $this->_statement->fetchAll();
         $indexRes = array_map(
-            function($v) {
-            return $v['index_name'];
-        }, $res);
+            function ($v) {
+                return $v['index_name'];
+            },
+            $res
+        );
 
         return $indexRes;
     }

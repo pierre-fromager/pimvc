@@ -9,7 +9,7 @@ class Pgsql implements IHelper
 
     /**
      * __construct
-     * 
+     *
      * @param string $tableId
      * @return $this
      */

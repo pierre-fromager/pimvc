@@ -9,7 +9,7 @@ class Mysql implements IHelper
 
     /**
      * __construct
-     * 
+     *
      * @param string $tableId
      * @return $this
      */

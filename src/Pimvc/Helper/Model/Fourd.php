@@ -6,7 +6,7 @@ class Fourd implements IHelper
 
     /**
      * __construct
-     * 
+     *
      * @param string $tableId
      * @return $this
      */
@@ -43,7 +43,7 @@ class Fourd implements IHelper
 
     /**
      * getIndexes
-     * 
+     *
      * @return array
      */
     public function getIndexes()
@@ -66,7 +66,7 @@ class Fourd implements IHelper
 
     /**
      * getIndexesType
-     * 
+     *
      * @return array
      */
     public function getIndexesType()
