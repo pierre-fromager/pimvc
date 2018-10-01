@@ -208,7 +208,9 @@ class Parser
         if ($filename !== null) {
             $charset = mb_detect_encoding($data);
             self::prepareHeaders($charset, $filename);
-            $data = mb_convertEncoding($data, $charset, "auto");
+            $data = mb_convert_encoding($data, $charset, "auto");
+            echo $data;
+            die;
             echo $data;
         }
         return $data;

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * class Pimvc\Tools\Arrayproto
  *
@@ -14,6 +13,42 @@ namespace Pimvc\Tools;
 
 class Arrayproto
 {
+
+    /**
+     * isAssoc
+     * 
+     * @param array $a
+     * @return boolean
+     */
+    public static function isAssoc($a)
+    {
+        $a = array_keys($a);
+        return ($a !== array_keys($a));
+    }
+
+    /**
+     * getTupple 
+     * 
+     * reduces assoc array to simple key value
+     * 
+     * @param array $options
+     * @return type 
+     */
+    public static function getTupple($options)
+    {
+        $tupple = array();
+        if (!self::isAssoc($options)) {
+            foreach ($options as $option) {
+                $expr = array_values($option);
+                $key = $expr[0];
+                $value = $expr[1];
+                $tupple[$key] = $value;
+            }
+        } else {
+            $tupple = $options;
+        }
+        return $tupple;
+    }
 
     /**
      * ato returns mixed from array
@@ -76,7 +111,7 @@ class Arrayproto
         }
         array_multisort($keys, $sortType, $array);
     }
-    
+
     /**
      * conciliate returns $data key & values, intersecting $col key on $data keys
      *
@@ -89,7 +124,6 @@ class Arrayproto
         $dataCols = array_fill_keys($cols, '');
         return array_intersect_key($data, $dataCols);
     }
-    
 
     /**
      * conciliateLot returns concialiate for n $rows array
@@ -103,7 +137,7 @@ class Arrayproto
         }
         return $result;
     }
-    
+
     /**
      * mergeAssoc
      *
@@ -114,14 +148,12 @@ class Arrayproto
     public static function mergeAssoc($array1, $array2)
     {
         return array_combine(
-            array_merge(array_keys($array1), array_keys($array2)),
-            array_merge(
-                array_values($array1),
-                array_values($array2)
+            array_merge(array_keys($array1), array_keys($array2)), array_merge(
+                array_values($array1), array_values($array2)
             )
         );
     }
-    
+
     /**
      * arrayColumn
      *
@@ -148,21 +180,13 @@ class Arrayproto
             return null;
         }
 
-        if (!is_int($params[1])
-            && !is_float($params[1])
-            && !is_string($params[1])
-            && $params[1] !== null
-            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
+        if (!is_int($params[1]) && !is_float($params[1]) && !is_string($params[1]) && $params[1] !== null && !(is_object($params[1]) && method_exists($params[1], '__toString'))
         ) {
             trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
             return false;
         }
 
-        if (isset($params[2])
-            && !is_int($params[2])
-            && !is_float($params[2])
-            && !is_string($params[2])
-            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
+        if (isset($params[2]) && !is_int($params[2]) && !is_float($params[2]) && !is_string($params[2]) && !(is_object($params[2]) && method_exists($params[2], '__toString'))
         ) {
             trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
             return false;
@@ -222,16 +246,14 @@ class Arrayproto
     {
         foreach ($haystack as $key => $value) {
             $current_key = $key;
-            if ($needle === $value
-                    || (is_array($value)
-                    && self::recursive_array_search($needle, $value) !== false)
-                    ) {
+            if ($needle === $value || (is_array($value) && self::recursive_array_search($needle, $value) !== false)
+            ) {
                 return $current_key;
             }
         }
         return false;
     }
-    
+
     /**
      * rotateMatrix
      *
@@ -257,8 +279,7 @@ class Arrayproto
         }
         return $out;
     }
-    
-    
+
     /**
      * recursive_array_diff
      *
