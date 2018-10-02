@@ -36,16 +36,12 @@ class Arrayproto
      */
     public static function getTupple($options)
     {
-        $tupple = array();
+        $tupple = $options;
         if (!self::isAssoc($options)) {
+            $tupple = [];
             foreach ($options as $option) {
-                $expr = array_values($option);
-                $key = $expr[0];
-                $value = $expr[1];
-                $tupple[$key] = $value;
+                $tupple[$option] = $option;
             }
-        } else {
-            $tupple = $options;
         }
         return $tupple;
     }
