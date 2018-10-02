@@ -1,17 +1,16 @@
 <?php
-
 /**
  * Description of Helper_Widget
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Views\Helpers;
 
 use Pimvc\Html\Element\Decorator as Deco;
 
 abstract class Widget implements Interfaces\Widget
 {
+
     protected $content;
     protected $sectionOptions;
     protected $sectionDecorator;
@@ -47,9 +46,10 @@ abstract class Widget implements Interfaces\Widget
     {
         $this->content = $this->getSection(
             $this->getHeader($this->title)
-                . $this->getBody($this->body)
-                . $this->getFooter()
+            . $this->getBody($this->body)
+            . $this->getFooter()
         );
+        return $this;
     }
 
     /**
@@ -139,7 +139,7 @@ abstract class Widget implements Interfaces\Widget
         $this->sectionDecorator = $decorator;
         return $this;
     }
-    
+
     /**
      * setFooter
      *
@@ -151,7 +151,7 @@ abstract class Widget implements Interfaces\Widget
         $this->footer = $footer;
         return $this;
     }
-    
+
     /**
      * setFooterDecorator
      *
@@ -162,7 +162,7 @@ abstract class Widget implements Interfaces\Widget
         $this->footerDecorator = $decorator;
         return $this;
     }
-    
+
     /**
      * setFooteOptions
      *
@@ -216,9 +216,11 @@ abstract class Widget implements Interfaces\Widget
      */
     private function getSection($content)
     {
-        return ($content)
-            ? (string) new Deco($this->sectionDecorator, $content, $this->sectionOptions)
-            : '';
+        return ($content) ? (string) new Deco(
+            $this->sectionDecorator,
+            $content,
+            $this->sectionOptions
+        ) : '';
     }
 
     /**
@@ -228,9 +230,11 @@ abstract class Widget implements Interfaces\Widget
      */
     private function getBody()
     {
-        return ($this->body)
-            ? (string) new Deco($this->bodyDecorator, $this->body, $this->bodyOptions)
-            : '';
+        return ($this->body) ? (string) new Deco(
+            $this->bodyDecorator,
+            $this->body,
+            $this->bodyOptions
+        ) : '';
     }
 
     /**
@@ -241,11 +245,13 @@ abstract class Widget implements Interfaces\Widget
      */
     private function getHeader($title)
     {
-        return ($title)
-            ? (string) new Deco($this->headerDecorator, $this->formatedTitle($title), $this->headerOptions)
-            : '';
+        return ($title) ? (string) new Deco(
+            $this->headerDecorator,
+            $this->formatedTitle($title),
+            $this->headerOptions
+        ) : '';
     }
-    
+
     /**
      * getFooter
      *
@@ -253,9 +259,11 @@ abstract class Widget implements Interfaces\Widget
      */
     private function getFooter()
     {
-        return ($this->footer)
-            ? (string) new Deco($this->footerDecorator, $this->footer, $this->footerOtions)
-            : '';
+        return ($this->footer) ? (string) new Deco(
+            $this->footerDecorator,
+            $this->footer,
+            $this->footerOtions
+        ) : '';
     }
 
     /**
@@ -267,8 +275,11 @@ abstract class Widget implements Interfaces\Widget
     private function formatedTitle($title)
     {
         return ($title) ?
-            (string) new Deco($this->titleDecorator, $title, $this->titleOptions)
-            : '';
+            (string) new Deco(
+                $this->titleDecorator,
+                $title,
+                $this->titleOptions
+            ) : '';
     }
 
     /**
