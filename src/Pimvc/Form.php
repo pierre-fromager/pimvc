@@ -1101,10 +1101,12 @@ class Form implements Interfaces\Form
     /**
      * render
      *
+     * @return $this
      */
     public function render()
     {
         $this->form = $this->get();
+        return $this;
     }
 
     /**

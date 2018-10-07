@@ -1,17 +1,16 @@
 <?php
-
 /**
  * Description of domain
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Db\Model\Interfaces;
 
 interface Orm
 {
-    const MODEL_DEBUG = false;
-    const MODEL_TRACE = false;
+
+    //const MODEL_DEBUG = true;
+    //const MODEL_TRACE = false;
     //const MODEL_FETCH_MODE = PDO::FETCH_ASSOC;
     const MODEL_TRANS = ':TRANS_';
     const MODEL_FROM = ' FROM ';
@@ -50,11 +49,10 @@ interface Orm
     const MODEL_GROUP_BY = ' GROUP BY ';
     const MODEL_OPERATOR_SPLITER = '#';
     const MODEL_DOMAIN_CLASS_PREFIX = '\Model\Domain\\';
-    const MODEL_ADAPTER_DEFAULT = 'Pdomysql';
-    const MODEL_ADAPTER_MYSQL = self::MODEL_ADAPTER_DEFAULT;
-    const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
-    const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
-    const MODEL_ADAPTER_4D = 'Pdo4d';
+    
+    //const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
+    //const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
+    //const MODEL_ADAPTER_4D = 'Pdo4d';
     const MODEL_PARENTH_O = '(';
     const MODEL_PARENTH_C = ')';
     const MODEL_CACHE_SUFFIX = 'Db/Queries/';
@@ -76,8 +74,6 @@ interface Orm
 
     public function setCasts($fieldsCast);
 
-    public function isPgsql();
-
     public function getName();
 
     public function getDefaultSchema();
@@ -94,9 +90,6 @@ interface Orm
 
     public function getFetchMode();
 
-    public function getSql();
-
-    public function getSize();
 
     public function getPrimary();
 

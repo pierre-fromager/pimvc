@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Lib_Html_Element_Decorator
+ * Description of \Pimvc\Html\Element\Decorator
  *
  * @author pierrefromager
  */
@@ -41,7 +41,7 @@ class Decorator
     /**
      * get
      *
-     * @return \Library\Html\Element\Decorator
+     * @return \Pimvc\Html\Element\Decorator
      */
     public function get()
     {

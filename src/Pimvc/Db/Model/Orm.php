@@ -1,18 +1,17 @@
 <?php
-
 /**
  * Description of Pimvc\Db\Model\Orm
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
-
 namespace Pimvc\Db\Model;
 
 use Pimvc\Db\Model\Exceptions\Orm as ormException;
 use Pimvc\Db\Model\Interfaces\Orm as ormInterface;
 
-abstract class Orm implements ormInterface
+abstract class Orm extends Core implements ormInterface
 {
+
     protected $_config = null;
     protected $_dsn = null;
     protected $_db = null;
@@ -31,7 +30,6 @@ abstract class Orm implements ormInterface
     public $_current = null;
     public $_currentIndex = null;
     public $_count = null;
-
     protected $_metas = null;
     protected $_primary = null;
     protected $_columns = null;
@@ -41,12 +39,10 @@ abstract class Orm implements ormInterface
     protected $_domainInstance = null;
     protected $_logger = null;
     protected $_attributes = [];
-
     protected $_dependentModels = [];
     protected $_refMap = [];
     protected $_Or = [];
     protected $_parenthesis = [];
-
     public $_useCache = false;
     public $_cache = null;
     protected $_cachePath = '';
@@ -59,7 +55,6 @@ abstract class Orm implements ormInterface
     protected $_fetchMode = \PDO::FETCH_ASSOC;
     protected $_restMode;
     protected $_casts;
-
     private $_app;
 
     /**
@@ -83,18 +78,14 @@ abstract class Orm implements ormInterface
             \Pimvc\Logger::DEBUG,
             \Pimvc\Logger::LOG_ADAPTER_FILE
         );
-        $this->_useCache = (isset($config['useCache']) && $config['useCache'] == false)
-            ? false
-            : self::MODEL_USE_CACHE;
+        $this->_useCache = (isset($config['useCache']) && $config['useCache'] == false) ? false : self::MODEL_USE_CACHE;
         $this->_restMode = (isset($config['restMode']) && $config['restMode'] == true);
         $this->_schema = $config[$this->_slot]['name'];
         $this->_db = \Pimvc\Db\Factory::getConnection($config[$this->_slot]);
         $this->_domainClass = $this->getDomainName();
         $this->_domainInstance = new $this->_domainClass;
         $is4dOrPg = in_array($this->_adapter, [self::MODEL_ADAPTER_4D, self::MODEL_ADAPTER_PGSQL]);
-        $this->_metas = (!$is4dOrPg)
-            ? $this->_metas = $this->describeTable()
-            : $this->getDomainFields();
+        $this->_metas = (!$is4dOrPg) ? $this->_metas = $this->describeTable() : $this->getDomainFields();
         $this->_columns = $this->getColumns();
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
@@ -141,16 +132,6 @@ abstract class Orm implements ormInterface
         foreach ($fieldsCast as $fieldName => $typeCast) {
             $this->_casts[$fieldName] = $typeCast;
         }
-    }
-
-    /**
-     * isPgsql
-     *
-     * @return boolean
-     */
-    public function isPgsql()
-    {
-        return ($this->_adapter == self::MODEL_ADAPTER_PGSQL);
     }
 
     /**
@@ -214,7 +195,6 @@ abstract class Orm implements ormInterface
         return $name . '-' . md5($hashTab);
     }
 
-
     /**
      * getDomainName returns the given mapping class
      *
@@ -225,7 +205,7 @@ abstract class Orm implements ormInterface
         $getCalledClassNameSpliter = explode(self::BACKSLASH, get_called_class());
         $entity = array_pop($getCalledClassNameSpliter);
         array_push($getCalledClassNameSpliter, self::MODEL_DOMAIN, $entity);
-        $domainName =  implode(self::BACKSLASH, $getCalledClassNameSpliter);
+        $domainName = implode(self::BACKSLASH, $getCalledClassNameSpliter);
         return $domainName;
     }
 
@@ -239,7 +219,6 @@ abstract class Orm implements ormInterface
         return $this->_domainInstance;
     }
 
-
     /**
      * getDomainFields return fields as defined in domain object
      *
@@ -249,7 +228,7 @@ abstract class Orm implements ormInterface
     {
         $objectVars = get_object_vars($this->_domainInstance);
         $fields = array_keys($objectVars);
-        $size = ($size == 0) ? $size = count($fields) : $size;
+        $size = ($size == 0) ? count($fields) : $size;
         $fields = array_slice($fields, 0, $size);
         $formatedFields = [];
         foreach ($fields as $field) {
@@ -298,10 +277,8 @@ abstract class Orm implements ormInterface
                 $key = self::MODEL_INDEX_FIELD;
                 break;
         }
-        $columns = $this->getMetasInfo($key);
-        $callback = array(__CLASS__, 'arrayToLower');
-        $columns = array_map($callback, $columns);
-        return $columns;
+        
+        return array_map('strtolower', $this->getMetasInfo($key));
     }
 
     /**
@@ -324,43 +301,6 @@ abstract class Orm implements ormInterface
         return $this->_fetchMode;
     }
 
-
-    /**
-     * arrayToLower
-     *
-     * @param string $value
-     * @return string
-     */
-    private static function arrayToLower($value)
-    {
-        return strtolower($value);
-    }
-
-    /**
-     * getSql
-     *
-     * @return string
-     */
-    public function getSql()
-    {
-        return $this->sql;
-    }
-
-    /**
-     * getSize
-     *
-     * @return int
-     */
-    public function getSize()
-    {
-        $sql = self::MODEL_SELECT . ' count(' . $this->_primary . ') '
-            . self::MODEL_FROM . $this->_name;
-        $results = $this->_db->query($sql);
-        foreach ($results as $result) {
-        }
-        return $result[0];
-    }
-
     /**
      * getPrimary
      * returns primary key name
@@ -370,72 +310,6 @@ abstract class Orm implements ormInterface
     public function getPrimary()
     {
         return $this->_primary;
-    }
-
-    /**
-     * describeTable
-     * returns the current table description
-     *
-     * @return array
-     */
-    public function describeTable($name = '')
-    {
-        $realName = (empty($name)) ? $this->_name : $name;
-        $cacheName = $this->_adapter . '_' . $realName;
-        $cacheDescribe = new \Pimvc\Cache($cacheName, 400);
-        $cacheDescribe->setPath($this->_app->getPath() . '/cache/Db/Metas/');
-
-        if ($cacheDescribe->expired()) {
-            $this->_name = (empty($name)) ? $this->_name : $name;
-            switch ($this->_adapter) {
-                case self::MODEL_ADAPTER_PGSQL:
-                    $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $this->_name . "';";
-                    break;
-                case self::MODEL_ADAPTER_SQLITE:
-                    $sql = "SELECT * FROM sqlite_master where name='" . $this->_name . "';";
-                    break;
-                default:
-                    $sql = 'DESCRIBE ' . $this->_schema . '.' . $this->_name;
-                    break;
-            }
-
-            try {
-                $this->_statement = $this->_db->prepare($sql);
-            } catch (\PDOException $exc) {
-                echo '<p style="color:red"> Prepare : ' . $sql . '</p>';
-                echo $exc->getMessage();
-                die;
-            }
-            try {
-                $this->_statement->execute();
-            } catch (\PDOException $exc) {
-                echo '<p style="color:red">Execute : ' . $sql . '</p>';
-                echo $exc->getMessage();
-                die;
-            }
-            $result = $this->_statement->fetchAll($this->_fetchMode);
-            if ($this->_adapter == self::MODEL_ADAPTER_SQLITE) {
-                $topStrip = "CREATE TABLE '" . $this->_name . "' (";
-                $striped = str_replace($topStrip, '', $result[0]['sql']);
-                $striped = str_replace(')', '', $striped);
-                $striped = str_replace(", '", ',', $striped);
-                $striped = str_replace("'", '', $striped);
-                $arrStripped = explode(',', $striped);
-                $finalArray = [];
-                foreach ($arrStripped as $column) {
-                    $colInfo = explode(' ', $column);
-                    $finalArray[] = array(
-                        self::MODEL_INDEX_FIELD => str_replace("'", '', $colInfo[0])
-                        , 'Type' => strtolower($colInfo[1])
-                    );
-                }
-                $result = $finalArray;
-            }
-            $cacheDescribe->set($result);
-        } else {
-            $result = $cacheDescribe->get($cacheName);
-        }
-        return $result;
     }
 
     /**
@@ -663,9 +537,7 @@ abstract class Orm implements ormInterface
         $isValid = ($domainObject instanceof $this->_domainClass);
         if ($isValid) {
             $pk = $this->getPrimary();
-            $isNew = ($forceAsNew === false)
-                ? empty($domainObject->$pk)
-                : $forceAsNew;
+            $isNew = ($forceAsNew === false) ? empty($domainObject->$pk) : $forceAsNew;
             if ($isNew) {
                 if (property_exists($domainObject, 'counter')) {
                     unset($domainObject->counter);
@@ -689,7 +561,6 @@ abstract class Orm implements ormInterface
         return $this;
     }
 
-
     /**
      * saveDiff
      *
@@ -708,9 +579,7 @@ abstract class Orm implements ormInterface
         $pk = $this->getPrimary();
         $isValid = ($domainObject instanceof $this->_domainClass);
         if ($isValid) {
-            $isNew = ($forceAsNew === false)
-                ? empty($domainObject->$pk)
-                : false;
+            $isNew = ($forceAsNew === false) ? empty($domainObject->$pk) : false;
             if ($isNew) {
                 if (property_exists($domainObject, 'counter')) {
                     unset($domainObject->counter);
@@ -754,7 +623,6 @@ abstract class Orm implements ormInterface
         );
     }
 
-
     /**
      * setOr
      *
@@ -776,7 +644,6 @@ abstract class Orm implements ormInterface
         $this->_parenthesis = $params;
         return $this;
     }
-
 
     /**
      * isOperator returns true if operator present
@@ -804,9 +671,7 @@ abstract class Orm implements ormInterface
             $operator = ' ' . $expr[1] . ' ';
             $key = $expr[0];
             $isEqual = ($operator == ' = ');
-            $operator = ($isEqual && $hasWirldcard)
-                ? self::MODEL_LIKE
-                : $operator;
+            $operator = ($isEqual && $hasWirldcard) ? self::MODEL_LIKE : $operator;
         } else {
             $operator = ($hasWirldcard) ? self::MODEL_LIKE : self::MODEL_EQUAL;
         }
@@ -820,7 +685,7 @@ abstract class Orm implements ormInterface
      */
     private function cleanCriterias(&$criterias)
     {
-        $cleanExclude = array('in','!in','bool','between');
+        $cleanExclude = array('in', '!in', 'bool', 'between');
         foreach ($criterias as $key => $value) {
             if ($this->isOperator(self::MODEL_OPERATOR_SPLITER, $key)) {
                 $expr = explode(self::MODEL_OPERATOR_SPLITER, $key);
@@ -862,21 +727,19 @@ abstract class Orm implements ormInterface
     private function _getWhere($criterias)
     {
         $where = '';
-        $excludeBind = array('in','!in','bool','between');
+        $excludeBind = array('in', '!in', 'bool', 'between');
         if (!empty($criterias)) {
             $result = [];
             $is4d = ($this->_adapter == self::MODEL_ADAPTER_4D);
             foreach ($criterias as $column => $value) {
-                $castType = (isset($this->_casts[$column]))
-                    ? '::' .$this->_casts[$column]
-                    : '';
+                $castType = (isset($this->_casts[$column])) ? '::' . $this->_casts[$column] : '';
                 if ($castType) {
                     //var_dump($castType);die;
                 }
                 $operator = $this->_getOperator($column, $value);
                 $opclean = strtolower(trim($operator));
                 if (in_array($opclean, $excludeBind)) {
-                    if ($opclean[0]=='!') {
+                    if ($opclean[0] == '!') {
                         $operator = ' not in';
                     }
                     $operator = str_replace('bool', '=', $operator);
@@ -885,8 +748,7 @@ abstract class Orm implements ormInterface
                 } else {
                     $key = ($is4d)
                         //? self::squareBracketField($column) . $operator . $this->getSbfHash($column, $value)
-                        ? $column . ' ' . $operator. ':' . $column
-                        :  $column . $castType . ' ' . $operator. ':' . $column;
+                        ? $column . ' ' . $operator . ':' . $column : $column . $castType . ' ' . $operator . ':' . $column;
                     $result[$key] = "'" . $value . "'";
                 }
             }
@@ -916,16 +778,6 @@ abstract class Orm implements ormInterface
             }
         }
         return $where . $this->patchWhere;
-    }
-
-    /**
-     * is4dAdapter
-     *
-     * @return boolean
-     */
-    private function is4dAdapter()
-    {
-        return ($this->_adapter == self::MODEL_ADAPTER_4D);
     }
 
     /**
@@ -969,104 +821,12 @@ abstract class Orm implements ormInterface
             if (is_array($limits)) {
                 $limitCounter = count($limits);
                 $limit = self::MODEL_LIMIT . $limits[0];
-                $limit .= ($limitCounter > 1)
-                    ? self::MODEL_OFFSET . $limits[1]
-                    : '';
+                $limit .= ($limitCounter > 1) ? self::MODEL_OFFSET . $limits[1] : '';
             } else {
                 $limit = self::MODEL_LIMIT . $limits;
             }
         }
         return $limit;
-    }
-
-    /**
-     * get4dTypeFromDomain
-     *
-     * @param string $key
-     * @return boolean | int
-     */
-    private function get4dTypeFromDomain($key)
-    {
-        $type = \PDO::PARAM_INT;
-        $isSytem = Tools_Db_4d_Tables::isSystem($this->_name);
-        $hasDefinition = $this->_domainInstance->hasPdo($key);
-        if (!$isSytem && $hasDefinition) {
-            return $this->_domainInstance->getPdo($key);
-        }
-        return $type;
-    }
-
-    /**
-     * get4dValueFromType
-     *
-     * @param int $type
-     * @param string $value
-     * @return int|string
-     */
-    private function get4dValueFromType($type, $value)
-    {
-        $typedValue = $value;
-        switch ($type) {
-            case \PDO::PARAM_INT:
-                $typedValue = (int) $value;
-                break;
-            case \PDO::PARAM_STR:
-                $typedValue = (string) $value;
-                break;
-            case \PDO::PARAM_BOOL:
-                $typedValue = (int) ($value == 1);
-                break;
-        }
-        return $typedValue;
-    }
-
-    /**
-     * bindArray binds Pdo values for query prepare
-     *
-     * @param PDOStatement $poStatement
-     * @param array $paArray
-     */
-    protected function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = [])
-    {
-        $motif = '/_' . $this->_primary . '$|id|code/';
-        foreach ($paArray as $k => $v) {
-            $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            if ($this->is4dAdapter()) {
-                $type = $this->get4dTypeFromDomain($k);
-                $value = $this->get4dValueFromType($type, $v);
-                //$key = $this->getSbfHash($k, $v);
-                $key = ':' . $k;
-            } else {
-                if (isset($forcedTypes[$k])) {
-                    $type = $forcedTypes[$k];
-                } else {
-                    $type = (preg_match($motif, $k))
-                        ? \PDO::PARAM_INT
-                        : \PDO::PARAM_STR;
-                    $type = (is_numeric($v))
-                        ? \PDO::PARAM_INT
-                        : \PDO::PARAM_STR;
-                }
-                $value = is_array($v) ? serialize($v) : $v;
-                $key = ':' . $k;
-                //echo 'K: ' . $key . ' , V: '. $value . ' , TYPE: ' . $type . '<br/>';
-            }
-            try {
-                $poStatement->bindValue($key, $value, $type);
-                if (self::MODEL_DEBUG) {
-                    $this->_logger->logDebug(
-                        'Bind key (' . $key . ')',
-                        'value (' . $value . ') and type (' . $type . ')'
-                    );
-                }
-            } catch (\PDOException $exc) {
-                $this->_logger->logError(
-                    'Sql Bind Error [' . $key . ':' . $value . ':' . $type . ']',
-                    $exc->getMessage()
-                );
-            }
-        }
-        return $this;
     }
 
     /**
@@ -1136,7 +896,6 @@ abstract class Orm implements ormInterface
         return $result;
     }
 
-
     /**
      * getDependantObjects
      *
@@ -1149,10 +908,8 @@ abstract class Orm implements ormInterface
     {
         $is4d = $this->is4dAdapter();
         $result = new \stdClass();
-        $what = ($is4d)
-            ? $this->getDomainInstance()->getVars()
-            : [];
-        
+        $what = ($is4d) ? $this->getDomainInstance()->getVars() : [];
+
         $where = array($key => $value);
         $this->_useCache = false;
         $this->cleanRowset();
@@ -1184,16 +941,13 @@ abstract class Orm implements ormInterface
                         \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool')
                     );
                     $mi = $ri->getDomainInstance();
-                    $what = ($is4d) ? $this->get4dPertinentIndexes($mi)
-                        : [];
+                    $what = ($is4d) ? $this->get4dPertinentIndexes($mi) : [];
                     $alias = isset($keys[self::_ALIAS]) ? $keys[self::_ALIAS] : get_class($mi);
                     $hasCardinality = (isset($keys[self::_CARDINALITY]));
                     if (!$is4d || $hasCardinality) {
                         $ri->find($what, $where);
                         $rowset = $ri->getRowset();
-                        $result->$alias = ($hasCardinality)
-                            ? $rowset
-                            : $rowset[0];
+                        $result->$alias = ($hasCardinality) ? $rowset : $rowset[0];
                     } else {
                         $rowset = $this->getParts($ri, $where);
                         $result->$alias = $rowset;
@@ -1225,12 +979,10 @@ abstract class Orm implements ormInterface
     private function get4dPertinentIndexes($mi)
     {
         $maxVars = count($mi->getVars());
-        return ($maxVars > 20)
-            ? array_merge(
-                $mi->getVarsByKeyword('numero'),
-                $mi->getVarsByKeyword('code')
-            )
-            : $mi->getVars();
+        return ($maxVars > 20) ? array_merge(
+            $mi->getVarsByKeyword('numero'),
+            $mi->getVarsByKeyword('code')
+        ) : $mi->getVars();
     }
 
     /**
@@ -1273,7 +1025,7 @@ abstract class Orm implements ormInterface
                 break;
         }
         $sqlJoin = $joinPrefix . self::MODEL_JOIN
-            . $ft. self::MODEL_JOIN_ON . $lt . self::MODEL_DOT . $lc
+            . $ft . self::MODEL_JOIN_ON . $lt . self::MODEL_DOT . $lc
             . self::MODEL_EQUAL
             . $ft . self::MODEL_DOT . $fc;
         return $sqlJoin;
@@ -1386,17 +1138,13 @@ abstract class Orm implements ormInterface
         $group = '',
         $having = ''
     ) {
-        $groupAggregateFunc = (empty($group))
-            ? ''
-            : ', count(' . $group . ') as counter ';
+        $groupAggregateFunc = (empty($group)) ? '' : ', count(' . $group . ') as counter ';
         $groupBy = (empty($group)) ? '' : self::MODEL_GROUP_BY . $group;
 
         $havingAgg = ($having && $groupBy) ? ' HAVING ' . $having : '';
         $groupBy .= $havingAgg;
 
-        $tableName = ($this->_schema && $this->_adapter != self::MODEL_ADAPTER_SQLITE)
-            ? $this->_schema . '.' .$this->_name
-            : $this->_name;
+        $tableName = ($this->_schema && $this->_adapter != self::MODEL_ADAPTER_SQLITE) ? $this->_schema . '.' . $this->_name : $this->_name;
 
         $sql = self::MODEL_SELECT
             . $this->getFields($fieldList) . $groupAggregateFunc
@@ -1453,7 +1201,6 @@ abstract class Orm implements ormInterface
         return $this;
     }
 
-
     /**
      * clearRowset
      */
@@ -1462,7 +1209,6 @@ abstract class Orm implements ormInterface
         $this->_rowset = null;
         return $this;
     }
-
 
     /**
      * counter
@@ -1480,9 +1226,7 @@ abstract class Orm implements ormInterface
         }
 
         if ($mustQuery) {
-            $schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL)
-                ? $this->_schema . '.'
-                : '';
+            $schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL) ? $this->_schema . '.' : '';
             $sql = self::MODEL_SELECT_COUNT . '(' . $this->_primary . ') '
                 . self::MODEL_FROM . $schemaPrefix . $this->_name
                 . $this->_getWhere($where);
@@ -1537,19 +1281,18 @@ abstract class Orm implements ormInterface
         } else {
             $key = $this->_primary;
             $value = $params[$key];
-            $id= ':' . $this->_primary;
+            $id = ':' . $this->_primary;
             /*
-            $id = ($is4d)
-                ? $this->getSbfHash($key, $value)
-                : $params[$this->_primary];
-            //unset($params[$this->_primary]);   */
+              $id = ($is4d)
+              ? $this->getSbfHash($key, $value)
+              : $params[$this->_primary];
+              //unset($params[$this->_primary]); */
             $where = self::MODEL_WHERE . $key . " = " . $id;
         }
         $quoteLeft = ($is4d) ? '' : '`';
         $quoteRight = ($is4d) ? '' : '`';
         foreach ($params as $key => $value) {
-            $keyBind = ($is4d)
-                ? ':' . $key //$this->getSbfHash($key, $value)
+            $keyBind = ($is4d) ? ':' . $key //$this->getSbfHash($key, $value)
                 : ':' . $key;
             $sql .= $quoteLeft . $key . $quoteRight . ' = ' . $keyBind . ', ';
         }
@@ -1562,7 +1305,6 @@ abstract class Orm implements ormInterface
         $returnCode = $this->run($sql, $params);
         return $returnCode;
     }
-
 
     /**
      * getSbfParams
@@ -1580,54 +1322,7 @@ abstract class Orm implements ormInterface
         return $spbParams;
     }
 
-    /**
-     * directsql
-     *
-     * @param string $sql
-     * @param array $params
-     */
-    public function directsql($sql, $params)
-    {
-        $isSelect = (strpos($sql, 'SELECT') !== false);
-        try {
-            $stmt = $this->_db->prepare($sql);
-        } catch (\PDOException $exc) {
-            echo $exc->getMessage();
-            die;
-        }
-        try {
-            foreach ($params as $key => &$value) {
-                $type = ($key == 'numero') ? PDO::PARAM_STR : PDO::PARAM_INT;
-                $prepValue = ($type == PDO::PARAM_STR)
-                    ? (string) $value
-                    : (int) $value;
-                //echo $type;
-                //echo $key . ' == ' . $value . '<br>';
-                $bindedKey = ':' . $key;
-                //echo $bindedKey . ' == ' . $value . '('. $type. ')<br>';
-                $stmt->bindParam($bindedKey, $prepValue, $type);
-            }
-        } catch (\PDOException $exc) {
-            echo $exc->getMessage();
-            echo 'EOPDSQL1';
-            die;
-        }
-        try {
-            //var_dump($stmt);
-            $this->_db->beginTransaction();
-            $stmt->execute();
-            $this->_db->commit();
-            if ($isSelect) {
-                //var_dump($stmt->fetchall());
-            }
-        } catch (\PDOException $exc) {
-            $this->_db->rollBack();
-            echo $exc->getMessage();
-            echo 'EOPDSQL2';
-            die;
-        }
-        return $this;
-    }
+
 
     /**
      * delete _current rowset
@@ -1644,9 +1339,7 @@ abstract class Orm implements ormInterface
             $sql .= $where;
             $returnCode = $this->run($sql);
         } else {
-            $id = isset($this->_current->{$this->_primary})
-                ? $this->_current->{$this->_primary}
-                : '';
+            $id = isset($this->_current->{$this->_primary}) ? $this->_current->{$this->_primary} : '';
             if (!empty($id)) {
                 $sql .= self::MODEL_WHERE . $this->_primary
                     . '= :' . $this->_primary;
@@ -1672,7 +1365,7 @@ abstract class Orm implements ormInterface
         if (!empty($lot)) {
             $quoteLot = "'" . implode("','", $lot) . "'";
             $sql = self::MODEL_DELETE . $this->_name . self::MODEL_WHERE
-                    . $this->_primary . ' IN (' . $quoteLot . ')';
+                . $this->_primary . ' IN (' . $quoteLot . ')';
             $this->run($sql);
         }
         return $this;
@@ -1703,21 +1396,6 @@ abstract class Orm implements ormInterface
             . $sqlKeys . ' values ' . $sqlValues;
         $returnCode = $this->run($sql, $params, $bindTypes);
         return $returnCode;
-    }
-
-    /**
-     * getQueryType
-     *
-     * @param string $sql
-     * @return string
-     */
-    private function getQueryType($sql)
-    {
-        $queryMembers = explode(' ', $sql);
-        $queryType = (empty($queryMembers[0]))
-            ? $queryMembers[1]
-            : $queryMembers[0];
-        return $queryType;
     }
 
     /**
@@ -1797,6 +1475,7 @@ abstract class Orm implements ormInterface
         }
         $this->sql = $sql;
         $queryType = $this->getQueryType($sql);
+
         $returnCode = false;
         $this->_error = '';
         try {
@@ -1807,8 +1486,8 @@ abstract class Orm implements ormInterface
                     $this->_errorMessage = 'Statement prepare error';
                 } else {
                     echo '<p style="color:red;">Error prepare sql : '
-                        . $sql
-                        . '</p>';
+                    . $sql
+                    . '</p>';
                     die;
                 }
             }
@@ -1834,8 +1513,8 @@ abstract class Orm implements ormInterface
             );
             if (self::MODEL_DEBUG || !$this->_restMode) {
                 echo '<p style="color:red">Bind error : '
-                    . $exc->getMessage()
-                    . '</p>';
+                . $exc->getMessage()
+                . '</p>';
                 die;
             }
         }
@@ -1854,10 +1533,10 @@ abstract class Orm implements ormInterface
                 var_dump($this->_columns);
                 var_dump(get_class($this->getDomainInstance()));
                 echo '<p style="color:red">Execute error : '
-                    . $exc->getMessage() . ' EOPRUN1'
-                    . '<hr>' . $this->getSql()
-                    . '<hr>' . $exc->getTraceAsString()
-                    . '</p>';
+                . $exc->getMessage() . ' EOPRUN1'
+                . '<hr>' . $this->getSql()
+                . '<hr>' . $exc->getTraceAsString()
+                . '</p>';
                 die;
             }
         }
@@ -1916,9 +1595,7 @@ abstract class Orm implements ormInterface
      */
     public function getWhere($asCriterias = false)
     {
-        return ($asCriterias)
-            ? $this->_whereCriterias
-            : $this->_where;
+        return ($asCriterias) ? $this->_whereCriterias : $this->_where;
     }
 
     /**
@@ -1930,7 +1607,6 @@ abstract class Orm implements ormInterface
     {
         return (boolean) count($this->_whereCriterias);
     }
-
 
     /**
      * bindWhere

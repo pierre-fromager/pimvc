@@ -49,7 +49,7 @@ class Pdopgsql implements IAdapter
      * getInstance : returns Mysql Pdo Instance
      * @param array $params
      */
-    public static function getInstance($params)
+    public static function getInstance(array $params)
     {
         $options = self::getOptions();
         self::$params = $params;

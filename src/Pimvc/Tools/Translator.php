@@ -24,6 +24,7 @@ class Translator
         $this->_adapter = $adapter;
         $this->_data = $this->_adapter->getTranslationData();
         $this->_locale = $this->_adapter->getLocale();
+        return $this;
     }
 
     /**
