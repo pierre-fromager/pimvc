@@ -8,14 +8,6 @@ namespace Pimvc\Db\Model;
 
 class Core implements Interfaces\Core
 {
-    
-    const MODEL_DEBUG = true;
-    const MODEL_TRACE = false;
-    const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
-    const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
-    const MODEL_ADAPTER_DEFAULT = 'Pdomysql';
-    const MODEL_ADAPTER_4D = 'Pdo4d';
-    const MODEL_ADAPTER_MYSQL = self::MODEL_ADAPTER_DEFAULT;
 
     protected $_db;
     protected $_logger;
@@ -64,7 +56,7 @@ class Core implements Interfaces\Core
         try {
             $this->_statement->execute();
         } catch (\PDOException $exc) {
-            $this->statementErrorExecute($exc);
+            $this->statementErrorExecute($exc, $queryType);
         }
         return $returnCode;
     }
@@ -320,7 +312,7 @@ class Core implements Interfaces\Core
      *
      * @param \PDOException $exc
      */
-    protected function statementErrorExecute(\PDOException $exc)
+    protected function statementErrorExecute(\PDOException $exc, $queryType)
     {
         $this->_error = $exc->getMessage();
         $this->_errorCode = $exc->getCode();
@@ -331,8 +323,6 @@ class Core implements Interfaces\Core
         );
         $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
         if ($isExecError) {
-            var_dump($this->_columns);
-            var_dump(get_class($this->getDomainInstance()));
             echo '<p style="color:red">Execute error : '
             . $exc->getMessage() . ' EOPRUN1'
             . '<hr>' . $this->getSql()

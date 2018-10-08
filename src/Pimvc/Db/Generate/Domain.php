@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tools_Db_Generate_Mapper
+ * Pimvc\Db\Generate\Domain
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -44,18 +44,6 @@ class Domain
             . ucfirst(str_replace('_', '', strtolower($tableName))) . self::GENERATE_PLURAL
             . ' ' . self::GENERATE_EXTENDS . ' ' . self::GENERATE_MODEL_SUFFIX
             . ' '. self::GENERATE_O_BRACKET . PHP_EOL;
-    }
-
-    /**
-     * isAssoc
-     *
-     * @param array $array
-     * @return boolean
-     */
-    private static function isAssoc($array)
-    {
-        $array = array_keys($array);
-        return ($array !== array_keys($array));
     }
 
     /**

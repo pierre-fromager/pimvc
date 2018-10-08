@@ -1,6 +1,6 @@
 <?php
 /**
- * Tools_Db_Generate_Model
+ * Pimvc\Db\Generate\Model
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
@@ -30,7 +30,6 @@ class Model
     const GENERATE_PARENT = 'parent';
     const GENERATE_CONSTRUCT = '__construct';
     const GENERATE_ARRAY = 'array';
-    const GENERATE_PLURAL = 's';
     const ADAPTER_4D = 'Pdo4d';
 
     protected static $indexes = [];
@@ -51,9 +50,7 @@ class Model
         self::$adapter = (empty($adapter))
             ? self::DEFAULT_ADAPTER
             : $adapter;
-        self::$modelSuffix = (self::$adapter == self::ADAPTER_4D)
-            ? self::GENERATE_MODEL_PREFIX . 'Proscope_'
-            : self::GENERATE_MODEL_PREFIX;
+        self::$modelSuffix = self::GENERATE_MODEL_PREFIX;
         self::$tableName = $tableName;
         self::$indexes = [];
         self::$relations = [];
@@ -76,23 +73,10 @@ class Model
     private static function getClassLine($tableName)
     {
         return self::GENERATE_MODEL_NAMESPACE . "\n" . self::TYPE_CLASS . ' ' . self::$modelSuffix
-            . ucfirst(str_replace('_', '', strtolower($tableName))) . self::GENERATE_PLURAL
+            . ucfirst(str_replace('_', '', strtolower($tableName)))
             . ' ' . self::GENERATE_EXTENDS . ' ' . self::GENERATE_MODEL_SUFFIX
             . ' '. self::GENERATE_O_BRACKET . PHP_EOL;
     }
-
-    /**
-     * isAssoc
-     *
-     * @param array $array
-     * @return boolean
-     */
-    private static function isAssoc($array)
-    {
-        $array = array_keys($array);
-        return ($array !== array_keys($array));
-    }
-
 
     /**
      * isIndex
@@ -159,7 +143,7 @@ class Model
     {
         $fts = [];
         foreach (self::$relations as $k => $v) {
-            $fts[] = self::getFt($k) . self::GENERATE_PLURAL;
+            $fts[] = self::getFt($k);
         }
         $fts = array_unique($fts);
         $fts = array_map(__CLASS__ . '::getModelClassname', $fts);

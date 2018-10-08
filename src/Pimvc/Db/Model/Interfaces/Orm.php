@@ -8,51 +8,10 @@ namespace Pimvc\Db\Model\Interfaces;
 
 interface Orm
 {
-
-    //const MODEL_DEBUG = true;
-    //const MODEL_TRACE = false;
-    //const MODEL_FETCH_MODE = PDO::FETCH_ASSOC;
+  
     const MODEL_TRANS = ':TRANS_';
-    const MODEL_FROM = ' FROM ';
-    const MODEL_SELECT = 'SELECT ';
-    const MODEL_SELECT_COUNT = 'SELECT COUNT';
-    const MODEL_JOIN = ' JOIN ';
-    const MODEL_JOIN_INNER = ' INNER ';
-    const MODEL_JOIN_OUTER = ' OUTER ';
-    const MODEL_JOIN_LEFT = ' LEFT ';
-    const MODEL_JOIN_RIGHT = ' RIGHT ';
-    const MODEL_JOIN_NATURAL = ' NATURAL ';
-    const MODEL_JOIN_FULL = ' FULL ';
-    const MODEL_JOIN_UNION = ' UNION ';
-    const MODEL_JOIN_CROSS = ' CROSS ';
-    const MODEL_JOIN_ON = ' ON ';
-    const MODEL_TRUNCATE = 'TRUNCATE TABLE ';
-    const MODEL_DOT = '.';
-    const MODEL_WHERE = ' WHERE ';
-    const MODEL_ORDER = ' ORDER BY ';
-    const MODEL_ORDER_ASC = 'ASC';
-    const MODEL_ORDER_DESC = 'DESC';
-    const MODEL_UPDATE = ' UPDATE ';
-    const MODEL_SET = ' SET ';
-    const MODEL_INSERT = ' INSERT INTO ';
-    const MODEL_DELETE = ' DELETE FROM ';
-    const MODEL_ALIAS = ' AS ';
-    const MODEL_LIKE = ' LIKE ';
-    const MODEL_EQUAL = ' = ';
-    const MODEL_AND = ' AND ';
-    const MODEL_OR = ' OR ';
-    const MODEL_ALTER = ' ALTER TABLE ';
-    const MODEL_ADD = ' ADD ';
-    const MODEL_DROP = ' DROP ';
-    const MODEL_LIMIT = ' LIMIT ';
-    const MODEL_OFFSET = ' OFFSET ';
-    const MODEL_GROUP_BY = ' GROUP BY ';
     const MODEL_OPERATOR_SPLITER = '#';
     const MODEL_DOMAIN_CLASS_PREFIX = '\Model\Domain\\';
-    
-    //const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
-    //const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
-    //const MODEL_ADAPTER_4D = 'Pdo4d';
     const MODEL_PARENTH_O = '(';
     const MODEL_PARENTH_C = ')';
     const MODEL_CACHE_SUFFIX = 'Db/Queries/';
@@ -89,7 +48,6 @@ interface Orm
     public function setFetchMode($mode);
 
     public function getFetchMode();
-
 
     public function getPrimary();
 
