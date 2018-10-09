@@ -8,6 +8,8 @@ namespace Pimvc\Db\Model;
 
 use Pimvc\Db\Model\Exceptions\Orm as ormException;
 use Pimvc\Db\Model\Core as dbCore;
+use Pimvc\Db\Model\Field as dbField;
+use Pimvc\Db\Model\Fields as dbFields;
 
 class Forge extends dbCore implements Interfaces\Forge
 {
@@ -19,7 +21,7 @@ class Forge extends dbCore implements Interfaces\Forge
      *
      * @param string $slot
      */
-    public function __construct($slot = '')
+    public function __construct(string $slot = '')
     {
         $this->setLogger();
         $this->setDbConfig();
@@ -34,18 +36,19 @@ class Forge extends dbCore implements Interfaces\Forge
 
     /**
      * tableCreate
-     * 
+     *
      * @param string $tableName
-     * @param array $columns
-     * @param boolean $withPk
+     * @param Pimvc\Db\Model\Fields $columns
+     * @param bool $withPk
      */
-    public function tableCreate($tableName, $columns, $withPk = true)
+    public function tableCreate(string $tableName, \Pimvc\Db\Model\Fields $columns, bool $withPk = true)
     {
-        $fields = [];
-        foreach ($columns as $field) {
+        $countColumns = count($columns);
+        for ($c = 0; $c < $countColumns; $c++) {
+            $field = $columns[$c];
             $typeLength = $this->getTypeFromField($field);
-            $typeLength .= $this->getParentheses($field->maxLength);
-            $fields[] = $field->name . ' ' . $typeLength;
+            $typeLength .= $this->getParentheses($field->getMaxLen());
+            $fields[] = $field->getName() . ' ' . $typeLength;
         }
         $cs = ' ,';
         $optionalFields = [];
@@ -117,20 +120,19 @@ class Forge extends dbCore implements Interfaces\Forge
      * @param Field $field
      * @return string
      */
-    private function getTypeFromField($field)
+    private function getTypeFromField(\Pimvc\Db\Model\Field $field)
     {
-        $type = ($field->isString) ? self::_VARCHAR : self::_INT;
-        $type = ($field->isFloat) ? self::_FLOAT : $type;
+        $type = ($field->getIsString()) ? self::_VARCHAR : self::_INT;
+        $type = ($field->getIsFloat()) ? self::_FLOAT : $type;
         return $type;
     }
 
     /**
      * getParentheses
-     * 
      * @param string $value
      * @return string
      */
-    private function getParentheses($value)
+    private function getParentheses(string $value): string
     {
         return '(' . $value . ')';
     }

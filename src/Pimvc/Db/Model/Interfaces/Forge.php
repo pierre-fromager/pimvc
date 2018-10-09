@@ -24,9 +24,9 @@ interface Forge
     const _AUTO_INCREMENT = 'AUTO_INCREMENT';
     const _PRIMARY_KEY = 'PRIMARY KEY';
 
-    public function __construct($slot);
+    public function __construct(string $slot);
 
-    public function tableRename($name, $newName);
+    public function tableRename(string $name, string $newName);
 
-    public function tableCreate($tableName, $columns);
+    public function tableCreate(string $tableName, \Pimvc\Db\Model\Fields $columns, bool $withPk);
 }
