@@ -16,6 +16,7 @@ class Flash
     const FLASH_ERROR = 'error';
     const FLASH_WARNING = 'warning';
     const FLASH_INFO = 'info';
+    const FLASH_SUCCESS = 'success';
     const FLASH_HTTP_REDIRECT_CODE = 302;
     
     /**
@@ -27,7 +28,17 @@ class Flash
     {
         self::add(self::FLASH_INFO, $message);
     }
-    
+
+    /**
+     * addSuccess
+     *
+     * @param string $message
+     */
+    public static function addSuccess($message)
+    {
+        self::add(self::FLASH_SUCCESS, $message);
+    }
+
     /**
      * addWarning
      *
@@ -69,7 +80,7 @@ class Flash
      *
      * @return string
      */
-    public static function render($helperName = '\Pimvc\Views\Helpers\Bootstrap\Flash')
+    public static function render($helperName = \Pimvc\Views\Helpers\Bootstrap\Flash::class)
     {
         $flashes = self::get();
         $helperRender = '';
