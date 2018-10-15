@@ -17,6 +17,10 @@ class Core implements Interfaces\Core
     protected $_errorMessage;
     protected $_statement;
     protected $_restMode;
+    protected $_fetchMode = \PDO::FETCH_ASSOC;
+    protected $_schema = '';
+    protected $_adapter = null;
+    protected $_primary = null;
 
     /**
      * run

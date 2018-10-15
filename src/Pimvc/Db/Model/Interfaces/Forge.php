@@ -16,6 +16,9 @@ interface Forge
     const _CREATE = 'CREATE';
     const _ALTER = 'ALTER';
     const _RENAME = 'RENAME';
+    const _INSERT = 'INSERT';
+    const _INTO = 'INTO';
+    const _VALUES = 'VALUES';
     const _TO = 'TO';
     const _VARCHAR = 'VARCHAR';
     const _INT = 'INT';

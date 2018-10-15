@@ -192,6 +192,26 @@ class Field
     }
 
     /**
+     * getAsArray
+     *
+     * @return array
+     */
+    public function getAsArray(): array
+    {
+        return [
+            'count' => $this->count,
+            'name' => $this->name,
+            'isUniq' => $this->isUniq,
+            'isNullable' => $this->isNullable,
+            'isNumeric' => $this->isNumeric,
+            'isFloat' => $this->isFloat,
+            'isInt' => $this->isInt,
+            'isString' => $this->isString,
+            'maxLen' => $this->maxLen,
+        ];
+    }
+
+    /**
      * setName
      *
      * @param string $name

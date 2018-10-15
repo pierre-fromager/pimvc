@@ -66,6 +66,54 @@ class Forge extends dbCore implements Interfaces\Forge
     }
 
     /**
+     * tableInsert
+     *
+     * @param string $tablename
+     * @param array $headers
+     * @param array $datas
+     */
+    public function tableInsert(string $tablename, array $headers, array $datas): bool
+    {
+        if (count($headers) === count($datas)) {
+            $types = $this->getPdoTypes($tablename);
+            $bindFields = array_map(function ($v) {
+                return ':' . $v;
+            }, $headers);
+            $statementBindings = array_combine($headers, $datas);
+            $bindTypes = array_map(function ($v) use ($types) {
+                return $types[$v];
+            }, $headers);
+            $fields = $this->getParentheses($this->build($headers, ','));
+            $values = $this->getParentheses($this->build($bindFields, ','));
+            $sql = $this->build(
+                [$this->insertInto($tablename), $fields, self::_VALUES, $values]
+            );
+            $this->run($sql, $statementBindings, $bindTypes);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * getPdoTypes
+     *
+     * @param string $tablename
+     * @return array
+     */
+    public function getPdoTypes(string $tablename): array
+    {
+        $fiedsDesc = $this->describeTable($tablename);
+        $types = [];
+        foreach ($fiedsDesc as $fieldDesc) {
+            $rawType = $fieldDesc['type'];
+            $regex = '(varchar|text|float)';
+            $fieldName = $fieldDesc['field'];
+            $types[$fieldName] = (preg_match("/^$regex$/", $rawType)) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+        }
+        return $types;
+    }
+
+    /**
      * renameTable
      *
      * @param string $name
@@ -81,10 +129,23 @@ class Forge extends dbCore implements Interfaces\Forge
     }
 
     /**
-     * tableCreate
+     * insertInto
      *
      * @param string $name
-     * @param string $newName
+     */
+    private function insertInto($name = '')
+    {
+        $insert = [self::_INSERT, self::_INTO];
+        if ($name) {
+            $insert[] = $name;
+        }
+        return $insert;
+    }
+
+    /**
+     * createTable
+     *
+     * @param string $name
      */
     private function createTable($name = '')
     {
@@ -193,7 +254,9 @@ class Forge extends dbCore implements Interfaces\Forge
         if (!isset($this->dbConfig[$slot][self::_ADAPTER])) {
             throw new ormException(ormException::ORM_EXC_MISSING_ADAPTER);
         }
-        $this->_db = \Pimvc\Db\Factory::getConnection($this->dbConfig[$slot]);
+        $slotDbConfig = $this->dbConfig[$slot];
+        $this->_adapter = $slotDbConfig['adapter'];
+        $this->_db = \Pimvc\Db\Factory::getConnection($slotDbConfig);
         return $this;
     }
 
@@ -230,5 +293,57 @@ class Forge extends dbCore implements Interfaces\Forge
             }
         }
         return implode($glue, $parts);
+    }
+
+    /**
+     * statementErrorPrepareChecking
+     *
+     */
+    protected function statementErrorPrepareChecking($sql)
+    {
+        
+        if ($this->_statement === false) {
+            if ($this->_restMode) {
+                $this->_errorCode = 5000;
+                $this->_errorMessage = 'Statement prepare error';
+            } else {
+                echo '<p style="color:red;">Error prepare sql : '
+                . $sql
+                . '</p>';
+                die;
+            }
+        }
+    }
+
+    /**
+     * statementErrorBind
+     *
+     * @param \PDOException $exc
+     */
+    protected function statementErrorBind(\PDOException $exc, $queryType)
+    {
+        $this->_error = $this->_errorMessage = $exc->getMessage();
+        $this->_errorCode = $exc->getCode();
+        $this->_logger->logError(
+            'Sql Bind Error' . $queryType . ' ' . $exc->getMessage(),
+            $this->_statement->queryString
+        );
+    }
+
+    /**
+     * statementErrorExecute
+     *
+     * @param \PDOException $exc
+     */
+    protected function statementErrorExecute(\PDOException $exc, $queryType)
+    {
+        $this->_error = $exc->getMessage();
+        $this->_errorCode = $exc->getCode();
+        $this->_errorMessage = $exc->getMessage();
+        $this->_logger->logError(
+            'Sql Execute Failed ' . $queryType . ' ' . $exc->getMessage(),
+            $this->_statement->queryString
+        );
+        $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
     }
 }

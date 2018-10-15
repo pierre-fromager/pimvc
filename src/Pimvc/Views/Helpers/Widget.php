@@ -11,6 +11,7 @@ use Pimvc\Html\Element\Decorator as Deco;
 abstract class Widget implements Interfaces\Widget
 {
 
+    protected $id;
     protected $content;
     protected $sectionOptions;
     protected $sectionDecorator;

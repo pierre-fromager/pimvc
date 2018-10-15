@@ -16,10 +16,7 @@ abstract class Orm extends Core implements ormInterface
     protected $_dsn = null;
     protected $_db = null;
     protected $_slot = 'db1';
-    protected $_statement = null;
-    protected $_schema = '';
     protected $_defaultSchema = '';
-    protected $_adapter = null;
     protected $_dependentTables = null;
     protected $_name = null;
     protected $_types = [];
@@ -31,7 +28,7 @@ abstract class Orm extends Core implements ormInterface
     public $_currentIndex = null;
     public $_count = null;
     protected $_metas = null;
-    protected $_primary = null;
+    
     protected $_columns = null;
     protected $_domain = null;
     protected $_domainSuffix = '';
@@ -52,7 +49,6 @@ abstract class Orm extends Core implements ormInterface
     protected $patchWhere = '';
     protected $_where = [];
     protected $_whereCriterias = [];
-    protected $_fetchMode = \PDO::FETCH_ASSOC;
     protected $_restMode;
     protected $_casts;
     private $_app;

@@ -480,7 +480,7 @@ class Form implements Interfaces\Form
                 $selected = ($key == $selectedvalue)
                     ? 'selected="selected"'
                     : '';
-                $options.= '<option value="' . $key . '" ' . $selected . '>'
+                $options .= '<option value="' . $key . '" ' . $selected . '>'
                     . $value . '</option>';
             }
             $select = '<select'
@@ -525,6 +525,7 @@ class Form implements Interfaces\Form
      */
     protected function mselect($label, $name, $datas, $selectedvalue, $class = '')
     {
+        
         $options = '';
         /*
         $selectTitle = ($class) ? $class : '- Selectionner -';
@@ -789,13 +790,6 @@ class Form implements Interfaces\Form
             '',
             array_merge($defaultInputOptions, $this->getElementOptions($name))
         ) . $error;
-        /*
-        return '<input id="' . $id . '" class="' . $class
-            . '" type="' . $type . '" name="' . $name . '" ' . $size
-            . ' value="' . $value . '" ' . $steps . ' '
-            . $checked . ' '
-            . $mode . $optionsRender
-            . '/>' . $error;*/
     }
 
     /**
@@ -926,14 +920,7 @@ class Form implements Interfaces\Form
         $countField = count($this->fieldList);
         $needSection = ($countField > $maxSection);
         $advancedId = "'" . '#advanced-' . $formId . "'";
-        $sectionStart ="";
-        //$sectionStart = '<br style="clear:both">' . PHP_EOL
-//            . '<div'
-//            . ' title="Advanced criterias"'
-//            . ' class="form_inactive"'
-//            . ' onclick="$j(' . $advancedId . ').toggle();$j(this).toggleClass(\'form_active\')"'
-//            . '>&nbsp;</div>' . PHP_EOL . '<div id="advanced-' . $formId . '" style="display:none">';
-        $sectionStop = ""; //PHP_EOL . '</div>';
+        $sectionStart = $sectionStop = '';
         foreach ($this->fieldList as $aField) {
             $fieldName = $aField[self::PARAM_FIELD];
             $input .= $this->getSection($fieldName, 'start');
