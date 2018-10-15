@@ -349,7 +349,7 @@ class Field
      * @param array $datas
      * @param string $fieldName
      */
-    private function setStackFromDatas(array $datas, string $fieldName = ''): void
+    private function setStackFromDatas(array $datas, string $fieldName = '')
     {
         $this->count = count($datas);
         $this->stack = [];

@@ -65,7 +65,7 @@ class Fields implements \ArrayAccess, \Countable
      *
      * @param \Pimvc\Db\Model\Field $field
      */
-    public function addItem(\Pimvc\Db\Model\Field $field): void
+    public function addItem(\Pimvc\Db\Model\Field $field)
     {
         $this->container[] = $field;
     }
