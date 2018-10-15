@@ -119,7 +119,7 @@ class Forge extends dbCore implements Interfaces\Forge
      * @param string $name
      * @param string $newName
      */
-    public function tableRename($name, $newName)
+    public function tableRename(string $name, string $newName)
     {
         $this->run(
             $this->build(
