@@ -42,7 +42,7 @@ class Core implements Interfaces\Core
         try {
             $this->_statement = $this->_db->prepare($sql);
             $this->statementErrorPrepareChecking($sql);
-            if ($queryType == self::MODEL_SELECT || $queryType == 'SHOW') {
+            if ($queryType == self::MODEL_SELECT || $queryType == 'SHOW' || $queryType == 'DESCRIBE') {
                 $this->_statement->setFetchMode($this->_fetchMode);
             }
             if ($bindParams) {
@@ -118,62 +118,47 @@ class Core implements Interfaces\Core
      */
     public function describeTable($name = '')
     {
-        $realName = (empty($name)) ? $this->_name : $name;
-        $cacheName = $this->_adapter . '_' . $realName;
-        $cacheDescribe = new \Pimvc\Cache($cacheName, 400);
-        $cacheDescribe->setPath(\Pimvc\App::getInstance()->getPath() . '/cache/Db/Metas/');
-
-        if ($cacheDescribe->expired()) {
-            $this->_name = (empty($name)) ? $this->_name : $name;
-            switch ($this->_adapter) {
-                case self::MODEL_ADAPTER_PGSQL:
-                    $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $this->_name . "';";
-                    break;
-                case self::MODEL_ADAPTER_SQLITE:
-                    $sql = "SELECT * FROM sqlite_master where name='" . $this->_name . "';";
-                    break;
-                default:
-                    $sql = 'DESCRIBE ' . $this->_schema . '.' . $this->_name;
-                    break;
-            }
-
-            try {
-                $this->_statement = $this->_db->prepare($sql);
-            } catch (\PDOException $exc) {
-                echo '<p style="color:red"> Prepare : ' . $sql . '</p>';
-                echo $exc->getMessage();
-                die;
-            }
-            try {
-                $this->_statement->execute();
-            } catch (\PDOException $exc) {
-                echo '<p style="color:red">Execute : ' . $sql . '</p>';
-                echo $exc->getMessage();
-                die;
-            }
-            $result = $this->_statement->fetchAll($this->_fetchMode);
-            if ($this->_adapter == self::MODEL_ADAPTER_SQLITE) {
-                $topStrip = "CREATE TABLE '" . $this->_name . "' (";
-                $striped = str_replace($topStrip, '', $result[0]['sql']);
-                $striped = str_replace(')', '', $striped);
-                $striped = str_replace(", '", ',', $striped);
-                $striped = str_replace("'", '', $striped);
-                $arrStripped = explode(',', $striped);
-                $finalArray = [];
-                foreach ($arrStripped as $column) {
-                    $colInfo = explode(' ', $column);
-                    $finalArray[] = array(
-                        self::MODEL_INDEX_FIELD => str_replace("'", '', $colInfo[0])
-                        , 'Type' => strtolower($colInfo[1])
-                    );
-                }
-                $result = $finalArray;
-            }
-            $cacheDescribe->set($result);
-        } else {
-            $result = $cacheDescribe->get($cacheName);
+        $this->_name = (empty($name)) ? $this->_name : $name;
+        switch ($this->_adapter) {
+            case self::MODEL_ADAPTER_PGSQL:
+                $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $this->_name . "';";
+                break;
+            case self::MODEL_ADAPTER_SQLITE:
+                $sql = "SELECT * FROM sqlite_master where name='" . $this->_name . "';";
+                break;
+            default:
+                $sql = 'DESCRIBE ' . $this->_schema . '.' . $this->_name;
+                break;
         }
+        
+        $this->run($sql);
+        $result = $this->_statement->fetchAll($this->_fetchMode);
         return $result;
+    }
+
+    /**
+     * tableExist
+     *
+     * @param string $tablename
+     * @return boolean
+     */
+    public function tableExist($tablename)
+    {
+        $informationSchema = 'INFORMATION_SCHEMA';
+        $tableSchema = 'TABLE_SCHEMA';
+        $tableName = 'TABLE_NAME';
+
+        switch ($this->_adapter) {
+            case self::MODEL_ADAPTER_MYSQL:
+                $shemaTables = $informationSchema . '.TABLES';
+                $condition = "($tableSchema = '$this->_schema') AND ($tableName = '$tablename')";
+                $sql = self::MODEL_SELECT . 'count(*)' . self::MODEL_FROM . $shemaTables .
+                    self::MODEL_WHERE . $condition;
+                break;
+        }
+        $this->run($sql);
+        $results = $this->_statement->fetchAll($this->_fetchMode);
+        return (count($results) > 0);
     }
 
     /**
@@ -195,10 +180,7 @@ class Core implements Interfaces\Core
             foreach ($params as $key => &$value) {
                 $type = ($key == 'numero') ? PDO::PARAM_STR : PDO::PARAM_INT;
                 $prepValue = ($type == PDO::PARAM_STR) ? (string) $value : (int) $value;
-                //echo $type;
-                //echo $key . ' == ' . $value . '<br>';
                 $bindedKey = ':' . $key;
-                //echo $bindedKey . ' == ' . $value . '('. $type. ')<br>';
                 $stmt->bindParam($bindedKey, $prepValue, $type);
             }
         } catch (\PDOException $exc) {
@@ -207,12 +189,10 @@ class Core implements Interfaces\Core
             die;
         }
         try {
-            //var_dump($stmt);
             $this->_db->beginTransaction();
             $stmt->execute();
             $this->_db->commit();
             if ($isSelect) {
-                //var_dump($stmt->fetchall());
             }
         } catch (\PDOException $exc) {
             $this->_db->rollBack();

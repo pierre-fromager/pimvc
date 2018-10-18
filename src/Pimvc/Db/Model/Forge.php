@@ -106,9 +106,9 @@ class Forge extends dbCore implements Interfaces\Forge
         $types = [];
         foreach ($fiedsDesc as $fieldDesc) {
             $rawType = $fieldDesc['type'];
-            $regex = '(varchar|text|float)';
+            $regex = '/^int/';
             $fieldName = $fieldDesc['field'];
-            $types[$fieldName] = (preg_match("/^$regex$/", $rawType)) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+            $types[$fieldName] = (preg_match($regex, $rawType)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
         }
         return $types;
     }
@@ -256,6 +256,7 @@ class Forge extends dbCore implements Interfaces\Forge
         }
         $slotDbConfig = $this->dbConfig[$slot];
         $this->_adapter = $slotDbConfig['adapter'];
+        $this->_schema = $slotDbConfig['name'];
         $this->_db = \Pimvc\Db\Factory::getConnection($slotDbConfig);
         return $this;
     }

@@ -15,7 +15,7 @@ interface Core
     const MODEL_TRACE = false;
     const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
     const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
-    const MODEL_ADAPTER_DEFAULT = 'Pdomysql';
+    const MODEL_ADAPTER_DEFAULT = 'PdoMysql';
     const MODEL_ADAPTER_4D = 'Pdo4d';
     const MODEL_ADAPTER_MYSQL = self::MODEL_ADAPTER_DEFAULT;
     const MODEL_FROM = ' FROM ';

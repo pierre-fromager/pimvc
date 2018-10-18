@@ -9,7 +9,7 @@ namespace Pimvc\Helper\Db\Field\Name;
 class Normalize
 {
 
-    const REMOVABLE_CHARS = [' ', '_'];
+    const REMOVABLE_CHARS = [' ', '_', '/', '\\'];
     const _ANY_LATIN = 'Any-Latin';
     const _LATIN_ASCII = 'Latin-ASCII';
     const _NFD = 'NFD';
@@ -74,6 +74,5 @@ class Normalize
         return implode(' ', array_map(function ($v) {
                 return self::_DDOT . $v . self::_SC;
         }, self::TRANSFOS));
-        //return ':: Any-Latin; :: Latin-ASCII; :: NFD; :: [:Nonspacing Mark:] Remove; :: Lower(); :: NFC;';
     }
 }
