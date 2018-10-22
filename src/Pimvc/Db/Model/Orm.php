@@ -309,18 +309,6 @@ abstract class Orm extends Core implements ormInterface
     }
 
     /**
-     * showTable returns the current table description
-     *
-     * @return array
-     */
-    public function showTable()
-    {
-        $sql = 'SHOW TABLES;';
-        $this->run($sql);
-        return $this->_statement->fetchAll($this->_fetchMode);
-    }
-
-    /**
      * getError
      *
      * @return string

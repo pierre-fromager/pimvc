@@ -120,14 +120,15 @@ class Core implements Interfaces\Core
     {
         $this->_name = (empty($name)) ? $this->_name : $name;
         switch ($this->_adapter) {
-            case self::MODEL_ADAPTER_PGSQL:
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
                 $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $this->_name . "';";
                 break;
             case self::MODEL_ADAPTER_SQLITE:
                 $sql = "SELECT * FROM sqlite_master where name='" . $this->_name . "';";
                 break;
-            default:
-                $sql = 'DESCRIBE ' . $this->_schema . '.' . $this->_name;
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
+                $tableName = (strpos($this->_name, '.') > 0) ? $this->_name : $this->_schema . '.' . $this->_name;
+                $sql = 'DESCRIBE ' . $tableName;
                 break;
         }
         
@@ -149,7 +150,7 @@ class Core implements Interfaces\Core
         $tableName = 'TABLE_NAME';
 
         switch ($this->_adapter) {
-            case self::MODEL_ADAPTER_MYSQL:
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
                 $shemaTables = $informationSchema . '.TABLES';
                 $condition = "($tableSchema = '$this->_schema') AND ($tableName = '$tablename')";
                 $sql = self::MODEL_SELECT . 'count(*)' . self::MODEL_FROM . $shemaTables .
@@ -159,6 +160,51 @@ class Core implements Interfaces\Core
         $this->run($sql);
         $results = $this->_statement->fetchAll($this->_fetchMode);
         return (count($results) > 0);
+    }
+
+    /**
+     * showTables
+     *
+     * @return array
+     */
+    public function showTables()
+    {
+        switch ($this->_adapter) {
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
+                $sql = 'SHOW TABLES';
+                $this->run($sql);
+                $results = $this->_statement->fetchAll($this->_fetchMode);
+                $tupple = [];
+                foreach ($results as $result) {
+                    $k = key($result);
+                    $tupple[] = $this->_schema . '.' . $result[$k];
+                }
+                unset($results);
+                return $tupple;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                $what = "(schemaname || '.' || tablename) as tn";
+                $sql = "SELECT $what FROM pg_catalog.pg_tables ";
+                $this->run($sql);
+                $results = $this->_statement->fetchAll($this->_fetchMode);
+                $tupple = [];
+                foreach ($results as $result) {
+                    $k = key($result);
+                    $tupple[] = $result[$k];
+                }
+                return $tupple;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
+                $what = "name";
+                $where = 'WHERE (type="table" OR type="view") AND name != "sqlite_sequence"';
+                $sql = "SELECT $what FROM sqlite_master " . $where;
+                $this->run($sql);
+                $results = $this->_statement->fetchAll(\PDO::FETCH_COLUMN, 0);
+                return $results;
+                break;
+        }
     }
 
     /**

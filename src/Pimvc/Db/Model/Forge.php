@@ -54,7 +54,7 @@ class Forge extends dbCore implements Interfaces\Forge
         $optionalFields = [];
         if ($withPk) {
             $optionalFields[] = $this->build(
-                $this->pk('id', self::_INT, 6)
+                $this->getColumnDesc('id', self::_INT, 6, false, true, true)
             );
         }
         $sqlFields = $this->build([$optionalFields, $this->build($fields, $cs)], $cs);
@@ -92,6 +92,70 @@ class Forge extends dbCore implements Interfaces\Forge
             return true;
         }
         return false;
+    }
+
+    /**
+     * tableAddField
+     *
+     * @param string $tablename
+     * @param string $name
+     */
+    public function tableAddField($tablename, $name)
+    {
+        $sql = $this->build(
+            $this->alterTable($tablename),
+            $this->addColumn($name)
+        );
+        $this->run($sql);
+    }
+
+    /**
+     * tableSetIndex
+     *
+     * @param string $tablename
+     * @param string $fieldname
+     */
+    public function tableSetIndex($tablename, $fieldname)
+    {
+        $tableIndex = [
+            $this->alterTableAdd($tablename),
+            self::_INDEX,
+            $this->getParentheses($fieldname)
+        ];
+        $sql = $this->build($tableIndex);
+        $this->run($sql);
+    }
+
+    /**
+     * tableSetIndex
+     *
+     * @param string $tablename
+     * @param string $fieldname
+     */
+    public function tableSetUnique($tablename, $fieldname)
+    {
+        $tableIndex = [
+            $this->alterTableAdd($tablename),
+            self::_UNIQUE,
+            $this->getParentheses($fieldname)
+        ];
+        $sql = $this->build($tableIndex);
+        $this->run($sql);
+    }
+
+    /**
+     * addColumn
+     *
+     * @param string $name
+     * @return array
+     */
+    private function addColumn($name = '')
+    {
+        $addColumn = [self::_ADD, self::_COLUMN];
+        if ($name) {
+            $addColumn[] = $name;
+        }
+        return $addColumn;
     }
 
     /**
@@ -157,22 +221,32 @@ class Forge extends dbCore implements Interfaces\Forge
     }
 
     /**
-     * pk
+     * getColumnDesc
      *
      * @param string $name
      * @param string $type
      * @param int $size
+     * @param bool $signed
+     * @param bool $autoInc
+     * @param bool $pkey
      * @return array
      */
-    private function pk($name, $type, $size)
+    private function getColumnDesc($name, $type, $size, $signed = false, $autoInc = false, $pkey = false)
     {
-        return [
-            $name,
+        $columnDesc = [$name,
             $type,
-            $this->getParentheses($size) . ' ' . self::_UNSIGNED,
-            self::_AUTO_INCREMENT,
-            self::_PRIMARY_KEY
-        ];
+            $this->getParentheses($size)];
+        if (!in_array($type, [self::_VARCHAR, 'TEXT'])) {
+            $columnDesc[] = (!$signed) ? self::_UNSIGNED : '';
+            if ($autoInc) {
+                $columnDesc[] = self::_AUTO_INCREMENT;
+            }
+        }
+        if ($pkey) {
+            $columnDesc[] = self::_PRIMARY_KEY;
+        }
+
+        return $columnDesc;
     }
 
     /**
@@ -211,6 +285,17 @@ class Forge extends dbCore implements Interfaces\Forge
             $alter[] = $name;
         }
         return $alter;
+    }
+
+    /**
+     * alterTableAdd
+     *
+     * @param string $tablename
+     * @return array
+     */
+    private function alterTableAdd($tablename)
+    {
+        return [$this->alterTable($tablename), self::_ADD];
     }
 
     /**

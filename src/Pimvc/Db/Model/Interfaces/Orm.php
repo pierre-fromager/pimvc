@@ -53,8 +53,6 @@ interface Orm
 
     public function describeTable($name = '');
 
-    public function showTable();
-
     public function getError();
 
     public function hasError();

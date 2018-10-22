@@ -15,9 +15,9 @@ interface Core
     const MODEL_TRACE = false;
     const MODEL_ADAPTER_PGSQL = 'Pdopgsql';
     const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
-    const MODEL_ADAPTER_DEFAULT = 'PdoMysql';
     const MODEL_ADAPTER_4D = 'Pdo4d';
-    const MODEL_ADAPTER_MYSQL = self::MODEL_ADAPTER_DEFAULT;
+    const MODEL_ADAPTER_MYSQL = 'Pdomysql';
+    const MODEL_ADAPTER_DEFAULT = self::MODEL_ADAPTER_MYSQL;
     const MODEL_FROM = ' FROM ';
     const MODEL_SELECT_COUNT = 'SELECT COUNT';
     const MODEL_JOIN = ' JOIN ';
@@ -54,9 +54,17 @@ interface Core
 
     public function run($sql, $bindParams = [], $bindTypes = []);
 
+    public function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = []);
+    
+    public function describeTable($name = '');
+
     public function getQueryType($sql);
 
     public function getSql();
 
     public function getSize();
+
+    public function tableExist($tablename);
+
+    public function showTables();
 }

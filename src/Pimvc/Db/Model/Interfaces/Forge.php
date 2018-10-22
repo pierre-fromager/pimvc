@@ -13,7 +13,11 @@ interface Forge
     const _ADAPTER = 'adapter';
     const _CREATE_TABLE = 'CREATE TABLE';
     const _TABLE = 'TABLE';
+    const _ADD = 'ADD';
+    const _COLUMN = 'COLUMN';
     const _CREATE = 'CREATE';
+    const _INDEX = 'INDEX';
+    const _UNIQUE = 'UNIQUE';
     const _ALTER = 'ALTER';
     const _RENAME = 'RENAME';
     const _INSERT = 'INSERT';
