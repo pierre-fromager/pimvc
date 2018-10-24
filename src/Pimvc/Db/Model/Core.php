@@ -120,7 +120,8 @@ class Core implements Interfaces\Core
                 $sql = "PRAGMA table_info([$tablename]);";
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
-                $sql = 'DESCRIBE ' . $tablename;
+                $schemaPrefix = ($this->_schema) ? $this->_schema . '.' : '';
+                $sql = 'DESCRIBE ' . $schemaPrefix . $tablename;
                 break;
         }
         
