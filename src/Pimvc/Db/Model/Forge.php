@@ -15,6 +15,8 @@ class Forge extends dbCore implements Interfaces\Forge
 {
 
     protected $dbConfig;
+    protected $slot;
+    protected $adatapter;
 
     /**
      * __construct
@@ -23,6 +25,7 @@ class Forge extends dbCore implements Interfaces\Forge
      */
     public function __construct(string $slot = '')
     {
+        $this->slot = $slot;
         $this->setLogger();
         $this->setDbConfig();
         if ($slot) {
@@ -43,6 +46,7 @@ class Forge extends dbCore implements Interfaces\Forge
      */
     public function tableCreate(string $tableName, \Pimvc\Db\Model\Fields $columns, bool $withPk = true)
     {
+   
         $countColumns = count($columns);
         for ($c = 0; $c < $countColumns; $c++) {
             $field = $columns[$c];
@@ -62,6 +66,13 @@ class Forge extends dbCore implements Interfaces\Forge
             $this->createTable($tableName),
             $this->getParentheses($sqlFields)
         ]);
+        if ($this->adatapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) {
+            $sql = preg_replace('/\([0-9]+\)/', '', $sql);
+            $sql = str_replace('INT', 'INTEGER', $sql);
+            $sql = str_replace('VARCHAR', ' TEXT ', $sql);
+            $sql = str_replace('FLOAT', ' REAL ', $sql);
+            $sql = str_replace('UNSIGNED AUTO_INCREMENT PRIMARY KEY', 'PRIMARY KEY AUTOINCREMENT', $sql);
+        }
         $this->run($sql);
     }
 
@@ -74,6 +85,7 @@ class Forge extends dbCore implements Interfaces\Forge
      */
     public function tableInsert(string $tablename, array $headers, array $datas): bool
     {
+
         if (count($headers) === count($datas)) {
             $types = $this->getPdoTypes($tablename);
             $bindFields = array_map(function ($v) {
@@ -167,11 +179,12 @@ class Forge extends dbCore implements Interfaces\Forge
     public function getPdoTypes(string $tablename): array
     {
         $fiedsDesc = $this->describeTable($tablename);
+        $fieldNameEntry = ($this->adatapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) ? 'name' : 'field';
         $types = [];
         foreach ($fiedsDesc as $fieldDesc) {
             $rawType = $fieldDesc['type'];
             $regex = '/^int/';
-            $fieldName = $fieldDesc['field'];
+            $fieldName = $fieldDesc[$fieldNameEntry];
             $types[$fieldName] = (preg_match($regex, $rawType)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
         }
         return $types;
@@ -233,9 +246,10 @@ class Forge extends dbCore implements Interfaces\Forge
      */
     private function getColumnDesc($name, $type, $size, $signed = false, $autoInc = false, $pkey = false)
     {
-        $columnDesc = [$name,
-            $type,
-            $this->getParentheses($size)];
+        $columnDesc = [
+            $name,
+            $type . $this->getParentheses($size)
+        ];
         if (!in_array($type, [self::_VARCHAR, 'TEXT'])) {
             $columnDesc[] = (!$signed) ? self::_UNSIGNED : '';
             if ($autoInc) {
@@ -322,6 +336,7 @@ class Forge extends dbCore implements Interfaces\Forge
         $this->dbConfig = \Pimvc\App::getInstance()->getConfig()->getSettings(
             self::_DB_POOL
         );
+        $this->adatapter = $this->dbConfig[$this->slot]['adapter'];
     }
 
     /**

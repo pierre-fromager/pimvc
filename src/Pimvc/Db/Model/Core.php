@@ -76,22 +76,14 @@ class Core implements Interfaces\Core
         $motif = '/_' . $this->_primary . '$|id|code/';
         foreach ($paArray as $k => $v) {
             $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-            if ($this->is4dAdapter()) {
-                $type = $this->get4dTypeFromDomain($k);
-                $value = $this->get4dValueFromType($type, $v);
-                //$key = $this->getSbfHash($k, $v);
-                $key = ':' . $k;
+            if (isset($forcedTypes[$k])) {
+                $type = $forcedTypes[$k];
             } else {
-                if (isset($forcedTypes[$k])) {
-                    $type = $forcedTypes[$k];
-                } else {
-                    $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-                    $type = (is_numeric($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-                }
+                $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+                $type = (is_numeric($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            }
                 $value = is_array($v) ? serialize($v) : $v;
                 $key = ':' . $k;
-                //echo 'K: ' . $key . ' , V: '. $value . ' , TYPE: ' . $type . '<br/>';
-            }
             try {
                 $poStatement->bindValue($key, $value, $type);
                 if (self::MODEL_DEBUG) {
@@ -119,22 +111,34 @@ class Core implements Interfaces\Core
     public function describeTable($name = '')
     {
         $this->_name = (empty($name)) ? $this->_name : $name;
+        $tablename = (strpos($this->_name, '.') > 0) ? $this->removeSchemaFromName($this->_name) : $this->_name;
         switch ($this->_adapter) {
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
-                $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $this->_name . "';";
+                $sql = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = \'' . $tablename . '\';';
                 break;
             case self::MODEL_ADAPTER_SQLITE:
-                $sql = "SELECT * FROM sqlite_master where name='" . $this->_name . "';";
+                $sql = "PRAGMA table_info([$tablename]);";
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
-                $tableName = (strpos($this->_name, '.') > 0) ? $this->_name : $this->_schema . '.' . $this->_name;
-                $sql = 'DESCRIBE ' . $tableName;
+                $sql = 'DESCRIBE ' . $tablename;
                 break;
         }
         
         $this->run($sql);
         $result = $this->_statement->fetchAll($this->_fetchMode);
         return $result;
+    }
+
+    /**
+     * removeSchemaFromName
+     *
+     * @param string $tablename
+     * @return string
+     */
+    public function removeSchemaFromName($tablename)
+    {
+        $parts = explode('.', $tablename);
+        return (count($parts) > 0) ? $parts[1] : $tablename;
     }
 
     /**
@@ -154,6 +158,11 @@ class Core implements Interfaces\Core
                 $shemaTables = $informationSchema . '.TABLES';
                 $condition = "($tableSchema = '$this->_schema') AND ($tableName = '$tablename')";
                 $sql = self::MODEL_SELECT . 'count(*)' . self::MODEL_FROM . $shemaTables .
+                    self::MODEL_WHERE . $condition;
+                break;
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
+                $condition = "type='table' AND name='$tablename'";
+                $sql = self::MODEL_SELECT . 'name' . self::MODEL_FROM . 'sqlite_master' .
                     self::MODEL_WHERE . $condition;
                 break;
         }
@@ -360,56 +369,5 @@ class Core implements Interfaces\Core
             . '</p>';
             die;
         }
-    }
-
-    /**
-     * get4dTypeFromDomain
-     *
-     * @param string $key
-     * @return boolean | int
-     */
-    private function get4dTypeFromDomain($key)
-    {
-        $type = \PDO::PARAM_INT;
-        $isSytem = Tools_Db_4d_Tables::isSystem($this->_name);
-        $hasDefinition = $this->_domainInstance->hasPdo($key);
-        if (!$isSytem && $hasDefinition) {
-            return $this->_domainInstance->getPdo($key);
-        }
-        return $type;
-    }
-
-    /**
-     * get4dValueFromType
-     *
-     * @param int $type
-     * @param string $value
-     * @return int|string
-     */
-    private function get4dValueFromType($type, $value)
-    {
-        $typedValue = $value;
-        switch ($type) {
-            case \PDO::PARAM_INT:
-                $typedValue = (int) $value;
-                break;
-            case \PDO::PARAM_STR:
-                $typedValue = (string) $value;
-                break;
-            case \PDO::PARAM_BOOL:
-                $typedValue = (int) ($value == 1);
-                break;
-        }
-        return $typedValue;
-    }
-
-    /**
-     * is4dAdapter
-     *
-     * @return boolean
-     */
-    protected function is4dAdapter()
-    {
-        return ($this->_adapter == self::MODEL_ADAPTER_4D);
     }
 }

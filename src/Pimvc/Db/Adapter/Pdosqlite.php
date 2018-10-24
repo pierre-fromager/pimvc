@@ -11,8 +11,7 @@ use Pimvc\Db\Adapter\Interfaces\Adapter as IAdapter;
 
 class Pdosqlite implements IAdapter
 {
-    const PREFIX = 'sqlite:';
-    const ERR_CON_FAIL = 'Connexion échouée : ';
+    const PREFIX_SQLITE = 'sqlite:';
 
     protected static $dsn = null;
     protected static $params = null;
@@ -32,22 +31,23 @@ class Pdosqlite implements IAdapter
      */
     private static function setDsn()
     {
-        self::$dsn = self::prefix . self::$params['file'];
+        self::$dsn = self::PREFIX_SQLITE . self::$params[self::_FILE];
     }
 
     /**
      * getInstance : returns Mysql Pdo Instance
      * @param array $params
      */
-    public static function getInstance($params)
+    public static function getInstance(array $params)
     {
         self::$params = $params;
         self::setDsn();
         if (self::$_instance === null) {
             try {
-                self::$_instance = new PDO(self::$dsn);
+                self::$_instance = new \PDO(self::$dsn);
             } catch (\PDOException $e) {
                 echo self::ERR_CON_FAIL . $e->getMessage();
+                die;
             }
         }
         return self::$_instance;

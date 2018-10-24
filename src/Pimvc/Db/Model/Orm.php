@@ -890,23 +890,22 @@ abstract class Orm extends Core implements ormInterface
      */
     public function getDependantObjects($key, $value, $deepness = 0)
     {
-        $is4d = $this->is4dAdapter();
+        //$is4d = $this->is4dAdapter();
         $result = new \stdClass();
-        $what = ($is4d) ? $this->getDomainInstance()->getVars() : [];
-
+        //$what = ($is4d) ? $this->getDomainInstance()->getVars() : [];
+        $what = [];
         $where = array($key => $value);
         $this->_useCache = false;
         $this->cleanRowset();
         $localAlias = $this->_alias;
-        $directQuery = ($is4d && count($what) < 20) || !$this->is4dAdapter();
-        if ($directQuery) {
+        //$directQuery = ($is4d && count($what) < 20) || !$this->is4dAdapter();
             $this->find($what, $where);
-            $rowset = $this->getRowset();
+        $rowset = $this->getRowset();
             $found = (isset($rowset[0]));
             $result->$localAlias = ($found) ? $rowset[0] : [];
-        } else {
-            $result->$localAlias = $this->getParts($this, $where);
-        }
+        /* else {
+          $result->$localAlias = $this->getParts($this, $where);
+          } */
         if ($result->$localAlias) {
             $linker = \Pimvc\Tools\Arrayproto::ota($result->$localAlias);
 
@@ -925,7 +924,8 @@ abstract class Orm extends Core implements ormInterface
                         \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool')
                     );
                     $mi = $ri->getDomainInstance();
-                    $what = ($is4d) ? $this->get4dPertinentIndexes($mi) : [];
+                    $what = [];
+
                     $alias = isset($keys[self::_ALIAS]) ? $keys[self::_ALIAS] : get_class($mi);
                     $hasCardinality = (isset($keys[self::_CARDINALITY]));
                     if (!$is4d || $hasCardinality) {
@@ -1254,7 +1254,6 @@ abstract class Orm extends Core implements ormInterface
      */
     public function update($params = [])
     {
-        $is4d = $this->is4dAdapter();
         $pk = $this->_primary;
         $type = $this->_domainInstance->getPdo($pk);
         $sql = self::MODEL_UPDATE . $this->_name . self::MODEL_SET;
@@ -1266,26 +1265,15 @@ abstract class Orm extends Core implements ormInterface
             $key = $this->_primary;
             $value = $params[$key];
             $id = ':' . $this->_primary;
-            /*
-              $id = ($is4d)
-              ? $this->getSbfHash($key, $value)
-              : $params[$this->_primary];
-              //unset($params[$this->_primary]); */
             $where = self::MODEL_WHERE . $key . " = " . $id;
         }
-        $quoteLeft = ($is4d) ? '' : '`';
-        $quoteRight = ($is4d) ? '' : '`';
+        $quoteLeft = '`';
+        $quoteRight = '`';
         foreach ($params as $key => $value) {
-            $keyBind = ($is4d) ? ':' . $key //$this->getSbfHash($key, $value)
-                : ':' . $key;
+            $keyBind = ':' . $key;
             $sql .= $quoteLeft . $key . $quoteRight . ' = ' . $keyBind . ', ';
         }
         $sql = substr($sql, 0, -2) . $where . ';';
-        if ($is4d) {
-            //$params = $this->getSbfParams($params);
-            //var_dump($params);die;
-        }
-        //echo $sql;die;
         $returnCode = $this->run($sql, $params);
         return $returnCode;
     }
