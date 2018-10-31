@@ -131,6 +131,81 @@ class Core implements Interfaces\Core
     }
 
     /**
+     * getIndexes
+     *
+     * @param string $tablename
+     * @return array
+     */
+    public function getIndexes($tablename = '')
+    {
+        $tablename = (strpos($this->_name, '.') > 0) ? $this->removeSchemaFromName($this->_name) : $this->_name;
+        switch ($this->_adapter) {
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                $sql = self::MODEL_SELECT . '*,t.relname, a.attname, a.attnum'
+                    . self::MODEL_FROM . 'pg_index c'
+                    . ' LEFT JOIN pg_class t ON c.indrelid  = t.oid'
+                    . ' LEFT JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(indkey)'
+                    . "WHERE t.relname = '$tablename'";
+                break;
+            case self::MODEL_ADAPTER_SQLITE:
+                $result = [];
+                $sql = "PRAGMA index_list([$tablename]);";
+                $this->run($sql);
+                $resultIndexes = $this->_statement->fetchAll($this->_fetchMode);
+                foreach ($resultIndexes as $row) {
+                    $indexName = $row['name'];
+                    $row['ixname'] = $indexName;
+                    $row['primary'] = false;
+                    $sql = "PRAGMA index_info([$indexName]);";
+                    $this->run($sql);
+                    $detailResult = $this->_statement->fetchAll($this->_fetchMode);
+                    $result[] = array_merge($row, $detailResult[0]);
+                }
+                $pkResult = [];
+                $sqlPk = "SELECT * FROM sqlite_master where tbl_name='$tablename' and sql like '%PRIMARY%'";
+                $this->run($sqlPk);
+                $pkResult = $this->_statement->fetchAll($this->_fetchMode);
+                if (isset($pkResult[0])) {
+                    $pattern = '/\(([^\)]*)\)/';
+                    $sqlPkResult = $pkResult[0]['sql'];
+                    $sqlPkResultMatches = preg_match($pattern, $sqlPkResult, $matches);
+                    if ($sqlPkResultMatches) {
+                        $rawfieldlist = str_replace(['(', "'"], '', $matches[0]);
+                        $fieldlist = explode(',', $rawfieldlist);
+                        foreach ($fieldlist as $field) {
+                            if (strpos($field, 'PRIMARY')) {
+                                $fieldParts = explode(' ', $field);
+                                $fieldName = $fieldParts[0];
+                                $pkDetail = [
+                                    'seq' => 1000,
+                                    'name' => $fieldName,
+                                    'unique' => true,
+                                    'origin' => 't',
+                                    'partial' => 0,
+                                    'ixname' => $fieldName,
+                                    'primary' => true,
+                                    'seqno' => 1000,
+                                    'cid' => 1000
+                                ];
+                                $result[] = $pkDetail;
+                            }
+                        }
+                    }
+                }
+
+                return $result;
+                break;
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
+                $schemaPrefix = ($this->_schema) ? $this->_schema . '.' : '';
+                $sql = 'SHOW INDEX FROM ' . $schemaPrefix . $tablename;
+                break;
+        }
+        $this->run($sql);
+        $result = $this->_statement->fetchAll($this->_fetchMode);
+        return $result;
+    }
+
+    /**
      * removeSchemaFromName
      *
      * @param string $tablename
@@ -165,6 +240,13 @@ class Core implements Interfaces\Core
                 $condition = "type='table' AND name='$tablename'";
                 $sql = self::MODEL_SELECT . 'name' . self::MODEL_FROM . 'sqlite_master' .
                     self::MODEL_WHERE . $condition;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                $sql = "SELECT * FROM   information_schema.tables 
+   WHERE  table_schema = '$this->_schema'
+   AND    table_name = '$tablename'
+   ;";
                 break;
         }
         $this->run($sql);

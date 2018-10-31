@@ -15,6 +15,8 @@ class Field
     const _STRLEN = 'strlen';
     const _IS_NUMERIC = 'is_numeric';
     const _IS_NULL = 'is_null';
+    const _PRIMARY = 'primary';
+    const _KEY = 'key';
 
     /**
      * $count
@@ -69,6 +71,18 @@ class Field
      * @var bool
      */
     protected $isUniq;
+
+    /**
+     * $isKey
+     * @var bool
+     */
+    protected $isKey;
+
+    /**
+     * $isPrimaryKey
+     * @var bool
+     */
+    protected $isPrimaryKey;
 
     /**
      * $stack
@@ -192,6 +206,26 @@ class Field
     }
 
     /**
+     * getIsKey
+     *
+     * @return bool
+     */
+    public function getIsKey(): bool
+    {
+        return $this->isKey;
+    }
+
+    /**
+     * getIsPrimaryKey
+     *
+     * @return bool
+     */
+    public function getIsPrimaryKey(): bool
+    {
+        return $this->isPrimaryKey;
+    }
+
+    /**
      * getAsArray
      *
      * @return array
@@ -308,6 +342,30 @@ class Field
     }
 
     /**
+     * setIsKey
+     *
+     * @param bool $isKey
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setIsKey(bool $isKey): Field
+    {
+        $this->isKey = $isKey;
+        return $this;
+    }
+
+    /**
+     * setIsPrimaryKey
+     *
+     * @param bool $isPrimaryKey
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setIsPrimaryKey(bool $isPrimaryKey): Field
+    {
+        $this->isPrimaryKey = $isPrimaryKey;
+        return $this;
+    }
+
+    /**
      * setIsNullable
      *
      * @param bool $isNullable
@@ -321,10 +379,9 @@ class Field
 
     /**
      * setFromData
-     *
      * @param array $dataGrid
      * @param string $fieldName
-     * @return $this
+     * @return \Pimvc\Db\Model\Field
      */
     public function setFromData(array $dataGrid, string $fieldName = ''): Field
     {
@@ -341,6 +398,85 @@ class Field
         }
         $this->stack = [];
         return $this;
+    }
+
+    /**
+     * setFromDescribe
+     * @param string $adapter
+     * @param array $desc
+     * @return \Pimvc\Db\Model\Field
+     * @throws Exception
+     */
+    public function setFromDescribe(string $adapter, array $desc): Field
+    {
+        $allowedAdapter = [
+            \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL,
+            \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE,
+            \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL
+        ];
+        if (!in_array($adapter, $allowedAdapter)) {
+            throw new \Exception('Unmanaged adapter', 1);
+        }
+        
+        switch ($adapter) {
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
+                $this->setName($desc['field']);
+                $this->setIsNullable($desc['null'] === 'YES');
+                $type = $desc['type'];
+                preg_match('#\((.*?)\)#', $type, $lenCapture);
+                $len = (isset($lenCapture[1])) ? (int) $lenCapture[1] : 0;
+                $this->setMaxlen($len);
+                $isString = (preg_match('/^varchar/', $type) === 1);
+                $this->setIsString($isString);
+                $this->setIsNumeric(!$isString);
+                $isPk = $desc[self::_PRIMARY];
+                $isKey = $desc[self::_KEY];
+                $this->setIsPrimaryKey($isPk);
+                $this->setIsKey($isKey);
+                if (!$isString) {
+                    $this->setIsInt((preg_match('/^int/', $type) === 1));
+                    $this->setIsFloat((preg_match('/^float/', $type) === 1));
+                }
+                return $this;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
+                $this->setName($desc['name']);
+                $this->setIsNullable($desc['notnull'] === '1');
+                $type = $desc['type'];
+                $isString = (preg_match('/^(TEXT|DATETIME)/', $type) === 1);
+                $this->setIsString($isString);
+                $this->setIsNumeric(!$isString);
+                $isPk = $desc[self::_PRIMARY];
+                $isKey = $desc[self::_KEY];
+                $this->setIsPrimaryKey($isPk);
+                $this->setIsKey($isKey);
+                if (!$isString) {
+                    $this->setIsInt((preg_match('/^INTEGER/', $type) === 1));
+                    $this->setIsFloat((preg_match('/^REAL/', $type) === 1));
+                }
+                return $this;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                //echo '<pre>' . print_r($desc, true) . '</pre>';
+                $this->setName($desc['column_name']);
+                $this->setIsNullable($desc['is_nullable'] === 'YES');
+                $type = $desc['data_type'];
+                $isString = (preg_match('/(^character|^text)/', $type) === 1);
+                $this->setMaxlen((int) $desc['character_maximum_length']);
+                $this->setIsString($isString);
+                $this->setIsNumeric(!$isString);
+                //$this->setIsPrimaryKey($desc['pk'] == 1);
+                if (!$isString) {
+                    $this->setIsInt((preg_match('/^integer/', $type) === 1));
+                    $this->setIsFloat((preg_match('/^real/', $type) === 1));
+                }
+                return $this;
+                break;
+            default:
+                break;
+        }
     }
 
     /**

@@ -16,7 +16,7 @@ class Forge extends dbCore implements Interfaces\Forge
 
     protected $dbConfig;
     protected $slot;
-    protected $adatapter;
+    protected $_adapter;
 
     /**
      * __construct
@@ -46,7 +46,6 @@ class Forge extends dbCore implements Interfaces\Forge
      */
     public function tableCreate(string $tableName, \Pimvc\Db\Model\Fields $columns, bool $withPk = true)
     {
-   
         $countColumns = count($columns);
         for ($c = 0; $c < $countColumns; $c++) {
             $field = $columns[$c];
@@ -66,12 +65,22 @@ class Forge extends dbCore implements Interfaces\Forge
             $this->createTable($tableName),
             $this->getParentheses($sqlFields)
         ]);
-        if ($this->adatapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) {
-            $sql = preg_replace('/\([0-9]+\)/', '', $sql);
-            $sql = str_replace('INT', 'INTEGER', $sql);
-            $sql = str_replace('VARCHAR', ' TEXT ', $sql);
-            $sql = str_replace('FLOAT', ' REAL ', $sql);
-            $sql = str_replace('UNSIGNED AUTO_INCREMENT PRIMARY KEY', 'PRIMARY KEY AUTOINCREMENT', $sql);
+        switch ($this->_adapter) {
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
+                $sql = preg_replace('/\([0-9]+\)/', '', $sql);
+                $sql = str_replace('INT', 'INTEGER', $sql);
+                $sql = str_replace('VARCHAR', 'TEXT', $sql);
+                $sql = str_replace('FLOAT', 'REAL', $sql);
+                $sql = str_replace('UNSIGNED AUTO_INCREMENT PRIMARY KEY', 'PRIMARY KEY AUTOINCREMENT', $sql);
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                $sql = str_replace('VARCHAR', 'CHAR', $sql);
+                $sql = str_replace('FLOAT', 'REAL', $sql);
+                $sql = preg_replace('/INT\([0-9]+\)/', 'INT', $sql);
+                $sql = preg_replace('/REAL\([0-9]+\)/', 'REAL', $sql);
+                $sql = str_replace('INT UNSIGNED AUTO_INCREMENT PRIMARY KEY', 'SERIAL PRIMARY KEY', $sql);
+                break;
         }
         $this->run($sql);
     }
@@ -100,6 +109,8 @@ class Forge extends dbCore implements Interfaces\Forge
             $sql = $this->build(
                 [$this->insertInto($tablename), $fields, self::_VALUES, $values]
             );
+            echo $sql;
+            die;
             $this->run($sql, $statementBindings, $bindTypes);
             return true;
         }
@@ -179,7 +190,7 @@ class Forge extends dbCore implements Interfaces\Forge
     public function getPdoTypes(string $tablename): array
     {
         $fiedsDesc = $this->describeTable($tablename);
-        $fieldNameEntry = ($this->adatapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) ? 'name' : 'field';
+        $fieldNameEntry = ($this->_adapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) ? 'name' : 'field';
         $types = [];
         foreach ($fiedsDesc as $fieldDesc) {
             $rawType = $fieldDesc['type'];
@@ -336,7 +347,7 @@ class Forge extends dbCore implements Interfaces\Forge
         $this->dbConfig = \Pimvc\App::getInstance()->getConfig()->getSettings(
             self::_DB_POOL
         );
-        $this->adatapter = $this->dbConfig[$this->slot]['adapter'];
+        $this->_adapter = $this->dbConfig[$this->slot]['adapter'];
     }
 
     /**

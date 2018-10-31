@@ -66,5 +66,9 @@ interface Core
 
     public function tableExist($tablename);
 
+    public function getIndexes($tablename = '');
+
     public function showTables();
+
+    public function removeSchemaFromName($tablename);
 }
