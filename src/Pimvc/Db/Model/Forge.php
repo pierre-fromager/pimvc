@@ -109,8 +109,6 @@ class Forge extends dbCore implements Interfaces\Forge
             $sql = $this->build(
                 [$this->insertInto($tablename), $fields, self::_VALUES, $values]
             );
-            echo $sql;
-            die;
             $this->run($sql, $statementBindings, $bindTypes);
             return true;
         }
@@ -190,10 +188,27 @@ class Forge extends dbCore implements Interfaces\Forge
     public function getPdoTypes(string $tablename): array
     {
         $fiedsDesc = $this->describeTable($tablename);
-        $fieldNameEntry = ($this->_adapter === \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE) ? 'name' : 'field';
+        $fieldNameEntry = '';
+        $fieldDescTypeEntry = '';
+        switch ($this->_adapter) {
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
+                $fieldNameEntry = 'field';
+                $fieldDescTypeEntry = 'type';
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
+                $fieldNameEntry = 'name';
+                $fieldDescTypeEntry = 'type';
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
+                $fieldNameEntry = 'column_name';
+                $fieldDescTypeEntry = 'data_type';
+                break;
+        }
         $types = [];
         foreach ($fiedsDesc as $fieldDesc) {
-            $rawType = $fieldDesc['type'];
+            $rawType = $fieldDesc[$fieldDescTypeEntry];
             $regex = '/^int/';
             $fieldName = $fieldDesc[$fieldNameEntry];
             $types[$fieldName] = (preg_match($regex, $rawType)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;

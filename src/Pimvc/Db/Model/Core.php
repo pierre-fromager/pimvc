@@ -243,10 +243,11 @@ class Core implements Interfaces\Core
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
-                $sql = "SELECT * FROM   information_schema.tables 
-   WHERE  table_schema = '$this->_schema'
-   AND    table_name = '$tablename'
-   ;";
+                $sql = self::MODEL_SELECT . '*' . self::MODEL_FROM
+                    . 'information_schema.tables' .
+                    self::MODEL_WHERE . "table_catalog = '$this->_schema'"
+                    . self::MODEL_AND . "table_schema = 'public'"
+                    . self::MODEL_AND . "table_name = '$tablename';";
                 break;
         }
         $this->run($sql);
