@@ -8,14 +8,12 @@
 
 namespace Pimvc\Db\Model;
 
-use \Pimvc\Db\Model\Interfaces\Domain as domainInterface;
-
-abstract class Domain implements domainInterface
+abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
 {
     public $counter;
 
 
-    final public function __construct()
+    public function __construct()
     {
     }
 
@@ -24,7 +22,7 @@ abstract class Domain implements domainInterface
      *
      * @param string $string
      */
-    private static function isSerialised($string)
+    protected static function isSerialised($string)
     {
         return (@unserialize($string) !== false);
     }
@@ -44,7 +42,7 @@ abstract class Domain implements domainInterface
      *
      * @return int
      */
-    public function countParts($partSize)
+    public function countParts($partSize = 0)
     {
         $partSize = ($partSize) ? $partSize : self::MAXPARTS;
         $nbPart = floor(count($this->getVars()) / $partSize);
@@ -114,7 +112,7 @@ abstract class Domain implements domainInterface
             $propList = $cacheManager->get($className);
         } else {
             $propertiesCache = new Cache(get_called_class()); // 5mn expiration
-            $propertiesCachePath = APP_PATH . '/cache/Db' . DIRECTORY_SEPARATOR;
+            $propertiesCachePath = APP_PATH . '/cache/Db/';
             $propertiesCache->setPath($propertiesCachePath);
             if ($propertiesCache->expired()) {
                 foreach ($propertiesList as $propertyName) {

@@ -27,8 +27,6 @@ interface Orm
     const _TABLE = 'table';
     const _CARDINALITY = 'cardinality';
 
-    public function __construct($config = []);
-
     public function setCast($fieldName, $typeCast);
 
     public function setCasts($fieldsCast);

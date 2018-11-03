@@ -17,6 +17,7 @@ class Liste implements Interfaces\Liste
     protected $columns = null;
     protected $data = [];
     protected $controler = null;
+    protected $modelName = null;
     private $headers = '';
     private $labels = [];
     private $body = '';
@@ -69,12 +70,21 @@ class Liste implements Interfaces\Liste
         $this->mandatory = $mandatory;
         $this->filter = $filter;
         $this->curentPage = (int) $curentPage;
+
         $this->modelName = $modelName;
-        $modelClass = $modelName;
         $this->modelConfig = \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool');
-        $this->_model = new $modelClass($this->modelConfig);
+        if (is_string($this->modelName)) {
+            $modelClass = $modelName;
+            $this->_model = new $modelClass($this->modelConfig);
+        } elseif ($this->modelName instanceof \Pimvc\Db\Model\Orm) {
+            $this->_model = $this->modelName;
+        } else {
+            throw new \Exception('Invalid model given');
+        }
+
         $this->_modelAdapter = $this->_model->getAdapter();
         $this->_modelMapper = $this->_model->getDomainInstance();
+
         $this->booleanList = ($this->is4dDb())
             ? $this->_modelMapper->getBooleans()
             : $this->booleanList;
@@ -103,8 +113,12 @@ class Liste implements Interfaces\Liste
         $this->casts = (isset($options[self::PARAM_CASTS]))
             ? $options[self::PARAM_CASTS]
             : [];
-        $this->_model->setCasts($this->casts);
-        $this->setData();
+       
+        if ($this->modelName) {
+            $this->_model->setCasts($this->casts);
+            $this->setData();
+        }
+
         return $this;
     }
     
@@ -179,6 +193,8 @@ class Liste implements Interfaces\Liste
         $this->_model->find($this->columns, $where, $order, $limit);
         $this->sql = $this->_model->getSql();
         $this->data = $this->_model->getRowsetAsArray();
+        /* echo '<pre>' . print_r($this->data, true) . '</pre>';
+          die; */
         $this->formatHelpers();
         return $this;
     }
@@ -346,6 +362,8 @@ class Liste implements Interfaces\Liste
     private function getLines()
     {
         $this->body = '';
+        //echo '<pre>' . print_r($this->data, true) . '</pre>';
+        //die;
         foreach ($this->data as $lines) {
             $this->body .= '<tr>';
             foreach ($lines as $key => $value) {
@@ -356,6 +374,11 @@ class Liste implements Interfaces\Liste
                     $value = (empty($value) || is_null($value))
                         ? '-'
                         : $value;
+                    if ($value instanceof \Pimvc\Db\Model\Fields) {
+                        //echo '<pre>' . print_r([$key, $value], true) . '</pre>';
+                        //die;
+                    }
+
                     $this->body .= '<td>' . $value . '</td>';
                 }
             }
@@ -431,8 +454,9 @@ class Liste implements Interfaces\Liste
             , 'table-stripped'
             , 'col-sm-12'
         ];
+        $modelName = is_string($this->modelName) ? $this->modelName : get_class($this->modelName);
         $tableOptions = [
-            self::PARAM_ID => 'table_' . md5($this->modelName)
+            self::PARAM_ID => 'table_' . md5($modelName)
             , 'class' => implode(' ', $defaultClasses)
         ];
         $table = (string) new Html\Element\Decorator(

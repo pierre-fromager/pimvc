@@ -79,9 +79,9 @@ abstract class Orm extends Core implements ormInterface
         $this->_schema = $config[$this->_slot]['name'];
         $this->_db = \Pimvc\Db\Factory::getConnection($config[$this->_slot]);
         $this->_domainClass = $this->getDomainName();
-        $this->_domainInstance = new $this->_domainClass;
-        $is4dOrPg = in_array($this->_adapter, [self::MODEL_ADAPTER_4D, self::MODEL_ADAPTER_PGSQL]);
-        $this->_metas = (!$is4dOrPg) ? $this->_metas = $this->describeTable() : $this->getDomainFields();
+        $isLateDomain = isset($config['lateDomain']);
+        $this->_domainInstance = ($isLateDomain) ? null : new $this->_domainClass;
+        $this->_metas = $this->describeTable();
         $this->_columns = $this->getColumns();
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
@@ -213,6 +213,15 @@ abstract class Orm extends Core implements ormInterface
     public function getDomainInstance()
     {
         return $this->_domainInstance;
+    }
+
+    /**
+     * setDomainInstance
+     * @param \Pimvc\Db\Model\Domain $domainInstance
+     */
+    public function setDomainInstance(\Pimvc\Db\Model\Domain $domainInstance)
+    {
+        $this->_domainInstance = $domainInstance;
     }
 
     /**
@@ -890,25 +899,18 @@ abstract class Orm extends Core implements ormInterface
      */
     public function getDependantObjects($key, $value, $deepness = 0)
     {
-        //$is4d = $this->is4dAdapter();
         $result = new \stdClass();
-        //$what = ($is4d) ? $this->getDomainInstance()->getVars() : [];
         $what = [];
         $where = array($key => $value);
         $this->_useCache = false;
         $this->cleanRowset();
         $localAlias = $this->_alias;
-        //$directQuery = ($is4d && count($what) < 20) || !$this->is4dAdapter();
             $this->find($what, $where);
         $rowset = $this->getRowset();
             $found = (isset($rowset[0]));
             $result->$localAlias = ($found) ? $rowset[0] : [];
-        /* else {
-          $result->$localAlias = $this->getParts($this, $where);
-          } */
         if ($result->$localAlias) {
             $linker = \Pimvc\Tools\Arrayproto::ota($result->$localAlias);
-
             foreach ($this->_refMap as $ft => $keys) {
                 $pk = $keys[self::_LOCAL];
                 $fk = $keys[self::_FOREIGN];
@@ -928,7 +930,8 @@ abstract class Orm extends Core implements ormInterface
 
                     $alias = isset($keys[self::_ALIAS]) ? $keys[self::_ALIAS] : get_class($mi);
                     $hasCardinality = (isset($keys[self::_CARDINALITY]));
-                    if (!$is4d || $hasCardinality) {
+
+                    if ($hasCardinality) {
                         $ri->find($what, $where);
                         $rowset = $ri->getRowset();
                         $result->$alias = ($hasCardinality) ? $rowset : $rowset[0];
@@ -952,21 +955,6 @@ abstract class Orm extends Core implements ormInterface
     public function getAlias()
     {
         return $this->_alias;
-    }
-
-    /**
-     * get4dPertinentIndexes
-     *
-     * @param Lib_Db_Mapper_Abstarct $mi
-     * @return array
-     */
-    private function get4dPertinentIndexes($mi)
-    {
-        $maxVars = count($mi->getVars());
-        return ($maxVars > 20) ? array_merge(
-            $mi->getVarsByKeyword('numero'),
-            $mi->getVarsByKeyword('code')
-        ) : $mi->getVars();
     }
 
     /**
@@ -1440,16 +1428,24 @@ abstract class Orm extends Core implements ormInterface
     protected function hydrate()
     {
         $this->_rowset = new \SplFixedArray();
-        $this->_rowset->setSize($this->_statement->rowCount());
+        $rowCount = $this->_statement->rowCount();
+        $this->_rowset->setSize($rowCount);
         $cpt = 0;
         $statementResult = $this->_statement->fetchAll($this->_fetchMode);
-        foreach ($statementResult as $rawData) {
-            $objMapper = new $this->_domainClass();
-            $objMapper->hydrate($rawData);
+        for ($cpt = 0; $cpt < $rowCount; $cpt++) {
+            $objMapper = clone $this->_domainInstance;
+            $objMapper->hydrate($statementResult[$cpt]);
             $this->_rowset[$cpt] = $objMapper->get();
-            ++$cpt;
             unset($objMapper);
         }
+        /*
+          foreach ($statementResult as $rawData) {
+          $objMapper = clone $this->_domainInstance;
+          $objMapper->hydrate($rawData);
+          $this->_rowset[$cpt] = $objMapper->get();
+          ++$cpt;
+          unset($objMapper);
+          } */
         unset($statementResult);
         $this->_statement->closeCursor();
         $this->seek();

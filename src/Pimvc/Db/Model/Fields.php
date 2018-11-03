@@ -1,7 +1,7 @@
 <?php
 namespace Pimvc\Db\Model;
 
-class Fields implements \ArrayAccess, \Countable
+class Fields implements \ArrayAccess, \Countable, \IteratorAggregate
 {
 
     const _BAD_INSTANCE = 'value must be an instance of Field';
@@ -78,5 +78,15 @@ class Fields implements \ArrayAccess, \Countable
     public function count(): int
     {
         return count($this->container);
+    }
+
+    /**
+     * getIterator
+     *
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->container);
     }
 }

@@ -417,7 +417,8 @@ class Field
         if (!in_array($adapter, $allowedAdapter)) {
             throw new \Exception('Unmanaged adapter', 1);
         }
-        
+        $this->setIsPrimaryKey($desc[self::_PRIMARY]);
+        $this->setIsKey($desc[self::_KEY]);
         switch ($adapter) {
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
                 $this->setName($desc['field']);
@@ -429,15 +430,10 @@ class Field
                 $isString = (preg_match('/^varchar/', $type) === 1);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
-                $isPk = $desc[self::_PRIMARY];
-                $isKey = $desc[self::_KEY];
-                $this->setIsPrimaryKey($isPk);
-                $this->setIsKey($isKey);
                 if (!$isString) {
                     $this->setIsInt((preg_match('/^int/', $type) === 1));
                     $this->setIsFloat((preg_match('/^float/', $type) === 1));
                 }
-                return $this;
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
@@ -447,19 +443,13 @@ class Field
                 $isString = (preg_match('/^(TEXT|DATETIME)/', $type) === 1);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
-                $isPk = $desc[self::_PRIMARY];
-                $isKey = $desc[self::_KEY];
-                $this->setIsPrimaryKey($isPk);
-                $this->setIsKey($isKey);
                 if (!$isString) {
                     $this->setIsInt((preg_match('/^INTEGER/', $type) === 1));
                     $this->setIsFloat((preg_match('/^REAL/', $type) === 1));
                 }
-                return $this;
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
-                //echo '<pre>' . print_r($desc, true) . '</pre>';
                 $this->setName($desc['column_name']);
                 $this->setIsNullable($desc['is_nullable'] === 'YES');
                 $type = $desc['data_type'];
@@ -467,16 +457,13 @@ class Field
                 $this->setMaxlen((int) $desc['character_maximum_length']);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
-                //$this->setIsPrimaryKey($desc['pk'] == 1);
                 if (!$isString) {
                     $this->setIsInt((preg_match('/^integer/', $type) === 1));
                     $this->setIsFloat((preg_match('/^real/', $type) === 1));
                 }
-                return $this;
-                break;
-            default:
                 break;
         }
+        return $this;
     }
 
     /**
