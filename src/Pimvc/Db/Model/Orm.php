@@ -57,6 +57,8 @@ abstract class Orm extends Core implements ormInterface
      * __construct
      *
      * @param type $config
+     * @return $this
+     * @throws ormException
      */
     public function __construct($config = [])
     {
@@ -1116,8 +1118,7 @@ abstract class Orm extends Core implements ormInterface
         $havingAgg = ($having && $groupBy) ? ' HAVING ' . $having : '';
         $groupBy .= $havingAgg;
 
-        $tableName = ($this->_schema && $this->_adapter != self::MODEL_ADAPTER_SQLITE) ? $this->_schema . '.' . $this->_name : $this->_name;
-
+        $tableName = ($this->_schema) ? $this->_schema . '.' . $this->_name : $this->_name;
         $sql = self::MODEL_SELECT
             . $this->getFields($fieldList) . $groupAggregateFunc
             . self::MODEL_FROM . $tableName
@@ -1198,7 +1199,8 @@ abstract class Orm extends Core implements ormInterface
         }
 
         if ($mustQuery) {
-            $schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL) ? $this->_schema . '.' : '';
+            //$schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL) ? $this->_schema . '.' : '';
+            $schemaPrefix = '';
             $sql = self::MODEL_SELECT_COUNT . '(' . $this->_primary . ') '
                 . self::MODEL_FROM . $schemaPrefix . $this->_name
                 . $this->_getWhere($where);
@@ -1255,11 +1257,10 @@ abstract class Orm extends Core implements ormInterface
             $id = ':' . $this->_primary;
             $where = self::MODEL_WHERE . $key . " = " . $id;
         }
-        $quoteLeft = '`';
-        $quoteRight = '`';
+        $quote = '`';
         foreach ($params as $key => $value) {
             $keyBind = ':' . $key;
-            $sql .= $quoteLeft . $key . $quoteRight . ' = ' . $keyBind . ', ';
+            $sql .= $quote . $key . $quote . ' = ' . $keyBind . ', ';
         }
         $sql = substr($sql, 0, -2) . $where . ';';
         $returnCode = $this->run($sql, $params);
@@ -1438,14 +1439,6 @@ abstract class Orm extends Core implements ormInterface
             $this->_rowset[$cpt] = $objMapper->get();
             unset($objMapper);
         }
-        /*
-          foreach ($statementResult as $rawData) {
-          $objMapper = clone $this->_domainInstance;
-          $objMapper->hydrate($rawData);
-          $this->_rowset[$cpt] = $objMapper->get();
-          ++$cpt;
-          unset($objMapper);
-          } */
         unset($statementResult);
         $this->_statement->closeCursor();
         $this->seek();

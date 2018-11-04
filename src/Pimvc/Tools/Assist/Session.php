@@ -30,7 +30,7 @@ class Session
      * get
      *
      * @param string $name
-     * @param \Lib_Request $request
+     * @param \Pimvc\Http\Request $request
      * @param boolean $reset
      *
      * @return array
@@ -49,7 +49,7 @@ class Session
             if ($preparedData) {
                 $storeData = array_merge(
                     (array) $persitentDatas,
-                    array_filter($preparedData, self::ASSIST_CALLBACK)
+                    array_filter($preparedData, 'strlen')
                 );
             }
             if ($reset) {
@@ -107,10 +107,7 @@ class Session
             $directDatas = true;
         }
         if ($isPost || $directDatas) {
-            $postedData = array_filter(
-                $params,
-                self::ASSIST_CALLBACK
-            );
+            $postedData = array_filter($params, 'strlen');
             self::set($name, $postedData, $key);
         }
         $assist = (sessionTools::has($name, $key))

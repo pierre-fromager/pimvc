@@ -84,10 +84,6 @@ class Liste implements Interfaces\Liste
 
         $this->_modelAdapter = $this->_model->getAdapter();
         $this->_modelMapper = $this->_model->getDomainInstance();
-
-        $this->booleanList = ($this->is4dDb())
-            ? $this->_modelMapper->getBooleans()
-            : $this->booleanList;
         $this->controler = $controler;
         $this->exclude = $exclude;
         $this->excludeAction = $excludeAction;
@@ -143,17 +139,7 @@ class Liste implements Interfaces\Liste
         $this->actionSuffix = $suffix;
         return $this;
     }
-    
-    /**
-     * is4dDb
-     *
-     * @return boolean
-     */
-    private function is4dDb()
-    {
-        return ($this->_modelAdapter == \Pimvc\Db\Model\Orm::MODEL_ADAPTER_4D);
-    }
-    
+
     /**
      * setKeyOrder
      *
@@ -193,8 +179,6 @@ class Liste implements Interfaces\Liste
         $this->_model->find($this->columns, $where, $order, $limit);
         $this->sql = $this->_model->getSql();
         $this->data = $this->_model->getRowsetAsArray();
-        /* echo '<pre>' . print_r($this->data, true) . '</pre>';
-          die; */
         $this->formatHelpers();
         return $this;
     }
@@ -335,10 +319,10 @@ class Liste implements Interfaces\Liste
     }
 
     /**
-     * getCommandes returns toolbar for editing
+     * getCommandes
      *
-     * @param int $id
-     * @return string
+     * @param type $line
+     * @return type
      */
     private function getCommandes($line)
     {
@@ -362,8 +346,6 @@ class Liste implements Interfaces\Liste
     private function getLines()
     {
         $this->body = '';
-        //echo '<pre>' . print_r($this->data, true) . '</pre>';
-        //die;
         foreach ($this->data as $lines) {
             $this->body .= '<tr>';
             foreach ($lines as $key => $value) {
@@ -374,11 +356,6 @@ class Liste implements Interfaces\Liste
                     $value = (empty($value) || is_null($value))
                         ? '-'
                         : $value;
-                    if ($value instanceof \Pimvc\Db\Model\Fields) {
-                        //echo '<pre>' . print_r([$key, $value], true) . '</pre>';
-                        //die;
-                    }
-
                     $this->body .= '<td>' . $value . '</td>';
                 }
             }
@@ -391,8 +368,7 @@ class Liste implements Interfaces\Liste
                         $operator = (isset($conditionv['operator']))
                             ? $conditionv['operator']
                             : '==';
-                        $isCallback = is_callable($value);
-                        if ($isCallback) {
+                        if (is_callable($value)) {
                             $hasCondition = $value($lines[$key]);
                         } else {
                             $evalString = "return '" . $lines[$key] . "'" . $operator . "'" . $value . "';";
@@ -550,8 +526,8 @@ class Liste implements Interfaces\Liste
             $pageSize,
             $maxPage
         );
-        $urlCombo = Tools\Session::getBaseUrl() . '/' . $this->controler
-            . DIRECTORY_SEPARATOR . self::PARAM_PAGESIZE . DIRECTORY_SEPARATOR;
+        $urlCombo = Tools\Session::getBaseUrl() . '/' . $this->controler . '/' .
+            self::PARAM_PAGESIZE . '/';
         $comboPage = Views\Helpers\Pagesize::getCombo($urlCombo, $pageSize);
         return $navPaging
             . '<div class="items-par-page">'
