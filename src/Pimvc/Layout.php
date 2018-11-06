@@ -77,6 +77,7 @@ class Layout extends \Pimvc\View implements viewInterface, layoutInterface
             $content .= $this->getRenderedPart($part);
         }
         $this->setContent($content);
+        return $this;
     }
     
     /**
