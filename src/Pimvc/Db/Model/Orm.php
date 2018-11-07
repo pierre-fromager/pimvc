@@ -1429,10 +1429,9 @@ abstract class Orm extends Core implements ormInterface
     protected function hydrate()
     {
         $this->_rowset = new \SplFixedArray();
-        $rowCount = $this->_statement->rowCount();
-        $this->_rowset->setSize($rowCount);
-        $cpt = 0;
         $statementResult = $this->_statement->fetchAll($this->_fetchMode);
+        $rowCount = count($statementResult);
+        $this->_rowset->setSize($rowCount);
         for ($cpt = 0; $cpt < $rowCount; $cpt++) {
             $objMapper = clone $this->_domainInstance;
             $objMapper->hydrate($statementResult[$cpt]);
