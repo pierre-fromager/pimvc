@@ -95,6 +95,16 @@ abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
     }
 
     /**
+     * toArray
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return (array) $this;
+    }
+
+    /**
      * getProperties
      *
      * @return array

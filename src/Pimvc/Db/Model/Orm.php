@@ -537,13 +537,12 @@ abstract class Orm extends Core implements ormInterface
                 if (property_exists($domainObject, 'counter')) {
                     unset($domainObject->counter);
                 }
-                $this->insert((array) $domainObject);
+                $this->insert($domainObject->toArray());
             } else {
                 $this->cleanRowset();
                 $pkValue = $domainObject->$pk;
-                $where = array($pk => $pkValue);
-                $this->find([], $where);
-                $this->_current->hydrate((array) $domainObject);
+                $this->find([], [$pk => $pkValue]);
+                $this->_current->hydrate($domainObject->toArray());
                 if (property_exists($domainObject, 'counter')) {
                     unset($domainObject->counter);
                 }
