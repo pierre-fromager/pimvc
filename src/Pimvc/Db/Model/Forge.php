@@ -188,6 +188,7 @@ class Forge extends dbCore implements Interfaces\Forge
     public function getPdoTypes(string $tablename): array
     {
         $fiedsDesc = $this->describeTable($tablename);
+
         $fieldNameEntry = '';
         $fieldDescTypeEntry = '';
         switch ($this->_adapter) {
@@ -197,7 +198,7 @@ class Forge extends dbCore implements Interfaces\Forge
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
-                $fieldNameEntry = 'name';
+                $fieldNameEntry = 'field';
                 $fieldDescTypeEntry = 'type';
                 break;
 
