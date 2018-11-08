@@ -89,4 +89,18 @@ class Fields implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         return new \ArrayIterator($this->container);
     }
+
+    /**
+     * toArray
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $datas = [];
+        for ($c = 0; $c < count($this->container); $c++) {
+            $datas[] = $this->container[$c]->toArray();
+        }
+        return $datas;
+    }
 }

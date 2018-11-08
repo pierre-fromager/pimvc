@@ -116,6 +116,28 @@ class Field
     }
 
     /**
+     * toArray
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'maxLen' => $this->maxLen,
+            'isFloat' => $this->isFloat,
+            'isInt' => $this->isInt,
+            'isString' => $this->isString,
+            'isNumeric' => $this->isNumeric,
+            'isNullable' => $this->isNullable,
+            'isUniq' => $this->isUniq,
+            'isKey' => $this->isKey,
+            'isPrimaryKey' => $this->isPrimaryKey,
+            'count' => $this->count,
+        ];
+    }
+
+    /**
      * getCount
      *
      * @return int
