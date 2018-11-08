@@ -539,14 +539,7 @@ abstract class Orm extends Core implements ormInterface
                 }
                 $this->insert($domainObject->toArray());
             } else {
-                $this->cleanRowset();
-                $pkValue = $domainObject->$pk;
-                $this->find([], [$pk => $pkValue]);
-                $this->_current->hydrate($domainObject->toArray());
-                if (property_exists($domainObject, 'counter')) {
-                    unset($domainObject->counter);
-                }
-                $this->update((array) $this->_current);
+                $this->update($domainObject->toArray());
             }
         } else {
             $error = 'Current domain object ' . $this->_domainClass . ' failed';
@@ -1244,7 +1237,7 @@ abstract class Orm extends Core implements ormInterface
     public function update($params = [])
     {
         $pk = $this->_primary;
-        $type = $this->_domainInstance->getPdo($pk);
+        //$type = $this->_domainInstance->getPdo($pk);
         $sql = self::MODEL_UPDATE . $this->_name . self::MODEL_SET;
         $hasWhere = $this->hasWhere();
         if ($hasWhere) {

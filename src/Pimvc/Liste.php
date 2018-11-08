@@ -459,6 +459,7 @@ class Liste implements Interfaces\Liste
         $paging = ($this->usePaging) ? $this->getPaging($modelSize) : '';
         $this->content = $this->getSql() . $paging;
         $this->content .= $this->getTable() . $this->getScript();
+        return $this;
     }
     
     /**
