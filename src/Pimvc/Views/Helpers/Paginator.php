@@ -1,6 +1,6 @@
 <?php
 /**
- * Helper_Paginator
+ * Pimvc\Views\Helpers\Paginator
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */

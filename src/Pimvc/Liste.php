@@ -1,7 +1,8 @@
 <?php
 
 /**
- * class liste
+ * Pimvc\Liste
+ *
  * is a liste manager
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
@@ -29,7 +30,6 @@ class Liste implements Interfaces\Liste
     private $filter = [];
     private $mandatory = [];
     protected $sql = '';
-    private $booleanList = [];
     private $needAction = false;
     private $order = null;
     private $keyOrder = '';
@@ -44,6 +44,7 @@ class Liste implements Interfaces\Liste
     private $casts = [];
     private $actionPrefix;
     private $actionSuffix;
+    private $baseUrl;
 
     /**
      * @see __construct
@@ -57,7 +58,7 @@ class Liste implements Interfaces\Liste
      */
     public function __construct(
         $modelName,
-        $controler = 'user',
+        $controler = 'user/manage',
         $exclude = [],
         $excludeAction = [],
         $curentPage = 0,
@@ -65,12 +66,12 @@ class Liste implements Interfaces\Liste
         $mandatory = [],
         $options = []
     ) {
+        $this->baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
         $this->content = '';
         $this->isFormated = false;
         $this->mandatory = $mandatory;
         $this->filter = $filter;
         $this->curentPage = (int) $curentPage;
-
         $this->modelName = $modelName;
         $this->modelConfig = \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool');
         if (is_string($this->modelName)) {
@@ -81,7 +82,6 @@ class Liste implements Interfaces\Liste
         } else {
             throw new \Exception('Invalid model given');
         }
-
         $this->_modelAdapter = $this->_model->getAdapter();
         $this->_modelMapper = $this->_model->getDomainInstance();
         $this->controler = $controler;
@@ -267,7 +267,7 @@ class Liste implements Interfaces\Liste
     /**
      * setShowSql
      *
-     * @param boolean $usage
+     * @param boolean $enable
      */
     public function setShowSql($enable)
     {
@@ -457,8 +457,9 @@ class Liste implements Interfaces\Liste
         $this->_model->setParenthesis($this->parenthesis);
         $modelSize = $this->_model->counter($this->filter);
         $paging = ($this->usePaging) ? $this->getPaging($modelSize) : '';
-        $this->content = $this->getSql() . $paging;
-        $this->content .= $this->getTable() . $this->getScript();
+        $this->content = $this->getSql() . $paging . $this->getTable();
+        \Pimvc\Views\Helpers\Collection\Js::add('/public/js/liste.js');
+        \Pimvc\Views\Helpers\Collection\Js::save();
         return $this;
     }
     
@@ -527,7 +528,7 @@ class Liste implements Interfaces\Liste
             $pageSize,
             $maxPage
         );
-        $urlCombo = Tools\Session::getBaseUrl() . '/' . $this->controler . '/' .
+        $urlCombo = $this->baseUrl . '/' . $this->controler . '/' .
             self::PARAM_PAGESIZE . '/';
         $comboPage = Views\Helpers\Pagesize::getCombo($urlCombo, $pageSize);
         return $navPaging
@@ -577,26 +578,8 @@ class Liste implements Interfaces\Liste
      */
     protected function getImgLink($name)
     {
-        $baseUrl = Tools\Session::getBaseUrl();
-        $imgPath = $baseUrl . 'public/images/arrow/' . $name;
+        $imgPath = $this->baseUrl . '/public/images/arrow/' . $name;
         return '<img src="' . $imgPath . '" alt="Fields actions"/>';
-    }
-
-    /**
-     * getScript
-     *
-     */
-    protected function getScript()
-    {
-        $templatePath = __DIR__ . '/Views/Helpers/Template/'
-            . self::LIST_SCRIPT_PARTIAL;
-        if (!file_exists($templatePath)) {
-            echo 'Missing file : ' . $templatePath;
-            die;
-        }
-        $view = new View();
-        $view->setParams([])->setFilename($templatePath)->render();
-        return (string) $view;
     }
 
     /**
