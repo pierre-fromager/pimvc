@@ -46,7 +46,7 @@ class Lang
         }
 
         $csv = new csvParser();
-        if ($this->isValidParsing($csv, $filenameOrData)) {
+        if (self::isValidParsing($csv, $filenameOrData)) {
             $data = $csv->unparse($csv->data, [], null, null, ',');
             if ($unlinkafter) {
                 unlink($filenameOrData);
@@ -65,7 +65,7 @@ class Lang
      * @param mixed $filenameOrData
      * @return boolean
      */
-    private function isValidParsing(csvParser $csv, $filenameOrData)
+    private static function isValidParsing(csvParser $csv, $filenameOrData)
     {
         $isValid =  (
             $csv->auto($filenameOrData) //parsed

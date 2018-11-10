@@ -460,6 +460,16 @@ class Request implements \Pimvc\Http\Interfaces\Request
     }
 
     /**
+     * getLang
+     *
+     * @return string
+     */
+    public function getLang(): string
+    {
+        return substr($this->getServer(self::REQUEST_LANG), 0, 2);
+    }
+
+    /**
      * assignCookie
      *
      * @return $this

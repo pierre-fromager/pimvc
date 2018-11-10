@@ -154,7 +154,8 @@ class App implements Interfaces\App
      */
     public function setTranslator()
     {
-        $this->translator = new translate(new translatorAdpater($this->locale));
+        $requestLang = $this->request->getLang();
+        $this->translator = new translate(new translatorAdpater($requestLang));
         return $this;
     }
 

@@ -38,6 +38,7 @@ interface Request
     const REQUEST_QUERY = 'query';
     const REQUEST_HOST = 'HTTP_HOST';
     const REQUEST_SCHEME = 'REQUEST_SCHEME';
+    const REQUEST_LANG = 'HTTP_ACCEPT_LANGUAGE';
     const REQUEST_SLASH = '/';
     const SCHEME_SUFFIX = '://';
     const PARAM_APACHE_HEADERS = 'apache_request_headers';
@@ -94,4 +95,6 @@ interface Request
     public function getSession($name, $key = '');
     
     public function getHeaders();
+
+    public function getLang();
 }
