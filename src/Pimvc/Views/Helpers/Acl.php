@@ -13,13 +13,13 @@ class Acl
     const ACL_ICONS_PATH = 'public/img/acl/';
     const CR = "\n";
     const MAX_ACL_ACTION = 4;
-    const ACL_TITLE = 'Gestion des droits';
     const ACL_CONTROLLER_ACTION = 'acl/toggle';
 
     protected $content = '';
     protected $baseUrl = '';
     protected $toggleUrl = '';
     protected $ressources = array();
+    protected $title = '';
 
     /**
      * @see __construct
@@ -31,18 +31,31 @@ class Acl
         $this->ressources = $ressources;
         $this->baseUrl = \Pimvc\App::getInstance()->getRequest()->getBaseUrl();
         $this->toggleUrl = $this->baseUrl . DIRECTORY_SEPARATOR . self::ACL_CONTROLLER_ACTION;
-        $this->process();
+        $this->render();
+        return $this;
     }
 
     /**
-     * process
+     * setTitle
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * render
      *
      */
-    protected function process()
+    public function render()
     {
         $this->content = '<div class="acl-manager">';
         $this->content .= '<h2>' . '<span class="fa fa-lock">&nbsp;</span>&nbsp;'
-            . self::ACL_TITLE . '</h2>';
+            . $this->title . '</h2>';
         foreach ($this->ressources as $controllerName => $actions) {
             $shortCrtl = $this->getClassnameFromNamespace($controllerName);
             $this->content .= '<div id="' . $shortCrtl . '" class="controler_header inactive">' . self::CR
@@ -68,6 +81,7 @@ class Acl
         }
         $this->content .= '</div>';
         $this->content .= $this->getScript();
+        return $this;
     }
     
     /**

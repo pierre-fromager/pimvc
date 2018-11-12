@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Helper_Fonts
+ * Description of Pimvc\Helper\Fonts
  *
  * @author pierrefromager
  */
@@ -12,8 +12,8 @@ use Pimvc\Html\Element\Decorator as glyphDecorator;
 
 class Fonts
 {
-    const PARAM_CLASS = 'class';
-    const PARAM_HREF = 'href';
+    const _CLASS = 'class';
+    const _HREF = 'href';
     const GLYPH_TAG = 'span';
     const GLYPH_TAG_GLYPHICON_CLASS = 'glyphicon glyphicon-';
     const GLYPH_TAG_AWESOME_CLASS = 'fa fa-';
@@ -38,7 +38,7 @@ class Fonts
     public static function get($glyph, $params = [], $tag = self::GLYPH_TAG)
     {
         $defaultAttribs = array(
-          self::PARAM_CLASS => self::getFontClass() . $glyph
+          self::_CLASS => self::getFontClass($glyph)
         );
         $attribs = self::mergeArrayAttributes($defaultAttribs, $params);
         $html = new glyphDecorator(
@@ -63,8 +63,8 @@ class Fonts
     public static function getLinked($glyph, $url, $options = [])
     {
         $defaultAttribs = array(
-          self::PARAM_CLASS => self::DEFAULT_LINKED_CLASS
-          , self::PARAM_HREF => $url
+          self::_CLASS => self::DEFAULT_LINKED_CLASS
+            , self::_HREF => $url
         );
         $attribs = self::mergeArrayAttributes($defaultAttribs, $options);
         $linkDecorator = new glyphDecorator(
@@ -95,6 +95,15 @@ class Fonts
     }
 
     /**
+     * getFontClass
+     *
+     */
+    public static function getFontClass($glyph = '')
+    {
+        return self::HELPER_CLASSES[get_called_class()] . $glyph;
+    }
+
+    /**
      * mergeArrayAttributes
      *
      * @param array $attrArray1
@@ -107,14 +116,5 @@ class Fonts
             array_merge(array_keys($attrArray1), array_keys($attrArray2)),
             array_merge(array_values($attrArray1), array_values($attrArray2))
         );
-    }
-
-    /**
-     * getFontClass
-     *
-     */
-    private static function getFontClass()
-    {
-        return self::HELPER_CLASSES[get_called_class()];
     }
 }
