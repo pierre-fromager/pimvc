@@ -27,7 +27,8 @@ interface Form
     const PARAM_CLASS = 'class';
     const PARAM_ID = 'id';
     const PARAM_FIELD = 'Field';
-    
+    const SEARCH_WRAPPER_TITLE = 'Critères';
+
     public function setFieldsExclude($fieldExlude);
 
     public function setName($name);

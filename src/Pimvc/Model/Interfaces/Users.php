@@ -1,26 +1,24 @@
 <?php
-
 /**
  * Description of Users
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Model\Interfaces;
 
 interface Users
 {
-    const PARAM_ID = 'id';
-    const PARAM_NAME = 'name';
-    const PARAM_EMAIL = 'email';
-    const PARAM_PASSWORD = 'password';
-    const PARAM_PROFIL = 'profil';
-    const PARAM_FID = 'fid';
-    const PARAM_IP = 'ip';
-    const PARAM_STATUS = 'status';
-    const PARAM_LOGIN = 'login';
-    const PARAM_TOKEN = 'token';
 
+    const _ID = 'id';
+    const _NAME = 'name';
+    const _EMAIL = 'email';
+    const _PASSWORD = 'password';
+    const _PROFIL = 'profil';
+    const _FID = 'fid';
+    const _IP = 'ip';
+    const _STATUS = 'status';
+    const _LOGIN = 'login';
+    const _TOKEN = 'token';
     const USERS_STATUS_VALID = 'valid';
     const USERS_STATUS_WAITING = 'waiting';
 

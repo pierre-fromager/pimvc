@@ -13,16 +13,16 @@ use \Pimvc\Db\Model\Orm;
 class Users extends Orm implements Interfaces\Users
 {
     protected $_name = 'user';
-    protected $_primary = self::PARAM_ID;
+    protected $_primary = self::_ID;
     protected $_alias = 'users';
     protected $_adapter = self::MODEL_ADAPTER_MYSQL;
     protected $userInfoFields = [
-        self::PARAM_ID
-        , self::PARAM_NAME
-        , self::PARAM_EMAIL
-        , self::PARAM_PASSWORD
-        , self::PARAM_PROFIL
-        , self::PARAM_STATUS
+        self::_ID
+        , self::_NAME
+        , self::_EMAIL
+        , self::_PASSWORD
+        , self::_PROFIL
+        , self::_STATUS
     ];
 
     /**
@@ -46,14 +46,14 @@ class Users extends Orm implements Interfaces\Users
     public function getAuth($login, $password)
     {
         $what = [
-            self::PARAM_ID, self::PARAM_FID, self::PARAM_EMAIL,
-            self::PARAM_LOGIN, self::PARAM_PASSWORD, self::PARAM_NAME,
-            self::PARAM_PROFIL, self::PARAM_STATUS, self::PARAM_TOKEN
+            self::_ID, self::_FID, self::_EMAIL,
+            self::_LOGIN, self::_PASSWORD, self::_NAME,
+            self::_PROFIL, self::_STATUS, self::_TOKEN
         ];
         $where = [
-            self::PARAM_LOGIN => $login
-            , self::PARAM_PASSWORD => $password
-            , self::PARAM_STATUS.'#'.'in' => "('valid','waiting')" // Allow both waiting and valid users to login
+            self::_LOGIN => $login
+            , self::_PASSWORD => $password
+            , self::_STATUS . '#' . 'in' => "('valid','waiting')" // Allow both waiting and valid users to login
         ];
         $this->cleanRowset();
         $this->find($what, $where);
@@ -68,12 +68,12 @@ class Users extends Orm implements Interfaces\Users
     public function getPro()
     {
         $what = [
-            self::PARAM_ID, self::PARAM_FID, self::PARAM_NAME, 'photo'
-            , 'adresse', 'gsm', self::PARAM_EMAIL
+            self::_ID, self::_FID, self::_NAME, 'photo'
+            , 'adresse', 'gsm', self::_EMAIL
             , 'cp', 'ville', 'site'
         ];
-        $where = [self::PARAM_PROFIL => 'pro'];
-        $order = [self::PARAM_FID => 'asc'];
+        $where = [self::_PROFIL => 'pro'];
+        $order = [self::_FID => 'asc'];
         $this->cleanRowset();
         $this->find($what, $where, $order);
         $results = $this->getRowsetAsArray();
@@ -101,7 +101,7 @@ class Users extends Orm implements Interfaces\Users
      */
     public function getAll()
     {
-        $this->find(['*'], [self::PARAM_ID => '%'], [self::PARAM_ID => 'asc']);
+        $this->find(['*'], [self::_ID => '%'], [self::_ID => 'asc']);
         return $this->getRowsetAsArray();
     }
 
@@ -115,7 +115,7 @@ class Users extends Orm implements Interfaces\Users
     public function getById($id, $what = ['*'])
     {
         $this->cleanRowset();
-        $this->find($what, [self::PARAM_ID => $id]);
+        $this->find($what, [self::_ID => $id]);
         return $this->_current;
     }
 
@@ -147,7 +147,7 @@ class Users extends Orm implements Interfaces\Users
      */
     private function getByStatus($status, $what = ['*'])
     {
-        return $this->find($what, [self::PARAM_STATUS => $status])->getRowsetAsArray();
+        return $this->find($what, [self::_STATUS => $status])->getRowsetAsArray();
     }
 
     /**
@@ -157,7 +157,7 @@ class Users extends Orm implements Interfaces\Users
      */
     public function count()
     {
-        $this->find([self::PARAM_ID]);
+        $this->find([self::_ID]);
         return count($this->getRowsetAsArray());
     }
 
@@ -170,9 +170,9 @@ class Users extends Orm implements Interfaces\Users
     public function getList($name)
     {
         return $this->find(
-            [self::PARAM_ID, self::PARAM_NAME],
-            [self::PARAM_NAME => '%' . $name . '%'],
-            [self::PARAM_ID => 'desc']
+            [self::_ID, self::_NAME],
+            [self::_NAME => '%' . $name . '%'],
+            [self::_ID => 'desc']
         )->getRowsetAsArray();
     }
 
@@ -207,11 +207,11 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         $this->find(
-            [self::PARAM_ID],
-            [self::PARAM_LOGIN => $login],
-            [self::PARAM_ID => 'desc'],
+            [self::_ID],
+            [self::_LOGIN => $login],
+            [self::_ID => 'desc'],
             [],
-            self::PARAM_LOGIN
+            self::_LOGIN
         );
         return (count($this->getRowset()) > 0);
     }
@@ -226,7 +226,7 @@ class Users extends Orm implements Interfaces\Users
     public function getByEmail($email, $what = ['*'])
     {
         $this->cleanRowset();
-        $this->find($what, [self::PARAM_EMAIL => $email]);
+        $this->find($what, [self::_EMAIL => $email]);
         $result = $this->getCurrent();
         $result = (isset($result->email)) ? $result : [];
         return $result;
@@ -255,8 +255,8 @@ class Users extends Orm implements Interfaces\Users
         $returnCode = false;
         if (!empty($id) && !empty($status)) {
             $this->cleanRowset();
-            $this->setWhere([self::PARAM_ID => $id]);
-            $datas = [self::PARAM_STATUS => $status];
+            $this->setWhere([self::_ID => $id]);
+            $datas = [self::_STATUS => $status];
             $returnCode = $this->update($datas);
         }
         return $returnCode;
@@ -273,11 +273,11 @@ class Users extends Orm implements Interfaces\Users
         $result = false;
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_EMAIL],
-            [self::PARAM_PROFIL => $profil],
-            [self::PARAM_ID => 'desc'],
+            [self::_EMAIL],
+            [self::_PROFIL => $profil],
+            [self::_ID => 'desc'],
             [],
-            self::PARAM_EMAIL
+            self::_EMAIL
         )->getRowsetAsArray();
     }
 
@@ -292,8 +292,8 @@ class Users extends Orm implements Interfaces\Users
         $results = [];
         $result = $this->countEmailsByProfil($profil);
         foreach ($result as $item) {
-            if (!empty($item[self::PARAM_EMAIL])) {
-                $results[] = strtolower($item[self::PARAM_EMAIL]);
+            if (!empty($item[self::_EMAIL])) {
+                $results[] = strtolower($item[self::_EMAIL]);
             }
         }
         unset($result);
@@ -310,7 +310,7 @@ class Users extends Orm implements Interfaces\Users
     {
         $isValid = false;
         if (!empty($uid)) {
-            $counter = $this->counter([self::PARAM_ID => $uid, self::PARAM_STATUS => 'valid']);
+            $counter = $this->counter([self::_ID => $uid, self::_STATUS => 'valid']);
             $isValid = ($counter > 1);
         }
         return $counter;
@@ -326,7 +326,7 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         $what = [];
-        $where = [self::PARAM_ID => $uid];
+        $where = [self::_ID => $uid];
         $this->find($what, $where);
         $dateToday = new \DateTime(date('Y-m-d H:i:s'));
         $dateEnd = new \DateTime($this->_current->dateexp);
@@ -356,7 +356,7 @@ class Users extends Orm implements Interfaces\Users
     {
         $result = false;
         if (!empty($uid)) {
-            $criterias = [self::PARAM_ID => $uid];
+            $criterias = [self::_ID => $uid];
             $this->cleanRowset();
             $this->find([], $criterias);
             $domainObject = $this->getCurrent();
@@ -440,7 +440,7 @@ class Users extends Orm implements Interfaces\Users
         return $this->find(
             ['offer'],
             ['offer' . '#' . 'in' => '("demo","liberte","premium","classique")'],
-            [self::PARAM_ID => 'desc'],
+            [self::_ID => 'desc'],
             [15],
             'offer'
         )->getRowsetAsArray();
@@ -456,11 +456,11 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_PROFIL],
+            [self::_PROFIL],
             ['profil#in' => '("admin","user")'],
-            [self::PARAM_ID => 'desc'],
+            [self::_ID => 'desc'],
             [15],
-            self::PARAM_PROFIL
+            self::_PROFIL
         )->getRowsetAsArray();
     }
 
@@ -474,11 +474,11 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_STATUS],
-            [self::PARAM_STATUS . '#' . 'in' => '("valid","waiting")'],
-            [self::PARAM_ID => 'desc'],
+            [self::_STATUS],
+            [self::_STATUS . '#' . 'in' => '("valid","waiting")'],
+            [self::_ID => 'desc'],
             [15],
-            self::PARAM_STATUS
+            self::_STATUS
         )->getRowsetAsArray();
     }
 
@@ -494,7 +494,7 @@ class Users extends Orm implements Interfaces\Users
         return $this->find(
             ['country'],
             [],
-            [self::PARAM_ID => 'desc'],
+            [self::_ID => 'desc'],
             [15],
             'country'
         )->getRowsetAsArray();
@@ -507,7 +507,7 @@ class Users extends Orm implements Interfaces\Users
     public function updateIp()
     {
         $this->cleanRowset();
-        $id = \Pimvc\App::getInstance()->getRequest()->getSession(self::PARAM_ID);
+        $id = \Pimvc\App::getInstance()->getRequest()->getSession(self::_ID);
         $user = $this->getById($id);
         $user->ip = $_SERVER['REMOTE_ADDR'];
         $this->save($user);
@@ -522,11 +522,11 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         $this->find(
-            [self::PARAM_IP],
-            [self::PARAM_IP . '#' . '!=' => ' '],
-            [self::PARAM_ID => 'desc'],
+            [self::_IP],
+            [self::_IP . '#' . '!=' => ' '],
+            [self::_ID => 'desc'],
             [],
-            self::PARAM_IP
+            self::_IP
         );
         return $this->getRowsetAsArray();
     }
@@ -541,8 +541,8 @@ class Users extends Orm implements Interfaces\Users
     {
         $this->cleanRowset();
         return $this->find(
-            [self::PARAM_ID, self::PARAM_NAME],
-            [self::PARAM_ID . '#' . 'in' => "('" . implode("','", $in) . "')"]
+            [self::_ID, self::_NAME],
+            [self::_ID . '#' . 'in' => "('" . implode("','", $in) . "')"]
         )->getRowsetAsArray();
     }
 
@@ -557,7 +557,7 @@ class Users extends Orm implements Interfaces\Users
         $this->cleanRowset();
         $this->find(
             $this->userInfoFields,
-            [self::PARAM_TOKEN => $token, self::PARAM_STATUS => 'valid']
+            [self::_TOKEN => $token, self::_STATUS => 'valid']
         );
         return $this->getRowsetAsArray();
     }

@@ -55,6 +55,7 @@ class Form implements Interfaces\Form
     protected $buttons = [];
     protected $sections = [];
     protected $isPost = false;
+    protected $searchWrapperTitle = self::SEARCH_WRAPPER_TITLE;
 
     /**
      * __construct
@@ -1900,7 +1901,7 @@ class Form implements Interfaces\Form
             ? $content
             : '<div id="criteriaFilterWrapper" class="row-fluid">'
             . '<span id="criteriaFilter" onclick="' . $script . '">'
-            . 'Critères'
+            . $this->searchWrapperTitle
             . '<i id="iconCriteria" class="glyphicon glyphicon-chevron-down"> </i>'
             . '</span>' . PHP_EOL
             . '<div id="' . $advancedId . '" style="display:none">'
@@ -1908,6 +1909,18 @@ class Form implements Interfaces\Form
             . '</div>'
             . '</div>';
         return $wrapper;
+    }
+
+    /**
+     * setSearchWrapperTitle
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setSearchWrapperTitle(string $title)
+    {
+        $this->searchWrapperTitle = ucfirst($title);
+        return $this;
     }
 
     /**
