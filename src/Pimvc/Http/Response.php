@@ -32,26 +32,17 @@ class Response implements Interfaces\Response
     /**
      * setHeaders
      *
+     * @param array $headers
      * @return $this
      */
-    private function setHeaders()
+    public function setHeaders(array $headers = [])
     {
-        $this->headers[] = self::HTTP_1 . $this->httpCodes[$this->httpCode];
-        $this->headers[] = self::HEADER_CACHE_CONTROL;
-        $this->headers[] = self::HEADER_CACHE_EXPIRE;
-        $this->headers[] = $this->getContentType($this->type);
+        if ($headers) {
+            $this->headers = $headers;
+        } else {
+            $this->setDefaultHeaders();
+        }
         return $this;
-    }
-    
-    /**
-     * getContentType
-     *
-     * @param string $type
-     * @return string
-     */
-    private function getContentType($type)
-    {
-        return self::CONTENT_TYPE . $type;
     }
 
     /**
@@ -173,5 +164,28 @@ class Response implements Interfaces\Response
         if ($andDie) {
             die;
         }
+    }
+
+    /**
+     * setDefaultHeaders
+     *
+     */
+    private function setDefaultHeaders()
+    {
+        $this->headers[] = self::HTTP_1 . $this->httpCodes[$this->httpCode];
+        $this->headers[] = self::HEADER_CACHE_CONTROL;
+        $this->headers[] = self::HEADER_CACHE_EXPIRE;
+        $this->headers[] = $this->getContentType($this->type);
+    }
+
+    /**
+     * getContentType
+     *
+     * @param string $type
+     * @return string
+     */
+    private function getContentType($type)
+    {
+        return self::CONTENT_TYPE . $type;
     }
 }

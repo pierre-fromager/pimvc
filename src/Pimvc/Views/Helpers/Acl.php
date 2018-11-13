@@ -113,34 +113,35 @@ class Acl
         return array_combine($keys, $array);
     }
 
-    /**
+      /**
      * getScript provides async acl features script
      *
      * @return string
      */
     protected function getScript()
     {
-        $script = '<script type="text/javascript">' . self::CR;
-        $script .= "var targetId = '';" . self::CR;
-        $script .= "var aclId = '';" . self::CR;
-        $script .= '$(document).ready(function() {' . self::CR;
-        $script .= '    $(".controler_header,.action_header").click(function() {' . self::CR;
-        $script .= '        $(this).toggleClass(\'active\');' . self::CR;
-        $script .= '        $(this).toggleClass(\'inactive\');' . self::CR;
-        $script .= '        targetId = $(this).attr(\'id\') + \'_content\';' . self::CR;
-        $script .= '        $(\'#\' + targetId).toggle();' . self::CR;
-        $script .= '    });' . self::CR;
-        $script .= '    $(".role_header").click(function() {' . self::CR;
-        $script .= '        aclId = $(this).attr(\'id\');' . self::CR;
-        $script .= '        $.get("' . $this->toggleUrl . '", { id : aclId },' . self::CR;
-        $script .= '        function(data){' . self::CR;
-        $script .= '            $(\'#link\' + aclId).removeClass(data.acl_disable);' . self::CR;
-        $script .= '            $(\'#link\' + aclId).addClass(data.acl_enable);' . self::CR;
-        $script .= '        });' . self::CR;
-        $script .= '    });' . self::CR;
-        $script .= '});' . self::CR;
-        $script .= '</script>' . self::CR;
-        return $script;
+        $script = [];
+        $script[] = '<script type="text/javascript">';
+        $script[] = "var targetId = '';";
+        $script[] = "var aclId = '';";
+        $script[] = '$(document).ready(function() {';
+        $script[] = '    $(".controler_header,.action_header").click(function() {';
+        $script[] = '        $(this).toggleClass(\'active\');';
+        $script[] = '        $(this).toggleClass(\'inactive\');';
+        $script[] = '        targetId = $(this).attr(\'id\') + \'_content\';';
+        $script[] = '        $(\'#\' + targetId).toggle();';
+        $script[] = '    });';
+        $script[] = '    $(".role_header").click(function() {';
+        $script[] = '        aclId = $(this).attr(\'id\');';
+        $script[] = '        $.get("' . $this->toggleUrl . '", { id : aclId },';
+        $script[] = '        function(data){';
+        $script[] = '            $(\'#link\' + aclId).removeClass(data.acl_disable);';
+        $script[] = '            $(\'#link\' + aclId).addClass(data.acl_enable);';
+        $script[] = '        });';
+        $script[] = '    });';
+        $script[] = '});';
+        $script[] = '</script>';
+        return implode(self::CR, $script);
     }
 
     /**

@@ -34,6 +34,8 @@ interface Response
             
     public function setContent($content);
 
+    public function setHeaders(array $headers = []);
+
     public function setHttpCode($code);
 
     public function setType($type = null);
