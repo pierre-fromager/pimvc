@@ -854,7 +854,7 @@ class Form implements Interfaces\Form
     }
 
     /**
-     * Boutton de soumission du formulaire
+     * Button Submit
      *
      * @param string $label
      */
@@ -872,7 +872,7 @@ class Form implements Interfaces\Form
     }
 
     /**
-     * Boutton de nettoyage du formulaire
+     * Button Reset
      *
      * @param string $label
      */
@@ -881,7 +881,7 @@ class Form implements Interfaces\Form
         if ($this->mode == 'readonly') {
             return '';
         }
-        return new Decorator('div', '', [
+        return new Decorator('input', '', [
             'class' => 'btn btn-default form-reset right',
             'type' => 'reset',
             'value' => $label
