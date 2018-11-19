@@ -161,7 +161,7 @@ class Form implements Interfaces\Form
     {
         if (!empty($fields) && !self::isAssoc($fields)) {
             $fields = array_map(
-                array(__CLASS__, 'formatFieldsCallback'),
+                [__CLASS__, 'formatFieldsCallback'],
                 $fields
             );
         }
@@ -234,6 +234,13 @@ class Form implements Interfaces\Form
         $this->buttons[$name] = $options;
     }
     
+    /**
+     * addSection
+     *
+     * @param type $startField
+     * @param type $stopField
+     * @param type $param
+     */
     public function addSection($startField, $stopField, $param = [])
     {
         $name = 'section_' . $startField . '___' . $stopField . '_';
@@ -245,6 +252,13 @@ class Form implements Interfaces\Form
         );
     }
     
+    /**
+     * getSection
+     *
+     * @param type $fieldName
+     * @param type $mode
+     * @return string
+     */
     public function getSection($fieldName, $mode = 'start')
     {
         $section = '';
@@ -367,11 +381,11 @@ class Form implements Interfaces\Form
         $wrapperClass = (isset($this->wrapperClasses[$name]))
             ? $this->wrapperClasses[$name]
             : 'form-element-wrapper ' . $this->fieldsAlign;
-        $wrapperOptions = array(
+        $wrapperOptions = [
             'id' => 'element-wrapper-' . $name
             , 'class' => $wrapperClass
-        );
-        return (string) new decorator(
+        ];
+        return (string) new Decorator(
             'div',
             $content,
             $wrapperOptions
@@ -846,21 +860,17 @@ class Form implements Interfaces\Form
      */
     protected function submit($label)
     {
-        $submitOptions = array(
+        if ($this->mode == 'readonly') {
+            return '';
+        }
+        return new Decorator('input', '', [
             'id' => 'submit-' . $this->name
             , 'class' => 'btn btn-success btn-right form-submit'
             , 'type' => 'submit'
             , 'value' => $label
-                
-        );
-        $submit = (string) new decorator(
-            'input',
-            '',
-            $submitOptions
-        );
-        return ($this->mode !=  'readonly') ? $submit : '';
+        ]);
     }
-    
+
     /**
      * Boutton de nettoyage du formulaire
      *
@@ -868,8 +878,14 @@ class Form implements Interfaces\Form
      */
     protected function clean($label)
     {
-        $clean = '<input class="btn btn-default form-reset right" type="reset" value="' . $label . '"/>';
-        return ($this->mode != 'readonly') ? $clean : '';
+        if ($this->mode == 'readonly') {
+            return '';
+        }
+        return new Decorator('div', '', [
+            'class' => 'btn btn-default form-reset right',
+            'type' => 'reset',
+            'value' => $label
+        ]);
     }
 
     /**
@@ -1436,7 +1452,7 @@ class Form implements Interfaces\Form
                     $initialValue = $value;
                     $validatorParams[] = $expl[1];
                 }
-                $callBack = array(self::FORM_VALIDATOR_CLASS, $value);
+                $callBack = [self::FORM_VALIDATOR_CLASS, $value];
                 $initialValue = $validatorParams[0];
                 $initialLength = (is_array($initialValue))
                     ? count($initialValue)
@@ -1926,17 +1942,19 @@ class Form implements Interfaces\Form
     /**
      * setEnableResetButton
      *
-     * @param boolean $enable
+     * @param bool $enable
+     * @return $this
      */
     public function setEnableResetButton($enable)
     {
         $this->enableResetButton = $enable;
+        return $this;
     }
 
     /**
      * getFormWrapper
      *
-     * @param type $param
+     * @param string $content
      */
     private function getFormWrapper($content)
     {
