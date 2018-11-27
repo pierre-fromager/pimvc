@@ -1,11 +1,9 @@
 <?php
-
 /**
  * Description of basicInterface
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 interface Basic extends View
@@ -17,5 +15,5 @@ interface Basic extends View
      * @param \Pimvc\App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = []);
+    public function __construct(\Pimvc\App $app, array $params = []);
 }

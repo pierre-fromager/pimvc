@@ -1,11 +1,9 @@
 <?php
-
 /**
  * Description of requestInterface
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 interface Request extends Base
@@ -17,7 +15,7 @@ interface Request extends Base
      * @param \Pimvc\App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = []);
+    public function __construct(\Pimvc\App $app, array $params = []);
 
     /**
      * getParams

@@ -1,15 +1,14 @@
 <?php
-
 /**
  * Description of Pimvc\Interfaces\Controller
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Interfaces;
 
 interface Controller
 {
+
     const ERROR = 'error';
     const _NAMESPACE = 'Controller';
     const DEFAULT_CONTROLER = 'Home';
@@ -32,7 +31,7 @@ interface Controller
 
     public function getPath();
 
-    public function check($className);
+    public function check($className): bool;
 
     public function setDefault();
 
@@ -41,4 +40,10 @@ interface Controller
     public function dispatch();
 
     public function getParams($key = '');
+
+    public function getControlerClass(): string;
+
+    public function getAction(): string;
+
+    public function setForbidden();
 }

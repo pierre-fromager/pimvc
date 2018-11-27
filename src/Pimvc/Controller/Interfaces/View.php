@@ -1,15 +1,14 @@
 <?php
-
 /**
  * Description of basicInterface
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 interface View extends Response
 {
+
     const VIEW_PATH = '/Views/';
 
     /**
@@ -18,13 +17,13 @@ interface View extends Response
      * @param \Pimvc\App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = []);
- 
+    public function __construct(\Pimvc\App $app, array $params = []);
+
     /**
      * getView
      *
      * @param array $params
      * @param string $viewPath
      */
-    public function getView($params, $viewPath);
+    public function getView(array $params, string $viewPath);
 }

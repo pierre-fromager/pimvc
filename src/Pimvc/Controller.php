@@ -105,15 +105,16 @@ class Controller implements Interfaces\Controller
     public function getPath()
     {
         return $this->app->path . self::_NAMESPACE . DIRECTORY_SEPARATOR
-            . str_replace('\\', '/', $this->name) . self::PHP_EXT;
+            . str_replace(self::BACKSLASH, '/', $this->name) . self::PHP_EXT;
     }
 
     /**
      * check
      *
-     * @param string $className
+     * @param type $className
+     * @return bool
      */
-    public function check($className)
+    public function check($className): bool
     {
         $passed = true;
         if (!$this->isError() && $fileExist = file_exists($this->getPath())) {
@@ -214,12 +215,12 @@ class Controller implements Interfaces\Controller
     /**
      * getModuleControllerNs
      *
-     * @return boolean
+     * @return string
      */
-    private function getModuleControllerNs()
+    private function getModuleControllerNs(): string
     {
         $parts =  array_map('ucfirst', explode('/', $this->name));
-        $ctrlNs = implode('\\', $parts);
+        $ctrlNs = implode(self::BACKSLASH, $parts);
         return $ctrlNs;
     }
 
@@ -257,9 +258,19 @@ class Controller implements Interfaces\Controller
      *
      * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
+    }
+
+    /**
+     * getControlerClass
+     *
+     * @return string
+     */
+    public function getControlerClass(): string
+    {
+        return static::class;
     }
 
     /**

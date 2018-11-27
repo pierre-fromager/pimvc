@@ -1,46 +1,41 @@
 <?php
-
 /**
- * Description of Response Controller
+ * Description of Pimvc\Controller\Response
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller;
-
-use Pimvc\App;
-use Pimvc\Http\Response as httpResponse;
 
 abstract class Response extends Request implements Interfaces\Response
 {
-    
+
     /**
      * __construct
      *
      * @param App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = [])
+    public function __construct(\Pimvc\App $app, array $params = [])
     {
         parent::__construct($app, $params);
     }
-    
+
     /**
      * redirect
      *
      * @param string $url
-     * @return Pimvc\Http\Response
+     * @return \Pimvc\Http\Response
      */
     public function redirect($url)
     {
         return $this->getApp()
-            ->getResponse()
-            ->setContent('')
-            ->setType(httpResponse::TYPE_HTML)
-            ->setHttpCode(302)
-            ->redirect($url);
+                ->getResponse()
+                ->setContent('')
+                ->setType(\Pimvc\Http\Response::TYPE_HTML)
+                ->setHttpCode(302)
+                ->redirect($url);
     }
-       
+
     /**
      * getHtmlResponse
      *
@@ -55,7 +50,7 @@ abstract class Response extends Request implements Interfaces\Response
         $response = $this->getApp()
             ->getResponse()
             ->setContent($view)
-            ->setType(httpResponse::TYPE_HTML)
+            ->setType(\Pimvc\Http\Response::TYPE_HTML)
             ->setHttpCode($httpCode);
         if ($cookieName && $cookieValue) {
             $response->withCookie($cookieName, $cookieValue);
@@ -73,9 +68,9 @@ abstract class Response extends Request implements Interfaces\Response
     public function getJsonResponse($content, $httpCode = 200)
     {
         return $this->getApp()
-            ->getResponse()
-            ->setContent($content)
-            ->setType(httpResponse::TYPE_JSON)
-            ->setHttpCode($httpCode);
+                ->getResponse()
+                ->setContent($content)
+                ->setType(\Pimvc\Http\Response::TYPE_JSON)
+                ->setHttpCode($httpCode);
     }
 }

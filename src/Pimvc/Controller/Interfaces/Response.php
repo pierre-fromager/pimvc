@@ -1,11 +1,9 @@
 <?php
-
 /**
  * Description of basicInterface
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 use Pimvc\App;
@@ -19,7 +17,7 @@ interface Response extends Request
      * @param \Pimvc\App $app
      * @param array $params
      */
-    public function __construct(App $app, $params = []);
+    public function __construct(App $app, array $params = []);
 
     /**
      * redirect
@@ -27,7 +25,7 @@ interface Response extends Request
      * @param string $url
      */
     public function redirect($url);
-    
+
     /**
      * getHtmlResponse
      *

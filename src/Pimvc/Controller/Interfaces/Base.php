@@ -1,12 +1,9 @@
 <?php
-
-
 /**
  * Description of Base
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 interface Base

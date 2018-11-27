@@ -1,17 +1,14 @@
 <?php
-
 /**
  * Description of Controller\Request : level 0
  *
  * @author Pierre Fromager
  */
-
 namespace Pimvc\Controller;
-
-use Pimvc\App;
 
 abstract class Request extends Base implements Interfaces\Request
 {
+
     private $params;
 
     /**
@@ -20,7 +17,7 @@ abstract class Request extends Base implements Interfaces\Request
      * @param App $app
      * @param array $params
      */
-    public function __construct(\Pimvc\App $app, $params = [])
+    public function __construct(\Pimvc\App $app, array $params = [])
     {
         parent::__construct($app);
         $this->params = array_merge(
@@ -29,7 +26,7 @@ abstract class Request extends Base implements Interfaces\Request
         );
         $this->init();
     }
-    
+
     /**
      * init
      *
@@ -38,7 +35,6 @@ abstract class Request extends Base implements Interfaces\Request
     {
     }
 
-           
     /**
      * getParams
      *
@@ -46,11 +42,9 @@ abstract class Request extends Base implements Interfaces\Request
      */
     public function getParams($key = '')
     {
-        return ($key)
-            ? isset($this->params[$key]) ? $this->params[$key] : ''
-            : $this->params;
+        return ($key) ? isset($this->params[$key]) ? $this->params[$key] : '' : $this->params;
     }
-    
+
     /**
      * hasValue
      *
@@ -61,7 +55,7 @@ abstract class Request extends Base implements Interfaces\Request
     {
         return isset($this->params[$param]);
     }
-    
+
     /**
      * forward
      *
@@ -72,14 +66,10 @@ abstract class Request extends Base implements Interfaces\Request
      */
     public function forward($controller = '', $action = '', $params = [])
     {
-        $runningController = ($controller)
-            ? new $controller($this->getApp(), $params)
-            : $this;
-        return ($action && method_exists($runningController, $action))
-            ? call_user_func_array(
-                [$runningController, $action],
-                $params
-            )
-            : null;
+        $runningController = ($controller) ? new $controller($this->getApp(), $params) : $this;
+        return ($action && method_exists($runningController, $action)) ? call_user_func_array(
+            [$runningController, $action],
+            $params
+        ) : null;
     }
 }

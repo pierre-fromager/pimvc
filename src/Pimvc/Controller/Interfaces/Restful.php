@@ -1,11 +1,9 @@
 <?php
-
 /**
  * Description of Pimvc\Controller\Interfaces\Restful
  *
  * @author pierrefromager
  */
-
 namespace Pimvc\Controller\Interfaces;
 
 interface Restful
