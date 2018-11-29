@@ -45,6 +45,7 @@ class Liste implements Interfaces\Liste
     private $actionPrefix;
     private $actionSuffix;
     private $baseUrl;
+    private $tableId;
 
     /**
      * @see __construct
@@ -113,11 +114,31 @@ class Liste implements Interfaces\Liste
         if ($this->modelName) {
             $this->_model->setCasts($this->casts);
             $this->setData();
+            $this->setTableId();
         }
 
         return $this;
     }
-    
+
+    /**
+     * setTableId
+     *
+     * @param string $id
+     * @return $this
+     */
+    public function setTableId(string $id = '')
+    {
+        $modelNameId = '';
+        if (!$id) {
+            $isOrmInstance = $this->modelName instanceof \Pimvc\Db\Model\Orm;
+            $modelNameId = ($isOrmInstance) ? $this->modelName->getName() : $this->modelName;
+        } else {
+            $modelNameId = $id;
+        }
+        $this->tableId = self::TABLE_ID_PREFIX . md5($modelNameId);
+        return $this;
+    }
+
     /**
      * setActionPrefix
      *
@@ -430,9 +451,9 @@ class Liste implements Interfaces\Liste
             , 'table-stripped'
             , 'col-sm-12'
         ];
-        $modelName = is_string($this->modelName) ? $this->modelName : get_class($this->modelName);
+        //$modelName = is_string($this->modelName) ? $this->modelName : get_class($this->modelName);
         $tableOptions = [
-            self::PARAM_ID => 'table_' . md5($modelName)
+            self::PARAM_ID => $this->tableId
             , 'class' => implode(' ', $defaultClasses)
         ];
         $table = (string) new Html\Element\Decorator(

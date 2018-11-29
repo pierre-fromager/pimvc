@@ -23,6 +23,7 @@ interface Liste
     const PARAM_ORDER = 'order';
     const PARAM_K_ORDER = 'keyOrder';
     const PARAM_CASTS = 'casts';
+    const TABLE_ID_PREFIX = 'table_';
 
     public function __construct(
         $modelName,
