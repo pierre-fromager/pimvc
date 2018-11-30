@@ -189,7 +189,7 @@ class Request implements \Pimvc\Http\Interfaces\Request
                 $this->request = &$_GET;
                 break;
             case self::REQUEST_METHOD_POST:
-                $this->request = &$_POST;
+                $this->request = ($this->isJsonAppContentType()) ? $this->getInput() : $_POST;
                 break;
             case self::REQUEST_METHOD_PUT:
             case self::REQUEST_METHOD_PATCH:
@@ -232,6 +232,16 @@ class Request implements \Pimvc\Http\Interfaces\Request
     }
 
     /**
+     * isJsonAppContentType
+     *
+     * @return bool
+     */
+    private function isJsonAppContentType(): bool
+    {
+        return (strtolower($this->contentType()) === self::HEADER_CONTENT_TYPE_JSON);
+    }
+
+    /**
      * isJson
      *
      * @param type $string
@@ -239,7 +249,7 @@ class Request implements \Pimvc\Http\Interfaces\Request
      */
     private function isJson($string)
     {
-        if (!($this->contentType() === self::HEADER_CONTENT_TYPE_JSON)) {
+        if (!$this->isJsonAppContentType()) {
             return false;
         }
         json_decode($string);
