@@ -73,6 +73,16 @@ class Controller implements Interfaces\Controller
         $this->name = $name;
         return $this;
     }
+   
+    /**
+     * getName
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * setAction
