@@ -551,8 +551,8 @@ class Field
      */
     private function computedIsNumeric(): bool
     {
-        $isNumeric = array_filter($this->stack, self::_IS_NUMERIC);
-        echo '<pre>' . print_r([$this->name, $isNumeric, $this->count], true) . '</pre>';
+        //$isNumeric = array_filter($this->stack, self::_IS_NUMERIC);
+        //echo '<pre>' . print_r([$this->name, $isNumeric, $this->count], true) . '</pre>';
         return (count(array_filter($this->stack, self::_IS_NUMERIC)) === $this->count);
     }
 
