@@ -31,6 +31,12 @@ class Field
     protected $name;
 
     /**
+     * $decimalSeparator
+     * @var string
+     */
+    protected $decimalSeparator;
+
+    /**
      * $maxLen
      * @var int
      */
@@ -160,7 +166,7 @@ class Field
     /**
      * getName
      *
-     * @return bool
+     * @return string
      */
     public function getName(): string
     {
@@ -168,11 +174,21 @@ class Field
     }
 
     /**
+     * getDecimalSeparator
+     *
+     * @return string
+     */
+    public function getDecimalSeparator(): string
+    {
+        return $this->decimalSeparator;
+    }
+
+    /**
      * getIsString
      *
      * @return bool
      */
-    public function getIsString(): string
+    public function getIsString(): bool
     {
         return $this->isString;
     }
@@ -264,6 +280,7 @@ class Field
             'isInt' => $this->isInt,
             'isString' => $this->isString,
             'maxLen' => $this->maxLen,
+            'decimalSeparator' => $this->decimalSeparator
         ];
     }
 
@@ -276,6 +293,18 @@ class Field
     public function setName(string $name): Field
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * setDecimalSeparator
+     *
+     * @param string $separator
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setDecimalSeparator(string $separator): Field
+    {
+        $this->decimalSeparator = $separator;
         return $this;
     }
 
@@ -499,7 +528,9 @@ class Field
         $this->count = count($datas);
         $this->stack = [];
         for ($c = 0; $c < $this->count; ++$c) {
-            $this->stack[] = ($fieldName) ? $datas[$c][$fieldName] : $datas[$c];
+            if (isset($datas[$c][$fieldName])) {
+                $this->stack[] = $datas[$c][$fieldName];
+            }
         }
     }
 
@@ -520,6 +551,8 @@ class Field
      */
     private function computedIsNumeric(): bool
     {
+        $isNumeric = array_filter($this->stack, self::_IS_NUMERIC);
+        echo '<pre>' . print_r([$this->name, $isNumeric, $this->count], true) . '</pre>';
         return (count(array_filter($this->stack, self::_IS_NUMERIC)) === $this->count);
     }
 

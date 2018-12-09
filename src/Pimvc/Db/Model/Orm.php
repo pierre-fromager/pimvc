@@ -28,7 +28,6 @@ abstract class Orm extends Core implements ormInterface
     public $_currentIndex = null;
     public $_count = null;
     protected $_metas = null;
-    
     protected $_columns = null;
     protected $_domain = null;
     protected $_domainSuffix = '';
@@ -1534,5 +1533,72 @@ abstract class Orm extends Core implements ormInterface
     {
         $this->_statement = $statement;
         return $this;
+    }
+
+    /**
+     * statementErrorPrepareChecking
+     *
+     */
+    protected function statementErrorPrepareChecking($sql)
+    {
+        if ($this->_statement === false) {
+            if ($this->_restMode) {
+                $this->_errorCode = 5000;
+                $this->_errorMessage = 'Statement prepare error';
+            } else {
+                echo '<p style="color:red;">Error prepare sql : '
+                . $sql
+                . '</p>';
+                die;
+            }
+        }
+    }
+
+    /**
+     * statementErrorBind
+     *
+     * @param \PDOException $exc
+     */
+    protected function statementErrorBind(\PDOException $exc, $queryType)
+    {
+
+        $this->_error = $this->_errorMessage = $exc->getMessage();
+        $this->_errorCode = $exc->getCode();
+        $this->_logger->logError(
+            'Sql Bind Error' . $queryType . ' ' . $exc->getMessage(),
+            $this->_statement->queryString
+        );
+        if (self::MODEL_DEBUG || !$this->_restMode) {
+            echo '<p style="color:red">Bind error : '
+            . $exc->getMessage()
+            . '</p>';
+            die;
+        }
+    }
+
+    /**
+     * statementErrorExecute
+     *
+     * @param \PDOException $exc
+     */
+    protected function statementErrorExecute(\PDOException $exc, $queryType)
+    {
+
+        $this->_error = $exc->getMessage();
+        $this->_errorCode = $exc->getCode();
+        $this->_errorMessage = $exc->getMessage();
+        $this->_logger->logError(
+            'Sql Execute Failed ' . $queryType . ' ' . $exc->getMessage(),
+            $this->_statement->queryString
+        );
+        $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
+        if ($isExecError) {
+            echo '<p style="color:red">Execute error : '
+            . $exc->getMessage() . ' EOPRUN1'
+            . '<hr>' . $this->getSql()
+            . '<hr>' . $exc->getTraceAsString()
+            . '</p>';
+            die;
+        }
     }
 }

@@ -6,7 +6,7 @@
  */
 namespace Pimvc\Db\Model;
 
-class Core implements Interfaces\Core
+abstract class Core implements Interfaces\Core
 {
 
     protected $_db;
@@ -73,25 +73,15 @@ class Core implements Interfaces\Core
      */
     public function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = [])
     {
-        $motif = '/_' . $this->_primary . '$|id|code/';
         foreach ($paArray as $k => $v) {
-            $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $type = (is_int($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
             if (isset($forcedTypes[$k])) {
                 $type = $forcedTypes[$k];
-            } else {
-                $type = (preg_match($motif, $k)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-                $type = (is_numeric($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
             }
-                $value = is_array($v) ? serialize($v) : $v;
-                $key = ':' . $k;
+            $value = is_array($v) ? serialize($v) : $v;
+            $key = ':' . $k;
             try {
                 $poStatement->bindValue($key, $value, $type);
-                if (self::MODEL_DEBUG) {
-                    $this->_logger->logDebug(
-                        'Bind key (' . $key . ')',
-                        'value (' . $value . ') and type (' . $type . ')'
-                    );
-                }
             } catch (\PDOException $exc) {
                 $this->_logger->logError(
                     'Sql Bind Error [' . $key . ':' . $value . ':' . $type . ']',
@@ -233,7 +223,7 @@ class Core implements Interfaces\Core
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
                 $shemaTables = $informationSchema . '.TABLES';
                 $condition = "($tableSchema = '$this->_schema') AND ($tableName = '$tablename')";
-                $sql = self::MODEL_SELECT . 'count(*)' . self::MODEL_FROM . $shemaTables .
+                $sql = self::MODEL_SELECT . '*' . self::MODEL_FROM . $shemaTables .
                     self::MODEL_WHERE . $condition;
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE:
@@ -394,64 +384,72 @@ class Core implements Interfaces\Core
      * statementErrorPrepareChecking
      *
      */
-    protected function statementErrorPrepareChecking($sql)
-    {
-        if ($this->_statement === false) {
-            if ($this->_restMode) {
-                $this->_errorCode = 5000;
-                $this->_errorMessage = 'Statement prepare error';
-            } else {
-                echo '<p style="color:red;">Error prepare sql : '
-                . $sql
-                . '</p>';
-                die;
-            }
-        }
-    }
+    abstract protected function statementErrorPrepareChecking($sql);
+    /*
+      {
+      if ($this->_statement === false) {
+      if ($this->_restMode) {
+      $this->_errorCode = 5000;
+      $this->_errorMessage = 'Statement prepare error';
+      } else {
+      echo '<p style="color:red;">Error prepare sql : '
+      . $sql
+      . '</p>';
+      die;
+      }
+      }
+      } */
 
     /**
      * statementErrorBind
      *
      * @param \PDOException $exc
      */
-    protected function statementErrorBind(\PDOException $exc, $queryType)
-    {
-        $this->_error = $this->_errorMessage = $exc->getMessage();
-        $this->_errorCode = $exc->getCode();
-        $this->_logger->logError(
-            'Sql Bind Error' . $queryType . ' ' . $exc->getMessage(),
-            $this->_statement->queryString
-        );
-        if (self::MODEL_DEBUG || !$this->_restMode) {
-            echo '<p style="color:red">Bind error : '
-            . $exc->getMessage()
-            . '</p>';
-            die;
-        }
-    }
+    abstract protected function statementErrorBind(\PDOException $exc, $queryType);
+    /*
+      {
+      throw new \PDOException($exc);
+      //\throwException($exc);
+      /*
+      $this->_error = $this->_errorMessage = $exc->getMessage();
+      $this->_errorCode = $exc->getCode();
+      $this->_logger->logError(
+      'Sql Bind Error' . $queryType . ' ' . $exc->getMessage(),
+      $this->_statement->queryString
+      );
+      if (self::MODEL_DEBUG || !$this->_restMode) {
+      echo '<p style="color:red">Bind error : '
+      . $exc->getMessage()
+      . '</p>';
+      die;
+      } */
+    //}
 
     /**
      * statementErrorExecute
      *
      * @param \PDOException $exc
      */
-    protected function statementErrorExecute(\PDOException $exc, $queryType)
-    {
-        $this->_error = $exc->getMessage();
-        $this->_errorCode = $exc->getCode();
-        $this->_errorMessage = $exc->getMessage();
-        $this->_logger->logError(
-            'Sql Execute Failed ' . $queryType . ' ' . $exc->getMessage(),
-            $this->_statement->queryString
-        );
-        $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
-        if ($isExecError) {
-            echo '<p style="color:red">Execute error : '
-            . $exc->getMessage() . ' EOPRUN1'
-            . '<hr>' . $this->getSql()
-            . '<hr>' . $exc->getTraceAsString()
-            . '</p>';
-            die;
-        }
-    }
+    abstract protected function statementErrorExecute(\PDOException $exc, $queryType);
+    /* {
+      throw new \PDOException($exc);
+      //\throwException($exc);
+      /*
+      $this->_error = $exc->getMessage();
+      $this->_errorCode = $exc->getCode();
+      $this->_errorMessage = $exc->getMessage();
+      $this->_logger->logError(
+      'Sql Execute Failed ' . $queryType . ' ' . $exc->getMessage(),
+      $this->_statement->queryString
+      );
+      $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
+      if ($isExecError) {
+      echo '<p style="color:red">Execute error : '
+      . $exc->getMessage() . ' EOPRUN1'
+      . '<hr>' . $this->getSql()
+      . '<hr>' . $exc->getTraceAsString()
+      . '</p>';
+      die;
+      } */
+    //}
 }

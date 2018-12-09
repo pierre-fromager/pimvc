@@ -211,7 +211,6 @@ class Parser
             $data = mb_convert_encoding($data, $charset, "auto");
             echo $data;
             die;
-            echo $data;
         }
         return $data;
     }

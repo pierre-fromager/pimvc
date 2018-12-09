@@ -17,6 +17,7 @@ class Forge extends dbCore implements Interfaces\Forge
     protected $dbConfig;
     protected $slot;
     protected $_adapter;
+    protected $_name;
 
     /**
      * __construct
@@ -96,20 +97,28 @@ class Forge extends dbCore implements Interfaces\Forge
     {
 
         if (count($headers) === count($datas)) {
-            $types = $this->getPdoTypes($tablename);
             $bindFields = array_map(function ($v) {
                 return ':' . $v;
             }, $headers);
+            foreach ($datas as $key => $value) {
+                $crocoma = str_replace(',', '.', $value);
+                $vv = (float) $crocoma;
+                $isFloat = ($crocoma == (string) $vv);
+                if ($isFloat) {
+                    $datas[$key] = $crocoma;
+                }
+                if (!is_numeric($value)) {
+                    $datas[$key] = $this->stringEscape($value);
+                }
+            }
             $statementBindings = array_combine($headers, $datas);
-            $bindTypes = array_map(function ($v) use ($types) {
-                return $types[$v];
-            }, $headers);
             $fields = $this->getParentheses($this->build($headers, ','));
             $values = $this->getParentheses($this->build($bindFields, ','));
+            $types = $this->getPdoTypes($tablename);
             $sql = $this->build(
                 [$this->insertInto($tablename), $fields, self::_VALUES, $values]
             );
-            $this->run($sql, $statementBindings, $bindTypes);
+            $this->run($sql, $statementBindings, $types);
             return true;
         }
         return false;
@@ -421,6 +430,19 @@ class Forge extends dbCore implements Interfaces\Forge
             }
         }
         return implode($glue, $parts);
+    }
+
+    /**
+     * stringEscape
+     *
+     * @param string $value
+     * @return string
+     */
+    private function stringEscape(string $value): string
+    {
+        $search = array("\\", "\x00", "\n", "\r", "'", '"', "\x1a");
+        $replace = array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z");
+        return str_replace($search, $replace, $value);
     }
 
     /**

@@ -9,22 +9,7 @@ namespace Pimvc\Helper\Db\Field\Name;
 class Normalize
 {
 
-    const REMOVABLE_CHARS = [' ', '_', '/', '\\', ';', ',', '"', "'"];
-    const _ANY_LATIN = 'Any-Latin';
-    const _LATIN_ASCII = 'Latin-ASCII';
-    const _NFD = 'NFD';
-    const _NON_SPACING_MARK = '[:Nonspacing Mark:] Remove';
-    const _LOWER = 'Lower()';
-    const _SC = ';';
-    const _DDOT = '::';
-    const TRANSFOS = [
-        self::_ANY_LATIN,
-        self::_LATIN_ASCII,
-        self::_NFD,
-        self::_NON_SPACING_MARK,
-        self::_LOWER,
-        self::_NFD
-    ];
+    const REMOVABLE_CHARS = [' ', '_', '/', '\\', ';', ',', '"', "'",];
 
     /**
      * normalizeFieldName
@@ -34,15 +19,11 @@ class Normalize
      */
     public static function normalizeFieldName(string $name): string
     {
-        $tr = \Transliterator::createFromRules(
-            self::getRulesTransfos(),
-            \Transliterator::FORWARD
-        );
         return strtolower(
             str_replace(
                 self::REMOVABLE_CHARS,
                 '',
-                $tr->transliterate($name)
+                iconv('UTF-8', 'ASCII//IGNORE', $name)
             )
         );
     }
@@ -60,19 +41,6 @@ class Normalize
         for ($c = 0; $c < $count; ++$c) {
             $fieldsName[] = self::normalizeFieldName($nameCollection[$c]);
         }
-
         return $fieldsName;
-    }
-
-    /**
-     * getRulesTransfos
-     *
-     * @return string
-     */
-    private static function getRulesTransfos()
-    {
-        return implode(' ', array_map(function ($v) {
-                return self::_DDOT . $v . self::_SC;
-        }, self::TRANSFOS));
     }
 }

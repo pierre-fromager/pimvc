@@ -24,7 +24,7 @@ abstract class Base implements Interfaces\Base
     /**
      * getApp
      *
-     * @return App
+     * @return \Pimvc\App
      */
     public function getApp()
     {
