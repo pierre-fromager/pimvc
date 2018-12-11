@@ -14,12 +14,14 @@ class Router implements Interfaces\Router
     private $server = null;
     private $routes = null;
     private $request = null;
-
+    
     /**
-     * __construct
      *
+     * @param \Pimvc\Http\Routes $routes
+     * @param \Pimvc\Http\Request $request
+     * @return \Pimvc\Http\Router
      */
-    public function __construct(Routes $routes, Request $request)
+    public function __construct(\Pimvc\Http\Routes $routes, \Pimvc\Http\Request $request)
     {
         $this->routes = $routes;
         $this->request = $request;
@@ -33,7 +35,7 @@ class Router implements Interfaces\Router
      *
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
@@ -43,7 +45,7 @@ class Router implements Interfaces\Router
      *
      * @return string
      */
-    public function setUri($uri = '')
+    public function setUri($uri = ''): \Pimvc\Http\Router
     {
         $this->uri = ($uri) ? $uri : substr($this->request->getUri(), 1);
         return $this;
@@ -54,7 +56,7 @@ class Router implements Interfaces\Router
      *
      * @return array
      */
-    public function getFragments()
+    public function getFragments(): array
     {
         return explode(self::URI_SEPARATOR, $this->getUri());
     }
@@ -64,7 +66,7 @@ class Router implements Interfaces\Router
      *
      * @return array
      */
-    public function compile()
+    public function compile(): array
     {
         $routes = $this->routes->getRoutes();
         $routesLength = sizeof($routes);
@@ -76,5 +78,6 @@ class Router implements Interfaces\Router
                 return $matches;
             }
         }
+        return [];
     }
 }

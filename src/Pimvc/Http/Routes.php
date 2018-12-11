@@ -44,7 +44,7 @@ class Routes implements Interfaces\Routes
     public function setRoutes($routes)
     {
         if (/*!$routes || */!is_array($routes)) {
-            throw new \Exception(self::BAD_ROUTE_COLLECTION);
+            //throw new \Exception(self::BAD_ROUTE_COLLECTION);
         }
         $this->routes = $routes;
         return $this;

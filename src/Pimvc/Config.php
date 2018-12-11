@@ -43,7 +43,7 @@ class Config implements \Pimvc\Interfaces\Config
      * @param string $path
      * @return $this
      */
-    public function setPath($path)
+    public function setPath(string $path): \Pimvc\Config
     {
         $this->path = $path;
         return $this;
@@ -54,7 +54,7 @@ class Config implements \Pimvc\Interfaces\Config
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -65,7 +65,7 @@ class Config implements \Pimvc\Interfaces\Config
      * @param string $key
      * @return mixed
      */
-    public function getSettings($key = '')
+    public function getSettings(string $key = ''): array
     {
         return ($key) ? $this->settings[$key] : $this->settings;
     }
@@ -76,7 +76,7 @@ class Config implements \Pimvc\Interfaces\Config
      * @param string $key
      * @return boolean
      */
-    public function hasEntry($key)
+    public function hasEntry(string $key): bool
     {
         return isset($this->settings[$key]);
     }
@@ -101,7 +101,7 @@ class Config implements \Pimvc\Interfaces\Config
      *
      * @return string
      */
-    private function getFilename()
+    private function getFilename(): string
     {
         return $this->path . $this->env . '.php';
     }

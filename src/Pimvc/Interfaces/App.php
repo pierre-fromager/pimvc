@@ -43,15 +43,15 @@ interface App
 
     public function setMiddleware();
 
-    public function setLocale($locale);
+    public function setLocale(string $locale): \Pimvc\App;
 
-    public function getLocale();
+    public function getLocale(): string;
 
-    public function setPath($path);
+    public function setPath(string $path): \Pimvc\App;
 
-    public function getPath();
+    public function getPath(): string;
 
-    public function getRouter();
+    public function getRouter(): \Pimvc\Http\Router;
 
     public function getRequest();
 

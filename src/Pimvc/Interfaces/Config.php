@@ -21,13 +21,13 @@ interface Config
 
     public function setEnv($env = self::ENV_DEV);
 
-    public function setPath($path);
+    public function setPath(string $path): \Pimvc\Config;
 
-    public function getPath();
+    public function getPath(): string;
 
-    public function getSettings($key = '');
+    public function getSettings(string $key = '');
 
-    public function hasEntry($key);
+    public function hasEntry(string $key);
 
     public function load();
 }

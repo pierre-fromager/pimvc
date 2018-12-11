@@ -21,9 +21,9 @@ interface Controller
 
     public function __construct(\Pimvc\App $app = null);
 
-    public function setClassPrefix($prefix);
+    public function setClassPrefix(string $prefix): \Pimvc\Controller;
 
-    public function getApp();
+    public function getApp(): \Pimvc\App;
 
     public function setName($name);
 

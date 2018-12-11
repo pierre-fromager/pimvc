@@ -46,18 +46,20 @@ class Controller implements Interfaces\Controller
      * setClassPrefix
      *
      * @param string $prefix
+     * @return \Pimvc\Controller
      */
-    public function setClassPrefix($prefix)
+    public function setClassPrefix(string $prefix): \Pimvc\Controller
     {
         $this->classPrefix = $prefix;
+        return $this;
     }
 
     /**
      * getApp
      *
-     * @return app
+     * @return \Pimvc\App
      */
-    public function getApp()
+    public function getApp(): \Pimvc\App
     {
         return $this->app;
     }
@@ -66,9 +68,9 @@ class Controller implements Interfaces\Controller
      * setName
      *
      * @param string $name
-     * @return $this
+     * @return \Pimvc\Controller
      */
-    public function setName($name)
+    public function setName($name): \Pimvc\Controller
     {
         $this->name = $name;
         return $this;
@@ -79,7 +81,7 @@ class Controller implements Interfaces\Controller
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -88,9 +90,9 @@ class Controller implements Interfaces\Controller
      * setAction
      *
      * @param string $action
-     * @return $this
+     * @return \Pimvc\Controller
      */
-    public function setAction($action)
+    public function setAction($action): \Pimvc\Controller
     {
         $this->action = $action;
         return $this;
@@ -99,9 +101,9 @@ class Controller implements Interfaces\Controller
     /**
      * setForbidden
      *
-     * @return $this
+     * @return \Pimvc\Controller
      */
-    public function setForbidden()
+    public function setForbidden(): \Pimvc\Controller
     {
         $this->addError(7);
         return $this;
@@ -112,7 +114,7 @@ class Controller implements Interfaces\Controller
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->app->path . self::_NAMESPACE . DIRECTORY_SEPARATOR
             . str_replace(self::BACKSLASH, '/', $this->name) . self::PHP_EXT;
@@ -150,9 +152,9 @@ class Controller implements Interfaces\Controller
     /**
      * setDefault
      *
-     * @return $this
+     * @return \Pimvc\Controller
      */
-    public function setDefault()
+    public function setDefault(): \Pimvc\Controller
     {
         list($this->name, $this->action) = [
             ucfirst(self::ERROR),
@@ -164,9 +166,9 @@ class Controller implements Interfaces\Controller
     /**
      * run
      *
-     * @return $this
+     * @return \Pimvc\Controller
      */
-    public function run()
+    public function run(): \Pimvc\Controller
     {
         if ($this->getApp()->getRequest()->isHome()) {
             $this->name = ucfirst(self::DEFAULT_CONTROLER);
@@ -214,9 +216,9 @@ class Controller implements Interfaces\Controller
     /**
      * isModuleController
      *
-     * @return boolean
+     * @return bool
      */
-    private function isModuleController()
+    private function isModuleController(): bool
     {
         $isModule = (strpos($this->name, '/') > 0);
         return $isModule;
@@ -258,7 +260,7 @@ class Controller implements Interfaces\Controller
      *
      * @return array
      */
-    public function getParams($key = '')
+    public function getParams($key = ''): array
     {
         return ($key) ? $this->params[$key] : $this->params;
     }
@@ -313,7 +315,7 @@ class Controller implements Interfaces\Controller
      *
      * @return string
      */
-    private function getNamespacedClass()
+    private function getNamespacedClass(): string
     {
         $prefixable = ($this->classPrefix) ? self::BACKSLASH . $this->classPrefix : '';
         $namespace = $prefixable . self::BACKSLASH . self::_NAMESPACE

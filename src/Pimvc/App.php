@@ -7,17 +7,12 @@
 
 namespace Pimvc;
 
-use Pimvc\Http\Routes;
-use Pimvc\Http\Router;
 use Pimvc\Http\Request;
-use Pimvc\Http\Response;
+//use Pimvc\Http\Response;
 use Pimvc\Http\Middleware;
 use Pimvc\View;
 use Pimvc\Controller;
-use Pimvc\Config as appConfig;
 use Pimvc\Storage;
-use Pimvc\Tools\Translate\Adapter\Csv as translatorAdpater;
-use Pimvc\Tools\Translator as translate;
 
 class App implements Interfaces\App
 {
@@ -43,10 +38,10 @@ class App implements Interfaces\App
     /**
      * __construct
      *
-     * @param appConfig $config
-     * @return $this
+     * @param \Pimvc\Config $config
+     * @return \Pimvc\App
      */
-    public function __construct(appConfig $config)
+    public function __construct(\Pimvc\Config $config)
     {
         $this->setConfig($config);
         $this->request = new Request($config);
@@ -61,10 +56,9 @@ class App implements Interfaces\App
     /**
      * setConfig
      *
-     * @param config $config
-     * @throws \Exception
+     * @param \Pimvc\Config $config
      */
-    private function setConfig(Config $config)
+    private function setConfig(\Pimvc\Config $config)
     {
         $this->config = $config;
     }
@@ -72,42 +66,46 @@ class App implements Interfaces\App
     /**
      * setRoutes
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setRoutes()
+    public function setRoutes(): \Pimvc\App
     {
-        $this->routes = new Routes($this->getConfig()->getSettings(self::APP_ROUTES));
+        $routesConfig = $this->getConfig()->getSettings(self::APP_ROUTES);
+        $this->routes = new \Pimvc\Http\Routes($routesConfig);
         return $this;
     }
 
     /**
      * setRouter
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setRouter()
+    public function setRouter(): \Pimvc\App
     {
-        $this->router = new Router($this->routes, $this->request);
+        $this->router = new \Pimvc\Http\Router(
+            $this->routes,
+            $this->request
+        );
         return $this;
     }
 
     /**
      * setResponse
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setResponse()
+    public function setResponse(): \Pimvc\App
     {
-        $this->response = new Response();
+        $this->response = new \Pimvc\Http\Response();
         return $this;
     }
 
     /**
      * setView
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setView()
+    public function setView(): \Pimvc\App
     {
         $this->view = new View();
         return $this;
@@ -116,12 +114,12 @@ class App implements Interfaces\App
     /**
      * setController
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setController()
+    public function setController(): \Pimvc\App
     {
         $classPrefix = $this->getConfig()->getSettings(self::APP_CLASSES)[self::APP_PREFIX];
-        $this->controller = new Controller($this);
+        $this->controller = new \Pimvc\Controller($this);
         $this->controller->setClassPrefix($classPrefix);
         return $this;
     }
@@ -131,13 +129,13 @@ class App implements Interfaces\App
      *
      * @return $this
      */
-    public function setMiddleware()
+    public function setMiddleware(): \Pimvc\App
     {
         $middlwaresClasses = $this->getConfig()->getSettings(self::APP_MIDDLEWARE);
         foreach ($middlwaresClasses as $name => $middleware) {
             $this->middlewareItems[$name] = new $middleware;
         }
-        $this->middleware = new Middleware();
+        $this->middleware = new \Pimvc\Http\Middleware();
         $this->middleware->layer($this->middlewareItems)->peel(
             $this->controller,
             function ($object) {
@@ -150,21 +148,23 @@ class App implements Interfaces\App
     /**
      * setTranslator
      *
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setTranslator()
+    public function setTranslator(): \Pimvc\App
     {
         $requestLang = $this->request->getLang();
-        $this->translator = new translate(new translatorAdpater($requestLang));
+        $this->translator = new \Pimvc\Tools\Translator(
+            new \Pimvc\Tools\Translate\Adapter\Csv($requestLang)
+        );
         return $this;
     }
 
     /**
      * getTranslator
      *
-     * @return Tools\Translator
+     * @return \Pimvc\Tools\Translator
      */
-    public function getTranslator()
+    public function getTranslator(): \Pimvc\Tools\Translator
     {
         return $this->translator;
     }
@@ -173,9 +173,9 @@ class App implements Interfaces\App
      * setLocale
      *
      * @param string $locale
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setLocale($locale)
+    public function setLocale(string $locale): \Pimvc\App
     {
         $this->locale = ($locale) ? $locale : locale_get_default();
         ini_set('intl.default_locale', $locale);
@@ -185,9 +185,9 @@ class App implements Interfaces\App
     /**
      * getLogger
      *
-     * @return string
+     * @return \Pimvc\Logger
      */
-    public function getLogger()
+    public function getLogger(): \Pimvc\Logger
     {
         return $this->logger;
     }
@@ -195,9 +195,9 @@ class App implements Interfaces\App
     /**
      * setLogger
      *
-     * @return string
+     * @return \Pimvc\App
      */
-    public function setLogger()
+    public function setLogger(): \Pimvc\App
     {
         $this->logger = Logger::getFileInstance(
             $this->getPath() . Logger::LOG_ADAPTER_FILE_PATH,
@@ -212,7 +212,7 @@ class App implements Interfaces\App
      *
      * @return string
      */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
@@ -220,20 +220,25 @@ class App implements Interfaces\App
     /**
      * getInstance
      *
-     * @return \Pimvc\App
+     * @return type
+     * @throws \Exception
      */
     public static function getInstance()
     {
-        return (self::$instance instanceof \Pimvc\App) ? self::$instance : false;
+        $isAppInstance = self::$instance instanceof \Pimvc\App;
+        if (!$isAppInstance) {
+            throw new \Exception('App is not a Pimvc\App instance');
+        }
+        return self::$instance;
     }
 
     /**
      * setPath
      *
      * @param string $path
-     * @return $this
+     * @return \Pimvc\App
      */
-    public function setPath($path)
+    public function setPath(string $path): \Pimvc\App
     {
         $this->path = $path;
         return $this;
@@ -242,19 +247,24 @@ class App implements Interfaces\App
     /**
      * getRouter
      *
-     * @return router
+     * @return \Pimvc\Http\Router
      */
-    public function getRouter()
+    public function getRouter(): \Pimvc\Http\Router
     {
+        if (!($this->router instanceof \Pimvc\Http\Router)) {
+            throw new \Exception(
+                'Not a \Pimvc\Http\Router instance'
+            );
+        }
         return $this->router;
     }
 
     /**
      * getRequest
      *
-     * @return Request
+     * @return \Pimvc\Http\Request
      */
-    public function getRequest()
+    public function getRequest(): \Pimvc\Http\Request
     {
         return $this->request;
     }
@@ -262,9 +272,9 @@ class App implements Interfaces\App
     /**
      * setRequest
      *
-     * @return this
+     * @return \Pimvc\App
      */
-    public function setRequest(Request $request)
+    public function setRequest(\Pimvc\Http\Request $request): \Pimvc\App
     {
         $this->request = $request;
         return $this;
@@ -273,9 +283,9 @@ class App implements Interfaces\App
     /**
      * getRoutes
      *
-     * @return routes
+     * @return \Pimvc\Http\Routes
      */
-    public function getRoutes()
+    public function getRoutes(): \Pimvc\Http\Routes
     {
         return $this->routes;
     }
@@ -283,9 +293,9 @@ class App implements Interfaces\App
     /**
      * getResponse
      *
-     * @return Response
+     * @return \Pimvc\Http\Response
      */
-    public function getResponse()
+    public function getResponse(): \Pimvc\Http\Response
     {
         return $this->response;
     }
@@ -293,9 +303,9 @@ class App implements Interfaces\App
     /**
      * getView
      *
-     * @return Pimvc\View
+     * @return \Pimvc\View
      */
-    public function getView()
+    public function getView(): \Pimvc\View
     {
         return $this->view;
     }
@@ -305,7 +315,7 @@ class App implements Interfaces\App
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -313,9 +323,9 @@ class App implements Interfaces\App
     /**
      * getController
      *
-     * @return Pimvc\Controller
+     * @return \Pimvc\Controller
      */
-    public function getController()
+    public function getController(): \Pimvc\Controller
     {
         return $this->controller;
     }
@@ -325,7 +335,7 @@ class App implements Interfaces\App
      *
      * @return Pimvc\Config
      */
-    public function getConfig()
+    public function getConfig(): \Pimvc\Config
     {
         return $this->config;
     }
@@ -335,7 +345,7 @@ class App implements Interfaces\App
      *
      * @return Pimvc\Storage
      */
-    public function getStorage()
+    public function getStorage(): \Pimvc\Storage
     {
         return $this->storage;
     }
@@ -347,6 +357,7 @@ class App implements Interfaces\App
      */
     public function run()
     {
+
         return $this->setMiddleware()
                 ->getController()
                 ->setDefault()
