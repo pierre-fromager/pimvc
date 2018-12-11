@@ -53,48 +53,20 @@ class Acl
      */
     public function render()
     {
-        $this->content = '<div class="acl-manager">';
-        $this->content .= '<h2>' . '<span class="fa fa-lock">&nbsp;</span>&nbsp;'
-            . $this->title . '</h2>';
-        foreach ($this->ressources as $controllerName => $actions) {
-            $shortCrtl = $this->getClassnameFromNamespace($controllerName);
-            $this->content .= '<div id="' . $shortCrtl . '" class="controler_header inactive">' . self::CR
-                . '<h3 class="controler_header">' . $shortCrtl . '</h3>' . self::CR
-                . '</div>' . self::CR // controler_header
-                . '<div id="' . $shortCrtl . '_content" class="controler_content">' . self::CR;
-            foreach ($actions as $actionName => $roles) {
-                $this->content .= '<div id="' . $shortCrtl . '-' . $actionName . '" class="action_header inactive">' . self::CR
-                    . '<h4 class="controler_header">' . $actionName . '</h4>' . self::CR
-                    . '</div>' . self::CR // action_header
-                    . '<div id="' . $shortCrtl . '-' . $actionName . '_content" class="action_content">' . self::CR;
-                foreach ($roles as $roleName => $acl) {
-                    $id = $shortCrtl . '-' . $actionName . '-' . $roleName;
-                    $this->content .= '<div id="' . $id . '" class="role_header">' . self::CR
-                        . '<a title="'.str_replace('-', ' ', $id).' : '.$acl.'" class="ajaxLink '.$acl.'" href="#" id="link' . $id . '">' . self::CR
-                        . '<span class="role-acl">' . $roleName . '</span></a>' . self::CR
-                        . '</div>' . self::CR // role_header
-                        . '<div id="' . $id . '_content" class="role_content"></div>' . self::CR; // role_content
-                }
-                $this->content .= '</div>' . self::CR; // action_content
-            }
-            $this->content .= '</div>' . self::CR; // controler_content
-        }
-        $this->content .= '</div>';
-        $this->content .= $this->getScript();
+        $view = (new \Pimvc\View())
+            ->setFilename(__DIR__ . '/Template/Acl.php')
+            ->setParams(
+                [
+                    'title' => $this->title,
+                    'ressources' => $this->ressources,
+                    'toggleUrl' => $this->toggleUrl
+                ]
+            )->render();
+        $this->content = (string) $view;
+        unset($view);
         return $this;
     }
     
-    /**
-     * getClassnameFromNamespace
-     *
-     * @param string $namespace
-     * @return string
-     */
-    private function getClassnameFromNamespace($namespace)
-    {
-        return str_replace('\\', '_', $namespace);
-    }
-
     /**
      * change_key
      *
@@ -111,37 +83,6 @@ class Acl
         $keys = array_keys($array);
         $keys[array_search($old_key, $keys)] = $new_key;
         return array_combine($keys, $array);
-    }
-
-      /**
-     * getScript provides async acl features script
-     *
-     * @return string
-     */
-    protected function getScript()
-    {
-        $script = [];
-        $script[] = '<script type="text/javascript">';
-        $script[] = "var targetId = '';";
-        $script[] = "var aclId = '';";
-        $script[] = '$(document).ready(function() {';
-        $script[] = '    $(".controler_header,.action_header").click(function() {';
-        $script[] = '        $(this).toggleClass(\'active\');';
-        $script[] = '        $(this).toggleClass(\'inactive\');';
-        $script[] = '        targetId = $(this).attr(\'id\') + \'_content\';';
-        $script[] = '        $(\'#\' + targetId).toggle();';
-        $script[] = '    });';
-        $script[] = '    $(".role_header").click(function() {';
-        $script[] = '        aclId = $(this).attr(\'id\');';
-        $script[] = '        $.get("' . $this->toggleUrl . '", { id : aclId },';
-        $script[] = '        function(data){';
-        $script[] = '            $(\'#link\' + aclId).removeClass(data.acl_disable);';
-        $script[] = '            $(\'#link\' + aclId).addClass(data.acl_enable);';
-        $script[] = '        });';
-        $script[] = '    });';
-        $script[] = '});';
-        $script[] = '</script>';
-        return implode(self::CR, $script);
     }
 
     /**
