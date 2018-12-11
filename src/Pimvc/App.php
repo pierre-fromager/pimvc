@@ -7,26 +7,19 @@
 
 namespace Pimvc;
 
-use Pimvc\Http\Request;
-//use Pimvc\Http\Response;
-use Pimvc\Http\Middleware;
-use Pimvc\View;
-use Pimvc\Controller;
-use Pimvc\Storage;
-
 class App implements Interfaces\App
 {
 
-    public $hash;
     private static $instance = null;
-    public $logger = null;
     protected $storage = null;
     protected $config = null;
     protected $routes = null;
     protected $router = null;
     protected $controller = null;
-    public $path = null;
     protected $request = null;
+    public $hash;
+    public $logger = null;
+    public $path = null;
     public $response = null;
     public $view = null;
     public $db = null;
@@ -44,7 +37,7 @@ class App implements Interfaces\App
     public function __construct(\Pimvc\Config $config)
     {
         $this->setConfig($config);
-        $this->request = new Request($config);
+        $this->request = new \Pimvc\Http\Request($config);
         $this->setRoutes()->setRouter()->setResponse()->setView()->setController();
         $this->hash = spl_object_hash($this);
         $this->storage = new Storage();
@@ -82,10 +75,7 @@ class App implements Interfaces\App
      */
     public function setRouter(): \Pimvc\App
     {
-        $this->router = new \Pimvc\Http\Router(
-            $this->routes,
-            $this->request
-        );
+        $this->router = new \Pimvc\Http\Router($this->routes, $this->request);
         return $this;
     }
 
@@ -107,7 +97,7 @@ class App implements Interfaces\App
      */
     public function setView(): \Pimvc\App
     {
-        $this->view = new View();
+        $this->view = new \Pimvc\View();
         return $this;
     }
 
