@@ -6,13 +6,17 @@
  */
 namespace Pimvc\Model\Fourd;
 
-class Conscolumns extends \Pimvc\Db\Model\Orm
+use \Pimvc\Db\Model\Orm;
+use \Pimvc\Model\Fourd\IFourd;
+
+class Conscolumns extends Orm implements IFourd
 {
 
     protected $_name = '_USER_CONS_COLUMNS';
     protected $_primary = 'constraint_id';
-    protected $_adapter = 'Pdo4d';
-    protected $_mapperSuffix = '4d_';
+    protected $_adapter = Orm::MODEL_ADAPTER_4D;
+    protected $_schema = '';
+    protected $_slot = 'db30';
 
     /**
      * @see __construct
@@ -32,10 +36,10 @@ class Conscolumns extends \Pimvc\Db\Model\Orm
      */
     public function getByTableName($tableName)
     {
-        $what = array('*');
-        $where = array('table_name' => $tableName);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_TABLE_NAME => $tableName]
+        )->getRowsetAsArray();
     }
 
     /**
@@ -46,10 +50,10 @@ class Conscolumns extends \Pimvc\Db\Model\Orm
      */
     public function getByTableId($tableId)
     {
-        $what = array('*');
-        $where = array('table_id' => $tableId);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_TABLE_ID => (int) $tableId]
+        )->getRowsetAsArray();
     }
 
     /**
@@ -60,10 +64,10 @@ class Conscolumns extends \Pimvc\Db\Model\Orm
      */
     public function getByColumnName($columnName)
     {
-        $what = array('*');
-        $where = array('column_name' => $columnName);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_COLUM_NAME => $columnName]
+        )->getRowsetAsArray();
     }
 
     /**
@@ -74,9 +78,9 @@ class Conscolumns extends \Pimvc\Db\Model\Orm
      */
     public function getByColumnId($columnId)
     {
-        $what = array('*');
-        $where = array('column_id' => $columnId);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_COLUM_ID => (int) $columnId]
+        )->getRowsetAsArray();
     }
 }

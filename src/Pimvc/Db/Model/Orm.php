@@ -70,6 +70,7 @@ abstract class Orm extends Core implements ormInterface
             throw new ormException(ormException::ORM_EXC_MISSING_ADAPTER);
         }
         $this->_adapter = ucfirst(strtolower($this->_config[$this->_slot]['adapter']));
+        
         $this->_logger = \Pimvc\Logger::getFileInstance(
             $this->_app->getPath() . '/log/',
             \Pimvc\Logger::DEBUG,
@@ -82,7 +83,8 @@ abstract class Orm extends Core implements ormInterface
         $this->_domainClass = $this->getDomainName();
         $isLateDomain = isset($config['lateDomain']);
         $this->_domainInstance = ($isLateDomain) ? null : new $this->_domainClass;
-        $this->_metas = $this->describeTable();
+        $this->_schema = ($this->is4d()) ? '' : $this->_schema;
+        $this->_metas = ($this->is4d()) ? $this->getDomainFields() : $this->describeTable();
         $this->_columns = $this->getColumns();
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
@@ -90,6 +92,16 @@ abstract class Orm extends Core implements ormInterface
         }
         $this->_casts = [];
         return $this;
+    }
+
+    /**
+     * is4d
+     *
+     * @return bool
+     */
+    protected function is4d()
+    {
+        return ($this->_adapter === self::MODEL_ADAPTER_4D);
     }
 
     /**
@@ -238,7 +250,9 @@ abstract class Orm extends Core implements ormInterface
         $fields = array_slice($fields, 0, $size);
         $formatedFields = [];
         foreach ($fields as $field) {
-            $formatedFields[] = array(self::MODEL_INDEX_FIELD => $field);
+            if ($field != 'counter') {
+                $formatedFields[] = array(self::MODEL_INDEX_FIELD => $field);
+            }
         }
         return $formatedFields;
     }
@@ -283,7 +297,6 @@ abstract class Orm extends Core implements ormInterface
                 $key = self::MODEL_INDEX_FIELD;
                 break;
         }
-        
         return array_map('strtolower', $this->getMetasInfo($key));
     }
 

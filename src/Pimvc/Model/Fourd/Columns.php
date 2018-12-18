@@ -6,13 +6,17 @@
  */
 namespace Pimvc\Model\Fourd;
 
-class Columns extends \Pimvc\Db\Model\Orm
+use \Pimvc\Db\Model\Orm;
+use \Pimvc\Model\Fourd\IFourd;
+
+class Columns extends Orm implements IFourd
 {
 
     protected $_name = '_USER_COLUMNS';
     protected $_primary = 'column_id';
-    protected $_adapter = 'Pdo4d';
-    protected $_mapperSuffix = '4d_';
+    protected $_adapter = Orm::MODEL_ADAPTER_4D;
+    protected $_schema = '';
+    protected $_slot = 'db30';
 
     /**
      * @see __construct
@@ -32,10 +36,10 @@ class Columns extends \Pimvc\Db\Model\Orm
      */
     public function getByTableName($tableName)
     {
-        $what = array('*');
-        $where = array('table_name' => $tableName);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_TABLE_NAME => $tableName]
+        )->getRowsetAsArray();
     }
 
     /**
@@ -46,9 +50,9 @@ class Columns extends \Pimvc\Db\Model\Orm
      */
     public function getByTableId($tableId)
     {
-        $what = array('*');
-        $where = array('table_id' => $tableId);
-        $this->find($what, $where);
-        return $this->getRowsetAsArray();
+        return $this->find(
+            [],
+            [self::_TABLE_ID => (int) $tableId]
+        )->getRowsetAsArray();
     }
 }

@@ -6,22 +6,35 @@
  */
 namespace Pimvc\Model\Fourd;
 
-class Schemas extends \Pimvc\Db\Model\Orm
+use \Pimvc\Db\Model\Orm;
+use \Pimvc\Model\Fourd\IFourd;
+
+class Schemas extends Orm implements IFourd
 {
 
     protected $_name = '_USER_SCHEMAS';
     protected $_primary = 'schema_id';
-    protected $_adapter = 'Pdo4d';
-    protected $_mapperSuffix = '4d_';
+    protected $_adapter = Orm::MODEL_ADAPTER_4D;
+    protected $_schema = '';
+    protected $_slot = 'db30';
 
+    /**
+     * __construct
+     *
+     * @param array $config
+     */
     public function __construct($config = array())
     {
         parent::__construct($config);
     }
 
+    /**
+     * get
+     *
+     * @return array
+     */
     public function get()
     {
-        $this->find();
-        return $this->getRowsetAsArray();
+        return $this->find()->getRowsetAsArray();
     }
 }

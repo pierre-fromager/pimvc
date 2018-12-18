@@ -15,12 +15,16 @@ abstract class Core implements Interfaces\Core
     protected $_error;
     protected $_errorCode;
     protected $_errorMessage;
+    /**
+     * $_statement
+     * @var \PDOStatement
+     */
     protected $_statement;
     protected $_restMode;
     protected $_fetchMode = \PDO::FETCH_ASSOC;
-    protected $_schema = '';
-    protected $_adapter = null;
-    protected $_primary = null;
+    protected $_schema;
+    protected $_adapter;
+    protected $_primary;
 
     /**
      * run
@@ -113,8 +117,10 @@ abstract class Core implements Interfaces\Core
                 $schemaPrefix = ($this->_schema) ? $this->_schema . '.' : '';
                 $sql = 'DESCRIBE ' . $schemaPrefix . $tablename;
                 break;
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
+                /* @TODO: Forthcomming */
+                break;
         }
-        
         $this->run($sql);
         $result = $this->_statement->fetchAll($this->_fetchMode);
         return $result;
@@ -204,7 +210,7 @@ abstract class Core implements Interfaces\Core
     public function removeSchemaFromName($tablename)
     {
         $parts = explode('.', $tablename);
-        return (count($parts) > 0) ? $parts[1] : $tablename;
+        return (count($parts) == 2) ? $parts[1] : $tablename;
     }
 
     /**
@@ -286,6 +292,10 @@ abstract class Core implements Interfaces\Core
                 $this->run($sql);
                 $results = $this->_statement->fetchAll(\PDO::FETCH_COLUMN, 0);
                 return $results;
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
+                /* @TODO : Forthcomming */
                 break;
         }
     }
@@ -385,20 +395,6 @@ abstract class Core implements Interfaces\Core
      *
      */
     abstract protected function statementErrorPrepareChecking($sql);
-    /*
-      {
-      if ($this->_statement === false) {
-      if ($this->_restMode) {
-      $this->_errorCode = 5000;
-      $this->_errorMessage = 'Statement prepare error';
-      } else {
-      echo '<p style="color:red;">Error prepare sql : '
-      . $sql
-      . '</p>';
-      die;
-      }
-      }
-      } */
 
     /**
      * statementErrorBind
@@ -406,24 +402,7 @@ abstract class Core implements Interfaces\Core
      * @param \PDOException $exc
      */
     abstract protected function statementErrorBind(\PDOException $exc, $queryType);
-    /*
-      {
-      throw new \PDOException($exc);
-      //\throwException($exc);
-      /*
-      $this->_error = $this->_errorMessage = $exc->getMessage();
-      $this->_errorCode = $exc->getCode();
-      $this->_logger->logError(
-      'Sql Bind Error' . $queryType . ' ' . $exc->getMessage(),
-      $this->_statement->queryString
-      );
-      if (self::MODEL_DEBUG || !$this->_restMode) {
-      echo '<p style="color:red">Bind error : '
-      . $exc->getMessage()
-      . '</p>';
-      die;
-      } */
-    //}
+   
 
     /**
      * statementErrorExecute
@@ -431,25 +410,4 @@ abstract class Core implements Interfaces\Core
      * @param \PDOException $exc
      */
     abstract protected function statementErrorExecute(\PDOException $exc, $queryType);
-    /* {
-      throw new \PDOException($exc);
-      //\throwException($exc);
-      /*
-      $this->_error = $exc->getMessage();
-      $this->_errorCode = $exc->getCode();
-      $this->_errorMessage = $exc->getMessage();
-      $this->_logger->logError(
-      'Sql Execute Failed ' . $queryType . ' ' . $exc->getMessage(),
-      $this->_statement->queryString
-      );
-      $isExecError = (self::MODEL_DEBUG && !$this->_restMode);
-      if ($isExecError) {
-      echo '<p style="color:red">Execute error : '
-      . $exc->getMessage() . ' EOPRUN1'
-      . '<hr>' . $this->getSql()
-      . '<hr>' . $exc->getTraceAsString()
-      . '</p>';
-      die;
-      } */
-    //}
 }

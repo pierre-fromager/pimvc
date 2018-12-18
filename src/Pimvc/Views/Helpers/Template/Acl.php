@@ -3,12 +3,12 @@
     var aclId = '';
 
     function processHeaders(show) {
-        var headers = document.querySelectorAll('div.controler_header');
-        //.style('display', 'none');
-                for (i = 0; i < headers.length; ++i) {
-                    headers[i].style.display = (show) ? 'block' : 'none';
+            var headers = document.querySelectorAll('div.controler_header');
+            for (i = 0; i < headers.length; ++i) {
+                        headers[i].style.display = (show) ? 'block' : 'none';
+                    }
                 }
-            }
+
 
     $(document).ready(function () {
 

@@ -45,7 +45,7 @@ abstract class Response extends Request implements Interfaces\Response
      * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '', $httpCode = 200)
+    public function getHtmlResponse($view, $cookieName = '', $cookieValue = '', $httpCode = 200): \Pimvc\Http\Response
     {
         $response = $this->getApp()
             ->getResponse()
@@ -65,7 +65,7 @@ abstract class Response extends Request implements Interfaces\Response
      * @param int $httpCode
      * @return \Pimvc\Http\Response
      */
-    public function getJsonResponse($content, $httpCode = 200)
+    public function getJsonResponse($content, $httpCode = 200): \Pimvc\Http\Response
     {
         return $this->getApp()
                 ->getResponse()

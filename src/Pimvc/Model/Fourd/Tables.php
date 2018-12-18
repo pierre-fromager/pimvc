@@ -6,13 +6,17 @@
  */
 namespace Pimvc\Model\Fourd;
 
-class Tables extends \Pimvc\Db\Model\Orm
+use \Pimvc\Db\Model\Orm;
+use \Pimvc\Model\Fourd\IFourd;
+
+class Tables extends Orm implements IFourd
 {
 
     protected $_name = '_USER_TABLES';
     protected $_primary = 'table_id';
-    protected $_adapter = 'Pdo4d';
-    protected $_mapperSuffix = '4d_';
+    protected $_adapter = Orm::MODEL_ADAPTER_4D;
+    protected $_schema = '';
+    protected $_slot = 'db30';
 
     /**
      * @see __construct
@@ -31,8 +35,7 @@ class Tables extends \Pimvc\Db\Model\Orm
      */
     public function get()
     {
-        $this->find();
-        return $this->getRowsetAsArray();
+        return $this->find()->getRowsetAsArray();
     }
 
     /**
@@ -42,12 +45,12 @@ class Tables extends \Pimvc\Db\Model\Orm
      */
     public function getPair()
     {
-        $tables = array();
-        $this->find(array(), array(), array('table_name' => 'asc'));
+        $tables = [];
+        $this->find([], [], [self::_TABLE_NAME => 'asc']);
         $tablesInfos = $this->getRowsetAsArray();
         foreach ($tablesInfos as $tablesInfo) {
-            $id = $tablesInfo['table_id'];
-            $name = $tablesInfo['table_name'];
+            $id = $tablesInfo[$this->_primary];
+            $name = $tablesInfo[self::_TABLE_NAME];
             $tables[$name] = $id;
         }
         return $tables;

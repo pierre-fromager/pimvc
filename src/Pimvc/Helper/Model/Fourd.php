@@ -4,6 +4,10 @@ namespace Pimvc\Helper\Model;
 class Fourd implements IHelper
 {
 
+    protected $indexesType;
+    protected $consColumns;
+    protected $baseUrl;
+
     /**
      * __construct
      *
@@ -12,6 +16,8 @@ class Fourd implements IHelper
      */
     public function __construct($tableId)
     {
+        $app = \Pimvc\App::getInstance();
+        $this->baseUrl = $app->getRequest()->getBaseUrl();
         $this->tableId = $tableId;
         $this->modelConfig = \Pimvc\App::getInstance()->getConfig()->getSettings('dbPool');
         return $this;
@@ -29,15 +35,17 @@ class Fourd implements IHelper
         $resultsCons = $indColumnModel->getByTableId($this->tableId);
         foreach ($resultsCons as $result) {
             $contraintName = strtolower($result[self::PARAM_CONSTRAINT_NAME]);
+            $hasRelatedColum = (isset($result[self::PARAM_RELATED_COLUMN_NAME]));
             $results[$contraintName] = array(
                 self::PARAM_COLUMN_NAME => strtolower(
                     $result[self::PARAM_COLUMN_NAME]
                 )
-                , self::PARAM_RELATED_COLUMN_NAME => strtolower(
+                , self::PARAM_RELATED_COLUMN_NAME => ($hasRelatedColum) ? strtolower(
                     $result[self::PARAM_RELATED_COLUMN_NAME]
-                )
+                ) : ''
             );
         }
+        $this->consColumns = $results;
         return $results;
     }
 
@@ -57,7 +65,7 @@ class Fourd implements IHelper
             $indexesData[] = array(
                 $index[self::PARAM_COLUMN_ID]
                 , strtolower($index[self::PARAM_COLUMN_NAME])
-                , Tools_Db_4d_Types::getIndexTypeLabel($type[self::PARAM_INDEX_TYPE])
+                , \Pimvc\Tools\Db\Fourd\Types::getIndexTypeLabel($type[self::PARAM_INDEX_TYPE])
                 , ($type[self::PARAM_UNIQNESS] == 1) ? self::PARAM_YES : self::PARAM_NO
             );
         }
@@ -81,6 +89,7 @@ class Fourd implements IHelper
                 , self::PARAM_UNIQNESS => $index[self::PARAM_UNIQNESS]
             );
         }
+        $this->indexesType = $indexes;
         return $indexes;
     }
 
@@ -102,15 +111,19 @@ class Fourd implements IHelper
             $constraintInfo = $this->getConscolumn($constraintName);
             $relatedColumn = $constraintInfo[self::PARAM_RELATED_COLUMN_NAME];
             $columnName = $constraintInfo[self::PARAM_COLUMN_NAME];
+            $hasRelation = isset($constraint[self::PARAM_RELATED_TABLE_ID]);
+            $relationId = ($hasRelation) ? $constraint[self::PARAM_RELATED_TABLE_ID] : '';
+            $relationName = ($hasRelation) ? $constraint[self::PARAM_RELATED_TABLE_NAME] : '';
             $tableLink = '<a class="foreignTableName" href="'
-                . $this->baseUrl . 'database/tables4d/id/'
-                . $constraint[self::PARAM_RELATED_TABLE_ID] . '">'
-                . $constraint[self::PARAM_RELATED_TABLE_NAME] . '</a>';
+                . $this->baseUrl . '/database/tables4d/id/'
+                . $relationId . '">'
+                . $relationName . '</a>';
+            $hasDeleteRule = isset($constraint['delete_rule']);
             $relationData[] = array(
                 $columnName
-                , ($withLink) ? $tableLink : $constraint[self::PARAM_RELATED_TABLE_NAME]
+                , ($withLink) ? $tableLink : $relationName
                 , $relatedColumn
-                , ($constraint['delete_rule'] == '') ? self::PARAM_NO : self::PARAM_YES
+                , ($hasDeleteRule) ? self::PARAM_NO : self::PARAM_YES
             );
         }
         return $relationData;
@@ -124,13 +137,13 @@ class Fourd implements IHelper
      */
     public function getColumns($withKey = false)
     {
-        $columsModel = new \Pimvc\Model\Fourd\Columns($this->modelOptions);
+        $columsModel = new \Pimvc\Model\Fourd\Columns($this->modelConfig);
         $resultModel = $columsModel->getByTableId($this->tableId);
         $columnsData = array();
         unset($columsModel);
         $columnsList = array();
         foreach ($resultModel as $column) {
-            $type4d = $column[self::PARAM_DATA_TYPE];
+            $type4d = $column['data_type'];
             $type4dLabel = \Pimvc\Db\Pdo\Types::getLabel($type4d);
             $typePdo = \Pimvc\Db\Pdo\Types::getPdo($type4d);
             $pdoLabel = \Pimvc\Db\Pdo\Types::getPdoLabel($typePdo);
@@ -139,16 +152,38 @@ class Fourd implements IHelper
                 , strtolower($column[self::PARAM_COLUMN_NAME])
                 , $type4dLabel
                 , $pdoLabel
-                , $column[self::PARAM_DATA_LENGTH]
+                , $column['data_length']
             );
             $columnsList[] = array(
                 self::PARAM_NAME => $column[self::PARAM_COLUMN_NAME]
                 , 't4d' => $type4d
                 , self::PARAM_TYPE => $pdoLabel
-                , self::PARAM_LENGTH => $column[self::PARAM_DATA_LENGTH]
+                , self::PARAM_LENGTH => $column['data_length']
             );
         }
         unset($resultModel);
         return ($withKey) ? $columnsList : $columnsData;
+    }
+
+    /**
+     * getConscolumn
+     *
+     * @param string $contrainName
+     * @return array
+     */
+    private function getConscolumn($contrainName)
+    {
+        return (isset($this->consColumns[$contrainName])) ? $this->consColumns[$contrainName] : '';
+    }
+
+    /**
+     * getIndexType
+     *
+     * @param string $indexId
+     * @return array
+     */
+    private function getIndexType($indexId)
+    {
+        return $this->indexesType[$indexId];
     }
 }
