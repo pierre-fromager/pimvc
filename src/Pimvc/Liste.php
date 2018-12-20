@@ -347,7 +347,7 @@ class Liste implements Interfaces\Liste
      */
     private function getCommandes($line)
     {
-        $id = strtolower($this->_model->getPrimary());
+        $id = $this->_model->getPrimary();
         $idValue = $line[$id];
         $commandes = new helperToolbarGlyph(
             [self::PARAM_ID => $idValue],
@@ -451,7 +451,6 @@ class Liste implements Interfaces\Liste
             , 'table-stripped'
             , 'col-sm-12'
         ];
-        //$modelName = is_string($this->modelName) ? $this->modelName : get_class($this->modelName);
         $tableOptions = [
             self::PARAM_ID => $this->tableId
             , 'class' => implode(' ', $defaultClasses)

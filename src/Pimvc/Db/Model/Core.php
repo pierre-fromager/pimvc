@@ -118,11 +118,27 @@ abstract class Core implements Interfaces\Core
                 $sql = 'DESCRIBE ' . $schemaPrefix . $tablename;
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
-                /* @TODO: Forthcomming */
+                $sql = 'SELECT * FROM _USER_COLUMNS uc'
+                    . ' JOIN _USER_CONSTRAINTS uco on uco.table_id = uc.table_id '
+                    . ' WHERE uc.table_name = :tablename';
+                $this->run($sql, ['tablename' => $this->getUtf8To16Le($tablename)]);
+                $results = $this->_statement->fetchAll($this->_fetchMode);
+                $this->_statement->closeCursor();
+                $this->utfConvertCollection($results);
+                if (!$results) {
+                    throw new \Exception('Cant describe ' . $tablename);
+                }
+                array_walk($results, function (&$v) {
+                    $v['column_name'] = strtolower($v['column_name']);
+                    $v['table_name'] = strtolower($v['table_name']);
+                });
+                reset($results);
+                return $results;
                 break;
         }
         $this->run($sql);
         $result = $this->_statement->fetchAll($this->_fetchMode);
+        $this->_statement->closeCursor();
         return $result;
     }
 
@@ -134,6 +150,7 @@ abstract class Core implements Interfaces\Core
      */
     public function getIndexes($tablename = '')
     {
+        $bindArray = [];
         $tablename = (strpos($this->_name, '.') > 0) ? $this->removeSchemaFromName($this->_name) : $this->_name;
         switch ($this->_adapter) {
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
@@ -195,9 +212,28 @@ abstract class Core implements Interfaces\Core
                 $schemaPrefix = ($this->_schema) ? $this->_schema . '.' : '';
                 $sql = 'SHOW INDEX FROM ' . $schemaPrefix . $tablename;
                 break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
+                $schemaPrefix = ($this->_schema) ? $this->_schema . '.' : '';
+                $sql = 'SELECT * FROM _USER_IND_COLUMNS uic'
+                    . ' JOIN _USER_INDEXES ui on ui.index_uuid = uic.index_uuid'
+                    . ' WHERE uic.table_name = :tablename';
+                $this->run($sql, ['tablename' => $this->getUtf8To16Le($tablename)]);
+                $result = $this->_statement->fetchAll($this->_fetchMode);
+                $this->_statement->closeCursor();
+                $this->utfConvertCollection($result);
+                array_walk($result, function (&$v) {
+                    $v['column_name'] = strtolower($v['column_name']);
+                    $v['table_name'] = strtolower($v['table_name']);
+                });
+                reset($result);
+                echo count($result);
+                return $result;
+                break;
         }
         $this->run($sql);
         $result = $this->_statement->fetchAll($this->_fetchMode);
+        $this->_statement->closeCursor();
         return $result;
     }
 
@@ -224,7 +260,8 @@ abstract class Core implements Interfaces\Core
         $informationSchema = 'INFORMATION_SCHEMA';
         $tableSchema = 'TABLE_SCHEMA';
         $tableName = 'TABLE_NAME';
-
+        $bindParams = [];
+        $forcedTypes = [];
         switch ($this->_adapter) {
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL:
                 $shemaTables = $informationSchema . '.TABLES';
@@ -237,7 +274,6 @@ abstract class Core implements Interfaces\Core
                 $sql = self::MODEL_SELECT . 'name' . self::MODEL_FROM . 'sqlite_master' .
                     self::MODEL_WHERE . $condition;
                 break;
-
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL:
                 $sql = self::MODEL_SELECT . '*' . self::MODEL_FROM
                     . 'information_schema.tables' .
@@ -245,9 +281,15 @@ abstract class Core implements Interfaces\Core
                     . self::MODEL_AND . "table_schema = 'public'"
                     . self::MODEL_AND . "table_name = '$tablename';";
                 break;
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
+                $sql = 'SELECT table_name FROM _USER_TABLES '
+                    . 'WHERE table_name = :tablename';
+                $bindParams = ['tablename' => $this->getUtf8To16Le($tablename)];
+                break;
         }
-        $this->run($sql);
+        $this->run($sql, $bindParams, $forcedTypes);
         $results = $this->_statement->fetchAll($this->_fetchMode);
+        $this->_statement->closeCursor();
         return (count($results) > 0);
     }
 
@@ -295,7 +337,11 @@ abstract class Core implements Interfaces\Core
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
-                /* @TODO : Forthcomming */
+                $sql = 'SELECT table_name FROM _USER_TABLES';
+                $this->run($sql);
+                $results = $this->_statement->fetchAll(\PDO::FETCH_COLUMN, 0);
+                $this->utfConvert($results);
+                return $results;
                 break;
         }
     }
@@ -378,6 +424,59 @@ abstract class Core implements Interfaces\Core
         foreach ($results as $result) {
         }
         return $result[0];
+    }
+
+    /**
+     * getUtf8To16Le
+     *
+     * @param string $value
+     * @return string
+     */
+    private function getUtf8To16Le(string $value): string
+    {
+        return iconv('utf-8', 'utf-16', $value);
+    }
+
+    /**
+     * getUtf16LeTo8
+     *
+     * @param string $value
+     * @return string
+     */
+    private function getUtf16LeTo8(string $value): string
+    {
+        return (string) iconv('utf-16', 'utf-8', $value);
+    }
+
+    /**
+     * utfConvert
+     *
+     * @param array $aa
+     * @param string $cf
+     * @param string $ct
+     */
+    protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
+    {
+        \array_walk($aa, function (&$v) use ($cf, $ct) {
+            if (!is_numeric($v)) {
+                $v = iconv($cf, $ct, $v);
+            }
+        });
+    }
+
+    /**
+     * utfConvertCollection
+     *
+     * @param array $aac
+     * @param string $cf
+     * @param string $ct
+     */
+    protected function utfConvertCollection(array &$aac, string $cf = 'utf-16', string $ct = 'utf-8')
+    {
+        $counter = count($aac);
+        for ($c = 0; $c < $counter; ++$c) {
+            $this->utfConvert($aac[$c], $cf, $ct);
+        }
     }
 
     /**

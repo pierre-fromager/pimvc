@@ -65,9 +65,12 @@ abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
      *
      * @param type $array
      */
-    public function hydrate($array)
+    public function hydrate($array, $utfConvert = false)
     {
         $classKeys = array_keys(get_class_vars(get_called_class()));
+        if ($utfConvert) {
+            $this->utfConvert($array);
+        }
         foreach ($classKeys as $property) {
             $value = (isset($array[$property]))
                 ? $array[$property]
@@ -77,11 +80,27 @@ abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
             ) {
                 $this->$property = (self::isSerialised($value))
                     ? unserialize($value)
-                    : $value;
+                    : utf8_encode($value);
             } else {
                 unset($this->$property);
             }
         }
+    }
+
+    /**
+     * utfConvert
+     *
+     * @param array $assocArray
+     * @param string $cf
+     * @param string $ct
+     */
+    protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
+    {
+        \array_walk($aa, function (&$v) use ($cf, $ct) {
+            if (!is_numeric($v)) {
+                $v = iconv($cf, $ct, $v);
+            }
+        });
     }
 
     /**

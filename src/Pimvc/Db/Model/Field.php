@@ -91,6 +91,13 @@ class Field
     protected $isPrimaryKey;
 
     /**
+     * $pdoType
+     *
+     * @var int
+     */
+    protected $pdoType;
+
+    /**
      * $stack
      * @var array
      */
@@ -264,6 +271,16 @@ class Field
     }
 
     /**
+     * getPdoType
+     *
+     * @return bool
+     */
+    public function getPdoType(): int
+    {
+        return $this->pdoType;
+    }
+
+    /**
      * getAsArray
      *
      * @return array
@@ -429,6 +446,18 @@ class Field
     }
 
     /**
+     * setPdoType
+     *
+     * @param int $pdoType
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setPdoType(int $pdoType): Field
+    {
+        $this->pdoType = $pdoType;
+        return $this;
+    }
+
+    /**
      * setFromData
      * @param array $dataGrid
      * @param string $fieldName
@@ -463,7 +492,8 @@ class Field
         $allowedAdapter = [
             \Pimvc\Db\Model\Core::MODEL_ADAPTER_MYSQL,
             \Pimvc\Db\Model\Core::MODEL_ADAPTER_SQLITE,
-            \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL
+            \Pimvc\Db\Model\Core::MODEL_ADAPTER_PGSQL,
+            \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D
         ];
         if (!in_array($adapter, $allowedAdapter)) {
             throw new \Exception('Unmanaged adapter', 1);
@@ -506,6 +536,22 @@ class Field
                 $type = $desc['data_type'];
                 $isString = (preg_match('/(^character|^text)/', $type) === 1);
                 $this->setMaxlen((int) $desc['character_maximum_length']);
+                $this->setIsString($isString);
+                $this->setIsNumeric(!$isString);
+                if (!$isString) {
+                    $this->setIsInt((preg_match('/^integer/', $type) === 1));
+                    $this->setIsFloat((preg_match('/^real/', $type) === 1));
+                }
+                break;
+
+            case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
+                $fourdType = $desc['old_data_type'];
+                $type = \Pimvc\Tools\Db\Fourd\Types::getPdo($fourdType);
+                $this->setPdoType($type);
+                $this->setName($desc['column_name']);
+                $this->setIsNullable($desc['nullable'] === '1');
+                $isString = ($type == \PDO::PARAM_STR);
+                $this->setMaxlen((int) $desc['data_length']);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
                 if (!$isString) {

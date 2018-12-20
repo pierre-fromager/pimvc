@@ -1,6 +1,8 @@
 <?php
 /**
- * DbPdo4dAdapter returns 4d Pdo instance
+ * Pimvc\Db\Adapter\Pdo4d
+ *
+ * returns 4d Pdo instance
  *
  * @see http://sources.4d.com/trac/4d_pdo4d/raw-attachment/wiki/PDOBuilds/pdo_4d_0.3_debian.zip
  * ports dispos 19812,19813,19814
@@ -15,11 +17,8 @@ class Pdo4d implements IAdapter
 {
 
     const PREFIX_4D = '4D:';
-    //const HOST_PREFIX = 'host=';
-    //const DB_NAME_PREFIX = ';dbname=';
     const PORT_PREFIX = ';port=';
     const CHARSET_PREFIX = ';charset=';
-    //const ERR_CON_FAIL = 'Echec de connexion : ';
 
     protected static $dsn = null;
     protected static $params = null;
@@ -53,7 +52,8 @@ class Pdo4d implements IAdapter
     {
         $dbname = self::hasValue('dbname') ? self::dbNamePrefix . self::$params['dbname'] : '';
         $port = self::hasValue(self::_PORT) ? self::PORT_PREFIX . self::$params[self::_PORT] : '';
-        $charset = self::hasValue('charset') ? self::CHARSET_PREFIX . self::$params['charset'] : '';
+        //$charset = self::hasValue('charset') ? self::CHARSET_PREFIX . self::$params['charset'] : '';
+        $charset = ';charset=UTF-16LE';
         self::$dsn = self::PREFIX_4D
             . self::HOST_PREFIX . self::$params[self::_HOST] . ''
             . $port . $dbname . $charset;
@@ -67,13 +67,13 @@ class Pdo4d implements IAdapter
     private static function getOptions()
     {
         return array(
-            //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
             \PDO::ATTR_PERSISTENT => false
             , \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-            //, PDO::ERRMODE_EXCEPTION => true
+            , \PDO::ERRMODE_EXCEPTION => true
             , \PDO::ATTR_CASE => \PDO::CASE_LOWER
+            //, \PDO::ATTR_CASE => \PDO::CASE_NATURAL
             , \PDO::ATTR_EMULATE_PREPARES => false
-            //, PDO::ATTR_CASE => PDO::CASE_NATURAL
+            
         );
     }
 
@@ -87,7 +87,6 @@ class Pdo4d implements IAdapter
         self::$params = $params;
         self::setDsn();
         self::$params[self::_OPTIONS] = self::getOptions();
-        //$options = (isset($params['options'])) ? $params['options'] : null;
         if (self::$_instance === null) {
             try {
                 self::$_instance = new \PDO(

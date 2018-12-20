@@ -59,15 +59,15 @@ class Fourd implements IHelper
         $indColumnModel = new \Pimvc\Model\Fourd\Indcolumns($this->modelConfig);
         $resultModel = $indColumnModel->getByTableId($this->tableId);
         unset($indColumnModel);
-        $indexesData = array();
+        $indexesData = [];
         foreach ($resultModel as $index) {
             $type = $this->getIndexType($index[self::PARAM_INDEX_ID]);
-            $indexesData[] = array(
+            $indexesData[] = [
                 $index[self::PARAM_COLUMN_ID]
                 , strtolower($index[self::PARAM_COLUMN_NAME])
                 , \Pimvc\Tools\Db\Fourd\Types::getIndexTypeLabel($type[self::PARAM_INDEX_TYPE])
                 , ($type[self::PARAM_UNIQNESS] == 1) ? self::PARAM_YES : self::PARAM_NO
-            );
+            ];
         }
         return $indexesData;
     }
@@ -84,10 +84,10 @@ class Fourd implements IHelper
         $resultModel = $indexModel->getByTableId($this->tableId);
         foreach ($resultModel as $index) {
             $indexId = $index[self::PARAM_INDEX_ID];
-            $indexes[$indexId] = array(
+            $indexes[$indexId] = [
                 self::PARAM_INDEX_TYPE => $index[self::PARAM_INDEX_TYPE]
                 , self::PARAM_UNIQNESS => $index[self::PARAM_UNIQNESS]
-            );
+            ];
         }
         $this->indexesType = $indexes;
         return $indexes;

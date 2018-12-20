@@ -17,6 +17,7 @@ class Indcolumns extends Orm implements IFourd
     protected $_adapter = Orm::MODEL_ADAPTER_4D;
     protected $_schema = '';
     protected $_slot = 'db30';
+    protected $_isSystem = true;
 
     /**
      * __construct

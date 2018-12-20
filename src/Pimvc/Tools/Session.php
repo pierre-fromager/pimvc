@@ -190,14 +190,4 @@ class Session
         unset($_SESSION[self::SESSION_PROFIL]);
         unset($_SESSION[self::SESSION_USER_INFO]);
     }
-
-    /*
-    public static function __callStatic($name, $arguments) {
-        //var_dump($name, $arguments);
-          if (self::$instance === null) {
-          self::$instance = new self();
-          }
-
-          self::$instance->callStaticMethod($name, $arguments);
-    }*/
 }

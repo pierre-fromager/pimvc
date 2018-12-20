@@ -50,6 +50,7 @@ abstract class Orm extends Core implements ormInterface
     protected $_whereCriterias = [];
     protected $_restMode;
     protected $_casts;
+    protected $_isSystem;
     private $_app;
 
     /**
@@ -84,7 +85,7 @@ abstract class Orm extends Core implements ormInterface
         $isLateDomain = isset($config['lateDomain']);
         $this->_domainInstance = ($isLateDomain) ? null : new $this->_domainClass;
         $this->_schema = ($this->is4d()) ? '' : $this->_schema;
-        $this->_metas = ($this->is4d()) ? $this->getDomainFields() : $this->describeTable();
+        $this->_metas = ($this->_isSystem === true) ? $this->getDomainFields() : $this->describeTable();
         $this->_columns = $this->getColumns();
         if ($this->_adapter == self::MODEL_ADAPTER_PGSQL) {
             $this->run('SET CLIENT_ENCODING TO \'UTF-8\'');
@@ -266,6 +267,7 @@ abstract class Orm extends Core implements ormInterface
     protected function getMetasInfo($info = null)
     {
         $result = [];
+        
         if (!empty($info)) {
             foreach ($this->_metas as $meta) {
                 if (isset($meta[$info])) {
@@ -295,6 +297,9 @@ abstract class Orm extends Core implements ormInterface
                 break;
             case self::MODEL_ADAPTER_MYSQL:
                 $key = self::MODEL_INDEX_FIELD;
+                break;
+            case self::MODEL_ADAPTER_4D:
+                $key = 'column_name';
                 break;
         }
         return array_map('strtolower', $this->getMetasInfo($key));
@@ -328,6 +333,9 @@ abstract class Orm extends Core implements ormInterface
      */
     public function getPrimary()
     {
+        if (!$this->_primary) {
+            return $this->_columns[0];
+        }
         return $this->_primary;
     }
 
@@ -1205,7 +1213,7 @@ abstract class Orm extends Core implements ormInterface
         if ($mustQuery) {
             //$schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL) ? $this->_schema . '.' : '';
             $schemaPrefix = '';
-            $sql = self::MODEL_SELECT_COUNT . '(' . $this->_primary . ') '
+            $sql = self::MODEL_SELECT_COUNT . '(' . $this->getPrimary() . ') '
                 . self::MODEL_FROM . $schemaPrefix . $this->_name
                 . $this->_getWhere($where);
             $this->cleanCriterias($where);
@@ -1436,9 +1444,10 @@ abstract class Orm extends Core implements ormInterface
         $statementResult = $this->_statement->fetchAll($this->_fetchMode);
         $rowCount = count($statementResult);
         $this->_rowset->setSize($rowCount);
+        $hydrateConvert = $this->is4d();
         for ($cpt = 0; $cpt < $rowCount; $cpt++) {
             $objMapper = clone $this->_domainInstance;
-            $objMapper->hydrate($statementResult[$cpt]);
+            $objMapper->hydrate($statementResult[$cpt], $hydrateConvert);
             $this->_rowset[$cpt] = $objMapper->get();
             unset($objMapper);
         }
