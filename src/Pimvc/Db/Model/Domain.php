@@ -8,8 +8,13 @@
 
 namespace Pimvc\Db\Model;
 
-abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
+use \Pimvc\Db\Model\Interfaces\Domain as IDomain;
+
+abstract class Domain implements IDomain
 {
+
+    use \Pimvc\Db\Charset\Convert;
+
     public $counter;
 
 
@@ -69,7 +74,7 @@ abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
     {
         $classKeys = array_keys(get_class_vars(get_called_class()));
         if ($utfConvert) {
-            $this->utfConvert($array);
+            $this->charsetConvert($array);
         }
         foreach ($classKeys as $property) {
             $value = (isset($array[$property]))
@@ -94,14 +99,15 @@ abstract class Domain implements \Pimvc\Db\Model\Interfaces\Domain
      * @param string $cf
      * @param string $ct
      */
-    protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
-    {
-        \array_walk($aa, function (&$v) use ($cf, $ct) {
-            if (!is_numeric($v)) {
-                $v = iconv($cf, $ct, $v);
-            }
-        });
-    }
+    /*
+      protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
+      {
+      \array_walk($aa, function (&$v) use ($cf, $ct) {
+      if (!is_numeric($v)) {
+      $v = @iconv($cf, $ct, $v);
+      }
+      });
+      } */
 
     /**
      * get

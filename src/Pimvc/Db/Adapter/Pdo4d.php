@@ -2,12 +2,12 @@
 /**
  * Pimvc\Db\Adapter\Pdo4d
  *
- * returns 4d Pdo instance
- *
- * @see http://sources.4d.com/trac/4d_pdo4d/raw-attachment/wiki/PDOBuilds/pdo_4d_0.3_debian.zip
- * ports dispos 19812,19813,19814
- *
  * @author Pierre Fromager <pf@pier-infor.fr>
+ * @see https://github.com/timurgen/pecl-pdo-4d
+ * @see http://sources.4d.com/trac/4d_pdo4d/raw-attachment/wiki/PDOBuilds/pdo_4d_0.3_debian.zip
+ *
+ * ports dispos 19812,19813,19814
+ * returns 4d Pdo instance
  */
 namespace Pimvc\Db\Adapter;
 
@@ -19,6 +19,7 @@ class Pdo4d implements IAdapter
     const PREFIX_4D = '4D:';
     const PORT_PREFIX = ';port=';
     const CHARSET_PREFIX = ';charset=';
+    const DEFAULT_CHARSET = 'UTF-16LE';
 
     protected static $dsn = null;
     protected static $params = null;
@@ -46,14 +47,13 @@ class Pdo4d implements IAdapter
     /**
      * setDsn : returns dsn string
      *
-     * @param array $params
      */
     private static function setDsn()
     {
         $dbname = self::hasValue('dbname') ? self::dbNamePrefix . self::$params['dbname'] : '';
         $port = self::hasValue(self::_PORT) ? self::PORT_PREFIX . self::$params[self::_PORT] : '';
         //$charset = self::hasValue('charset') ? self::CHARSET_PREFIX . self::$params['charset'] : '';
-        $charset = ';charset=UTF-16LE';
+        $charset = self::CHARSET_PREFIX . self::DEFAULT_CHARSET;
         self::$dsn = self::PREFIX_4D
             . self::HOST_PREFIX . self::$params[self::_HOST] . ''
             . $port . $dbname . $charset;

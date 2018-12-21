@@ -545,7 +545,7 @@ class Field
                 break;
 
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
-                $fourdType = $desc['old_data_type'];
+                $fourdType = $desc['data_type'];
                 $type = \Pimvc\Tools\Db\Fourd\Types::getPdo($fourdType);
                 $this->setPdoType($type);
                 $this->setName($desc['column_name']);
@@ -555,8 +555,9 @@ class Field
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
                 if (!$isString) {
-                    $this->setIsInt((preg_match('/^integer/', $type) === 1));
-                    $this->setIsFloat((preg_match('/^real/', $type) === 1));
+                    $isInt = \Pimvc\Tools\Db\Fourd\Types::isFourdInt($type);
+                    $this->setIsInt($isInt);
+                    $this->setIsFloat(!$isInt);
                 }
                 break;
         }

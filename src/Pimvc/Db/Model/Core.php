@@ -6,7 +6,7 @@
  */
 namespace Pimvc\Db\Model;
 
-abstract class Core implements Interfaces\Core
+abstract class Core extends Charset implements Interfaces\Core
 {
 
     protected $_db;
@@ -79,8 +79,10 @@ abstract class Core implements Interfaces\Core
     {
         foreach ($paArray as $k => $v) {
             $type = (is_int($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+
             if (isset($forcedTypes[$k])) {
                 $type = $forcedTypes[$k];
+                $v = ($type == \PDO::PARAM_INT) ? (int) $v : $v;
             }
             $value = is_array($v) ? serialize($v) : $v;
             $key = ':' . $k;
@@ -118,13 +120,16 @@ abstract class Core implements Interfaces\Core
                 $sql = 'DESCRIBE ' . $schemaPrefix . $tablename;
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
-                $sql = 'SELECT * FROM _USER_COLUMNS uc'
-                    . ' JOIN _USER_CONSTRAINTS uco on uco.table_id = uc.table_id '
-                    . ' WHERE uc.table_name = :tablename';
-                $this->run($sql, ['tablename' => $this->getUtf8To16Le($tablename)]);
+                $sql = 'SELECT  * '
+                    . ' FROM _USER_COLUMNS uc'
+                    //. '  INNER JOIN _USER_CONSTRAINTS uco on uc.table_id = uco.table_id'
+                    . '  WHERE uc.table_name = :tablename'; // AND uco.constraint_name = \'\''; //' AND uco.table_name = :tablename';
+                $this->run($sql, ['tablename' => $this->getCharsetConvert(
+                        $tablename, 'utf-8', 'utf-16'
+                )]);
                 $results = $this->_statement->fetchAll($this->_fetchMode);
                 $this->_statement->closeCursor();
-                $this->utfConvertCollection($results);
+                $this->charsetConvertCollection($results);
                 if (!$results) {
                     throw new \Exception('Cant describe ' . $tablename);
                 }
@@ -132,6 +137,7 @@ abstract class Core implements Interfaces\Core
                     $v['column_name'] = strtolower($v['column_name']);
                     $v['table_name'] = strtolower($v['table_name']);
                 });
+                //var_dump($results);die;
                 reset($results);
                 return $results;
                 break;
@@ -218,16 +224,17 @@ abstract class Core implements Interfaces\Core
                 $sql = 'SELECT * FROM _USER_IND_COLUMNS uic'
                     . ' JOIN _USER_INDEXES ui on ui.index_uuid = uic.index_uuid'
                     . ' WHERE uic.table_name = :tablename';
-                $this->run($sql, ['tablename' => $this->getUtf8To16Le($tablename)]);
+                $this->run($sql, ['tablename' => $this->getCharsetConvert(
+                        $tablename, 'utf-8', 'utf-16'
+                )]);
                 $result = $this->_statement->fetchAll($this->_fetchMode);
                 $this->_statement->closeCursor();
-                $this->utfConvertCollection($result);
+                $this->charsetConvertCollection($result);
                 array_walk($result, function (&$v) {
                     $v['column_name'] = strtolower($v['column_name']);
                     $v['table_name'] = strtolower($v['table_name']);
                 });
                 reset($result);
-                echo count($result);
                 return $result;
                 break;
         }
@@ -284,7 +291,10 @@ abstract class Core implements Interfaces\Core
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
                 $sql = 'SELECT table_name FROM _USER_TABLES '
                     . 'WHERE table_name = :tablename';
-                $bindParams = ['tablename' => $this->getUtf8To16Le($tablename)];
+                $bindParams = ['tablename' => $this->getCharsetConvert(
+                        $tablename, 'utf-8', 'utf-16'
+                    )
+                ];
                 break;
         }
         $this->run($sql, $bindParams, $forcedTypes);
@@ -340,7 +350,7 @@ abstract class Core implements Interfaces\Core
                 $sql = 'SELECT table_name FROM _USER_TABLES';
                 $this->run($sql);
                 $results = $this->_statement->fetchAll(\PDO::FETCH_COLUMN, 0);
-                $this->utfConvert($results);
+                $this->charsetConvert($results);
                 return $results;
                 break;
         }
@@ -426,58 +436,7 @@ abstract class Core implements Interfaces\Core
         return $result[0];
     }
 
-    /**
-     * getUtf8To16Le
-     *
-     * @param string $value
-     * @return string
-     */
-    private function getUtf8To16Le(string $value): string
-    {
-        return iconv('utf-8', 'utf-16', $value);
-    }
-
-    /**
-     * getUtf16LeTo8
-     *
-     * @param string $value
-     * @return string
-     */
-    private function getUtf16LeTo8(string $value): string
-    {
-        return (string) iconv('utf-16', 'utf-8', $value);
-    }
-
-    /**
-     * utfConvert
-     *
-     * @param array $aa
-     * @param string $cf
-     * @param string $ct
-     */
-    protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
-    {
-        \array_walk($aa, function (&$v) use ($cf, $ct) {
-            if (!is_numeric($v)) {
-                $v = iconv($cf, $ct, $v);
-            }
-        });
-    }
-
-    /**
-     * utfConvertCollection
-     *
-     * @param array $aac
-     * @param string $cf
-     * @param string $ct
-     */
-    protected function utfConvertCollection(array &$aac, string $cf = 'utf-16', string $ct = 'utf-8')
-    {
-        $counter = count($aac);
-        for ($c = 0; $c < $counter; ++$c) {
-            $this->utfConvert($aac[$c], $cf, $ct);
-        }
-    }
+ 
 
     /**
      * isPgsql

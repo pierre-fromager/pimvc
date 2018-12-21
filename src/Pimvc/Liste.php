@@ -22,7 +22,17 @@ class Liste implements Interfaces\Liste
     private $headers = '';
     private $labels = [];
     private $body = '';
-    private $_model = null;
+    /*
+     * $_model
+     *
+     * Pimvc\Db\Model\Orm
+     */
+    private $_model;
+    /*
+     * $_model
+     *
+     * \Pimvc\Db\Model\Domain
+     */
     private $_modelMapper = null;
     private $exclude = [];
     private $excludeAction = [];
@@ -196,7 +206,7 @@ class Liste implements Interfaces\Liste
         $pagesize = Tools\Session::has(self::PARAM_PAGESIZE)
             ? Tools\Session::get(self::PARAM_PAGESIZE)
             : self::LISTE_DEFAULT_PAGESIZE;
-        $limit = array($pagesize, $this->curentPage * $pagesize);
+        $limit = [$pagesize, $this->curentPage * $pagesize];
         $this->_model->find($this->columns, $where, $order, $limit);
         $this->sql = $this->_model->getSql();
         $this->data = $this->_model->getRowsetAsArray();
@@ -517,21 +527,12 @@ class Liste implements Interfaces\Liste
         $jsonList->liste->filters = $this->filter;
         $jsonList->liste->columns = $this->columns;
         $jsonList->liste->pagesize = $this->getPageSize();
-        $rowset = $this->_model->getRowset();
-        $reducedDatas = [];
-        if ($rowset) {
-            foreach ($rowset as $set) {
-                $reducedDatas[] = array_intersect_key(
-                    get_object_vars($set),
-                    array_combine($this->columns, $this->columns)
-                );
-            }
-        }
+        $jsonList->liste->sql = $this->sql;
         $jsonList->liste->counter = $this->_model->counter($this->filter);
-        $jsonList->liste->results = $reducedDatas;
+        $jsonList->liste->results = $this->data;
         return $jsonList;
     }
-        
+
     /**
      * getPaging
      *

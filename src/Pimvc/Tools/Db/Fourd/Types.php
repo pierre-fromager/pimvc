@@ -37,12 +37,21 @@ class Types
      */
     public static function getPdo($type4d)
     {
-        $intTypes = array(self::TYPE_INTEGER, self::TYPE_LONGINT);
-        $isInt = in_array($type4d, $intTypes);
-        $pdo = ($isInt) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+        $pdo = (self::isFourdInt($type4d)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
         $pdo = ($type4d == self::TYPE_BOOLEAN) ? \PDO::PARAM_BOOL : $pdo;
         $pdo = ($type4d == self::TYPE_LOB) ? \PDO::PARAM_LOB : $pdo;
         return $pdo;
+    }
+
+    /**
+     * isFourdInt
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdInt(int $type4d): bool
+    {
+        return in_array($type4d, [self::TYPE_INTEGER, self::TYPE_LONGINT]);
     }
 
     /**

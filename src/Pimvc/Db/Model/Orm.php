@@ -32,7 +32,11 @@ abstract class Orm extends Core implements ormInterface
     protected $_domain = null;
     protected $_domainSuffix = '';
     protected $_domainClass = null;
-    protected $_domainInstance = null;
+    /*
+     * $_domainInstance
+     * \Pimvc\Db\Model\Domain
+     */
+    protected $_domainInstance;
     protected $_logger = null;
     protected $_attributes = [];
     protected $_dependentModels = [];
@@ -1148,8 +1152,26 @@ abstract class Orm extends Core implements ormInterface
         }
 
         if ($mustQuery) {
+            $forcedType = [];
             $this->cleanCriterias($criterias);
-            $this->run($sql, $criterias);
+            $isCrud = (static::class == 'App1\Model\Crud');
+            if ($this->is4d() && $isCrud) {
+                $metasFieldsName = array_keys($criterias);
+                foreach ($metasFieldsName as $name) {
+                    $pdoType = $this->getDomainInstance()->getMetas($name)->getPdoType();
+                    if ($pdoType == \PDO::PARAM_INT) {
+                        $criterias[$name] = (int) $criterias[$name];
+                    } elseif ($pdoType == \PDO::PARAM_STR) {
+                        $criterias[$name] = //$this->getUtf8To16Le($criterias[$name]);
+                            $this->getCharsetConvert(
+                            $criterias[$name], 'utf-8', 'utf-16'
+                        );
+                    }
+                    $forcedType[$name] = $pdoType;
+                }
+            }
+            $this->run($sql, $criterias, $forcedType);
+            //var_dump($forcedType);
             $this->hydrate();
             $this->cleanParenthesis();
             $this->cleanOr();
@@ -1211,14 +1233,31 @@ abstract class Orm extends Core implements ormInterface
         }
 
         if ($mustQuery) {
-            //$schemaPrefix = ($this->_adapter == self::MODEL_ADAPTER_PGSQL) ? $this->_schema . '.' : '';
             $schemaPrefix = '';
             $sql = self::MODEL_SELECT_COUNT . '(' . $this->getPrimary() . ') '
                 . self::MODEL_FROM . $schemaPrefix . $this->_name
                 . $this->_getWhere($where);
             $this->cleanCriterias($where);
             $this->clearRowset();
-            $this->run($sql, $where);
+
+            $forcedType = [];
+            $isCrud = (static::class == 'App1\Model\Crud');
+            if ($this->is4d() && $isCrud) {
+                $metasFieldsName = array_keys($where);
+                foreach ($metasFieldsName as $name) {
+                    $pdoType = $this->getDomainInstance()->getMetas($name)->getPdoType();
+                    if ($pdoType == \PDO::PARAM_INT) {
+                        $where[$name] = (int) $where[$name];
+                    } elseif ($pdoType == \PDO::PARAM_STR) {
+                        $where[$name] = $this->getCharsetConvert(
+                            $where[$name], 'utf-8', 'utf-16'
+                        );
+                    }
+                    $forcedType[$name] = $pdoType;
+                }
+            }
+
+            $this->run($sql, $where, $forcedType);
             $results = $this->_statement->fetchAll();
             $this->_statement->closeCursor();
             $this->seek();
@@ -1618,7 +1657,7 @@ abstract class Orm extends Core implements ormInterface
             echo '<p style="color:red">Execute error : '
             . $exc->getMessage() . ' EOPRUN1'
             . '<hr>' . $this->getSql()
-            . '<hr>' . $exc->getTraceAsString()
+            //. '<hr>' . $exc->getTraceAsString()
             . '</p>';
             die;
         }
