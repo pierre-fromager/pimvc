@@ -49,7 +49,7 @@ trait Convert
     protected function charsetConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
     {
         \array_walk($aa, function (&$v) use ($cf, $ct) {
-            if (!is_numeric($v)) {
+            if (!is_numeric($v) && !is_null($v)) {
                 $v = $this->getCharsetConvert($v, $cf, $ct);
             }
         });
