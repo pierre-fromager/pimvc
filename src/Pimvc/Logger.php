@@ -76,14 +76,15 @@ class Logger implements Interfaces\Logger
     private static $dbInstances = [];
     private static $remoteAddr = '';
     private static $adapter;
-    
+    private static $filename;
+
     /**
      * Partially implements the Singleton pattern. Each $logDirectory gets one
      * instance.
      *
      * @param string  $logDirectory File path to the logging directory
      * @param integer $severity     One of the pre-defined severity constants
-     * @return KLogger
+     * @return \Pimvc\Logger
      */
     public static function getFileInstance($logDirectory = false, $severity = false, $adapter = self::LOG_ADAPTER_FILE)
     {
@@ -111,7 +112,17 @@ class Logger implements Interfaces\Logger
 
         return self::$fileInstances[$logDirectory];
     }
-    
+
+    /**
+     * getFilename
+     *
+     * @return string
+     */
+    public static function getFilename(): string
+    {
+        return static::$filename;
+    }
+
     /**
      * getDbInstance
      *
@@ -163,6 +174,7 @@ class Logger implements Interfaces\Logger
                 . 'log_'
                 . date('Y-m-d')
                 . '.txt';
+            self::$filename = $this->_logFilePath;
             $this->_severityThreshold = $severity;
             if (!file_exists($logDirectory)) {
                 $mkResult = @mkdir($logDirectory, self::$_defaultPermissions, true);
