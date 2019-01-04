@@ -1,12 +1,14 @@
 <?php
 
 /**
- * Description of urlselector
+ * Description of Pimvc\Views\Helpers\Urlselector
  *
  * @author Pierre Fromager <pf@pier-infor.fr>
  */
 
 namespace Pimvc\Views\Helpers;
+
+use Pimvc\Html\Element\Decorator;
 
 class Urlselector
 {
@@ -26,64 +28,65 @@ class Urlselector
      *
      * @param string $name
      * @param string $url
-     * @param array $options
+     * @param array $items
      * @param string $default
      * @param string $defaultMessage
      * @return string
      */
-    public static function get($name, $url, $options, $default, $defaultMessage = '')
+    public static function get($name, $url, $items, $defaultValue, $defaultMessage = '')
     {
-        self::$selected = $default;
-        $selector = self::SELECT_OPEN_VALUE . $name . '" '
-            . 'onchange="location.href='
-            . "'" . $url . "' +"
-            . 'this.options[this.selectedIndex].value;">'
-            . self::CR;
-        $selector .= self::OPTION_OPEN_VALUE . $defaultMessage .self::OPTION_END
-                . self::OPTION_DEFAULT_MESSAGE . self::OPTION_CLOSE_VALUE
-                . self::CR;
-        $selector .= self::getOptions($options, $default);
-        $selector .= self::SELECT_CLOSE_VALUE . self::CR;
+        self::$selected = $defaultValue;
+        $selectorOptionsOptions = self::getOptions($items, $defaultValue, $defaultMessage);
+        $selector = new Decorator('select', $selectorOptionsOptions, [
+            'class' => 'col-lg-6 form-control',
+            'name' => $name,
+            'onchange' => 'location.href=\'' . $url . '\' + this.options[this.selectedIndex].value;'
+        ]);
         return $selector;
     }
     
     /**
      * getOptions
      *
-     * @param array $options
+     * @param array $items
      * @param string $default
      * @return string
      */
-    private static function getOptions($options, $default)
+    private static function getOptions($items, $defaultValue, $defaultMessage)
     {
-        $optionsContent = '';
-        $options = self::getTupple($options);
-        foreach ($options as $key => $value) {
-            $selected = ($value == self::$selected)
-                ? self::OPTION_SELECTED
-                : self::OPTION_END;
-            $optionsContent .= self::getOption($key, $value, $selected);
+        $optionsContent = self::getOption(
+            $defaultMessage,
+            $defaultValue,
+            ($defaultValue == self::$selected)
+        );
+        $selectorOptionsItems = self::getTupple($items);
+        foreach ($selectorOptionsItems as $key => $value) {
+            $optionsContent .= self::getOption(
+                $key,
+                $value,
+                ($value == self::$selected)
+            );
         }
         return $optionsContent;
     }
-    
+
     /**
      * getOption
      *
      * @param string $key
      * @param string $value
-     * @param string $selected
-     * @return string
+     * @param bool $selected
+     * @return Decorator
      */
-    private static function getOption($key, $value, $selected)
+    private static function getOption(string $key, string $value, bool $selected): Decorator
     {
-        return self::OPTION_OPEN_VALUE
-            . $value
-            . $selected
-            . $key
-            . self::OPTION_CLOSE_VALUE;
+        $decoratorOptions = ['name' => $key, 'value' => $value];
+        if ($selected) {
+            $decoratorOptions['selected'] = 'selected';
+        }
+        return new Decorator('option', $value, $decoratorOptions);
     }
-    
+
     /**
      * isAssoc
      *

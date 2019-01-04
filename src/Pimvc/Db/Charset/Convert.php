@@ -27,7 +27,7 @@ trait Convert
 
     /**
      * getCharsetConvertValue
-     * 
+     *
      * @param string $v
      * @param string $cf
      * @param string $ct

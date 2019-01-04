@@ -85,29 +85,12 @@ abstract class Domain implements IDomain
             ) {
                 $this->$property = (self::isSerialised($value))
                     ? unserialize($value)
-                    : utf8_encode($value);
+                    : $value;
             } else {
                 unset($this->$property);
             }
         }
     }
-
-    /**
-     * utfConvert
-     *
-     * @param array $assocArray
-     * @param string $cf
-     * @param string $ct
-     */
-    /*
-      protected function utfConvert(array &$aa, string $cf = 'utf-16', string $ct = 'utf-8')
-      {
-      \array_walk($aa, function (&$v) use ($cf, $ct) {
-      if (!is_numeric($v)) {
-      $v = @iconv($cf, $ct, $v);
-      }
-      });
-      } */
 
     /**
      * get

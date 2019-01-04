@@ -500,7 +500,25 @@ class Liste implements Interfaces\Liste
      */
     private function getSql()
     {
-        return ($this->showSql) ? '<pre>' . $this->sql . '</pre>' : '';
+        return ($this->showSql) ? $this->getSqlWrapper() : '';
+    }
+    
+    /**
+     * getSqlWrapper
+     *
+     * @return string
+     */
+    private function getSqlWrapper(): string
+    {
+        return '<div id="listeSqlWrapper" class="row-fuild"><p>Sql&nbsp;'
+                . Views\Helpers\Glyph::get(
+                    Views\Helpers\Glyph::EYE_OPEN,
+                    [self::PARAM_ID => 'sqlListeToggleIcon']
+                )
+                . '</p></div>'
+                . '<pre id="listeSql" class="hidden">'
+                . str_replace(',', ', ', $this->sql)
+                . '</pre>';
     }
 
     /**

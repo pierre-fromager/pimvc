@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Helper_Pagesize
+ * Pimvc\Views\Helpers\Pagesize
  *
  * @author pierrefromager
  */
@@ -10,7 +10,7 @@ namespace Pimvc\Views\Helpers;
 
 class Pagesize
 {
-    protected static $pagesizes = array(10, 25, 50, 75, 100);
+    protected static $pagesizes = [10, 25, 50, 75, 100, 250, 500];
 
     /**
      * get
@@ -36,27 +36,19 @@ class Pagesize
     /**
      * getCombo
      *
-     * @param string $curent
+     * @param string $currentSize
      * @return string
      */
-    public static function getCombo($url, $curent)
+    public static function getCombo($url, $currentSize)
     {
         $pageSizes = array_combine(self::getData(), self::getData());
         $selector = Urlselector::get(
             'pageSize',
             $url,
             $pageSizes,
-            $curent
+            $currentSize
         );
-        /*
-        $selector = new Helper_Select(
-            'pageSize'
-            , 'pageSize'
-            , $curent
-            , $pageSizes
-        );*/
         $result = (string) $selector;
-        //unset($selector);
         return $result;
     }
 }

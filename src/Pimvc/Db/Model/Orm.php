@@ -1164,8 +1164,10 @@ abstract class Orm extends Core implements ormInterface
                     } elseif ($pdoType == \PDO::PARAM_STR) {
                         $criterias[$name] = //$this->getUtf8To16Le($criterias[$name]);
                             $this->getCharsetConvert(
-                            $criterias[$name], 'utf-8', 'utf-16'
-                        );
+                                $criterias[$name],
+                                'utf-8',
+                                'utf-16'
+                            );
                     }
                     $forcedType[$name] = $pdoType;
                 }
@@ -1250,7 +1252,9 @@ abstract class Orm extends Core implements ormInterface
                         $where[$name] = (int) $where[$name];
                     } elseif ($pdoType == \PDO::PARAM_STR) {
                         $where[$name] = $this->getCharsetConvert(
-                            $where[$name], 'utf-8', 'utf-16'
+                            $where[$name],
+                            'utf-8',
+                            'utf-16'
                         );
                     }
                     $forcedType[$name] = $pdoType;

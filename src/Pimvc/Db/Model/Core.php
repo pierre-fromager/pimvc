@@ -125,7 +125,9 @@ abstract class Core extends Charset implements Interfaces\Core
                     //. '  INNER JOIN _USER_CONSTRAINTS uco on uc.table_id = uco.table_id'
                     . '  WHERE uc.table_name = :tablename'; // AND uco.constraint_name = \'\''; //' AND uco.table_name = :tablename';
                 $this->run($sql, ['tablename' => $this->getCharsetConvert(
-                        $tablename, 'utf-8', 'utf-16'
+                    $tablename,
+                    'utf-8',
+                    'utf-16'
                 )]);
                 $results = $this->_statement->fetchAll($this->_fetchMode);
                 $this->_statement->closeCursor();
@@ -225,7 +227,9 @@ abstract class Core extends Charset implements Interfaces\Core
                     . ' JOIN _USER_INDEXES ui on ui.index_uuid = uic.index_uuid'
                     . ' WHERE uic.table_name = :tablename';
                 $this->run($sql, ['tablename' => $this->getCharsetConvert(
-                        $tablename, 'utf-8', 'utf-16'
+                    $tablename,
+                    'utf-8',
+                    'utf-16'
                 )]);
                 $result = $this->_statement->fetchAll($this->_fetchMode);
                 $this->_statement->closeCursor();
@@ -292,8 +296,10 @@ abstract class Core extends Charset implements Interfaces\Core
                 $sql = 'SELECT table_name FROM _USER_TABLES '
                     . 'WHERE table_name = :tablename';
                 $bindParams = ['tablename' => $this->getCharsetConvert(
-                        $tablename, 'utf-8', 'utf-16'
-                    )
+                    $tablename,
+                    'utf-8',
+                    'utf-16'
+                )
                 ];
                 break;
         }
