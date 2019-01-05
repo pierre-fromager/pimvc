@@ -363,11 +363,14 @@ class Logger implements Interfaces\Logger
             if (self::$adapter == self::LOG_ADAPTER_FILE) {
                 $line = "$status $line";
                 if ($args !== self::NO_ARGUMENTS) {
-                    $line = $line . ';' . str_replace(
+                    $isArgString = (is_string($args));
+                    $argLine = ($isArgString) ? $args : var_export($args, true);
+                    $argLine = (!$isArgString) ? str_replace(
                         ["\n", ' '],
                         '',
-                        var_export($args, true)
-                    );
+                        $argLine
+                    ) : $argLine;
+                    $line = $line . ';' . $argLine;
                 }
                 $this->writeFreeFormLine($line . PHP_EOL);
             } elseif ($this->isDbAdapter(self::$adapter)

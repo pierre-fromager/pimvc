@@ -28,7 +28,7 @@ interface Logger
     const LOG_LAN_ANY = true;
     //log adapter
     const LOG_ADAPTER_FILE = 'file';
-    const LOG_ADAPTER_FILE_PATH = 'cache/log/';
+    const LOG_ADAPTER_FILE_PATH = 'log/';
     const LOG_ADAPTER_DB = 'db';
     const LOG_ADAPTER_DB1 = 'db1';
     const LOG_ADAPTER_DB2 = 'db2';
