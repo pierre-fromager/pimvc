@@ -120,26 +120,30 @@ abstract class Core extends Charset implements Interfaces\Core
                 $sql = 'DESCRIBE ' . $schemaPrefix . $tablename;
                 break;
             case \Pimvc\Db\Model\Core::MODEL_ADAPTER_4D:
-                $sql = 'SELECT  * '
-                    . ' FROM _USER_COLUMNS uc'
-                    //. '  INNER JOIN _USER_CONSTRAINTS uco on uc.table_id = uco.table_id'
-                    . '  WHERE uc.table_name = :tablename'; // AND uco.constraint_name = \'\''; //' AND uco.table_name = :tablename';
-                $this->run($sql, ['tablename' => $this->getCharsetConvert(
-                    $tablename,
-                    'utf-8',
-                    'utf-16'
-                )]);
+                $tablenameConverted = $this->getCharsetConvert($tablename, 'utf-8', 'utf-16');
+                $sqlPk = 'SELECT ucoco.column_id,ucoco.column_name'
+                    . ' FROM _user_cons_columns ucoco '
+                    . ' JOIN _user_constraints uco ON uco.constraint_id = ucoco.constraint_id'
+                    . ' WHERE (_user_constraints.constraint_type = :type)'
+                    . ' AND (_user_constraints.table_name = :tablename)';
+                $this->run($sqlPk, ['tablename' => $tablenameConverted, 'type' => $this->getCharsetConvert('P', 'utf-8', 'utf-16')]);
+                $resultsPk = $this->_statement->fetchAll($this->_fetchMode);
+                $this->_statement->closeCursor();
+                $this->charsetConvertCollection($resultsPk);
+                $pkColumnName = strtolower($resultsPk[0]['column_name']);
+                $sql = 'SELECT * FROM _user_columns uc WHERE uc.table_name = :tablename';
+                $this->run($sql, ['tablename' => $tablenameConverted]);
                 $results = $this->_statement->fetchAll($this->_fetchMode);
                 $this->_statement->closeCursor();
                 $this->charsetConvertCollection($results);
                 if (!$results) {
                     throw new \Exception('Cant describe ' . $tablename);
                 }
-                array_walk($results, function (&$v) {
+                array_walk($results, function (&$v) use ($pkColumnName) {
                     $v['column_name'] = strtolower($v['column_name']);
                     $v['table_name'] = strtolower($v['table_name']);
+                    $v['primary'] = ($v['column_name'] == $pkColumnName) ? '1' : '0';
                 });
-                //var_dump($results);die;
                 reset($results);
                 return $results;
                 break;

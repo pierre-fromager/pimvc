@@ -61,6 +61,12 @@ class Field
     protected $isString;
 
     /**
+     * $isBool
+     * @var bool
+     */
+    protected $isBool;
+
+    /**
      * $isNumeric
      * @var bool
      */
@@ -141,6 +147,7 @@ class Field
             'isFloat' => $this->isFloat,
             'isInt' => $this->isInt,
             'isString' => $this->isString,
+            'isBool' => $this->isBool,
             'isNumeric' => $this->isNumeric,
             'isNullable' => $this->isNullable,
             'isUniq' => $this->isUniq,
@@ -221,6 +228,16 @@ class Field
     }
 
     /**
+     * getIsBool
+     *
+     * @return bool
+     */
+    public function getIsBool(): bool
+    {
+        return $this->isBool;
+    }
+
+    /**
      * getIsNumeric
      *
      * @return bool
@@ -296,6 +313,7 @@ class Field
             'isFloat' => $this->isFloat,
             'isInt' => $this->isInt,
             'isString' => $this->isString,
+            'isBool' => $this->isBool,
             'maxLen' => $this->maxLen,
             'decimalSeparator' => $this->decimalSeparator
         ];
@@ -394,6 +412,18 @@ class Field
     public function setIsInt(bool $isInt): Field
     {
         $this->isInt = $isInt;
+        return $this;
+    }
+
+    /**
+     * setIsBool
+     *
+     * @param bool $isBool
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setIsBool(bool $isBool): Field
+    {
+        $this->isBool = $isBool;
         return $this;
     }
 
@@ -554,10 +584,17 @@ class Field
                 $this->setMaxlen((int) $desc['data_length']);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
+                $this->setIsUniq($desc['uniqueness'] === '0');
                 if (!$isString) {
-                    $isInt = \Pimvc\Tools\Db\Fourd\Types::isFourdInt($type);
+                    $isInt = \Pimvc\Tools\Db\Fourd\Types::isFourdInt((int) $fourdType);
                     $this->setIsInt($isInt);
-                    $this->setIsFloat(!$isInt);
+                    $isFloat = \Pimvc\Tools\Db\Fourd\Types::isFourdFloat((int) $fourdType);
+                    $this->setIsFloat($isFloat);
+                    $isBool = \Pimvc\Tools\Db\Fourd\Types::isFourdBool((int) $fourdType);
+                    $this->setIsBool($isBool);
+                    if ($isBool) {
+                        $this->setIsNumeric(false);
+                    }
                 }
                 break;
         }

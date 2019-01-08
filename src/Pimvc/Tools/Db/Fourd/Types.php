@@ -55,6 +55,28 @@ class Types
     }
 
     /**
+     * isFourdFloat
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdFloat(int $type4d): bool
+    {
+        return ($type4d === self::TYPE_REAL);
+    }
+
+    /**
+     * isFourdBool
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdBool(int $type4d): bool
+    {
+        return ($type4d === self::TYPE_BOOLEAN);
+    }
+
+    /**
      * getLabel
      *
      * @param int $type4d
