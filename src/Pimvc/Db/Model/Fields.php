@@ -6,6 +6,10 @@ class Fields implements \ArrayAccess, \Countable, \IteratorAggregate
 
     const _BAD_INSTANCE = 'value must be an instance of Field';
 
+    /**
+     * $container
+     * @var \Pimvc\Db\Model\Field[]
+     */
     private $container = [];
 
     /**
@@ -100,6 +104,23 @@ class Fields implements \ArrayAccess, \Countable, \IteratorAggregate
         $datas = [];
         for ($c = 0; $c < count($this->container); $c++) {
             $datas[] = $this->container[$c]->toArray();
+        }
+        return $datas;
+    }
+
+    /**
+     * getIndexes
+     *
+     * @return array
+     */
+    public function getIndexes(): array
+    {
+        $datas = [];
+        for ($c = 0; $c < count($this->container); $c++) {
+            $isIndex = $this->container[$c]->getIsKey();
+            if ($isIndex) {
+                $datas[] = $this->container[$c]->toArray();
+            }
         }
         return $datas;
     }
