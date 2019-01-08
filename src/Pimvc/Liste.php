@@ -131,6 +131,21 @@ class Liste implements Interfaces\Liste
     }
 
     /**
+     * setPrimary
+     *
+     * @param string $pkName
+     * @throws \Exception
+     */
+    public function setPrimary(string $pkName)
+    {
+        if ($this->modelName instanceof Db\Model\Orm) {
+            $this->modelName->setPrimary($pkName);
+        } else {
+            throw new \Exception('Not a Db\Model\Orm instance');
+        }
+    }
+
+    /**
      * setTableId
      *
      * @param string $id

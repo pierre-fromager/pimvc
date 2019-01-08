@@ -344,6 +344,19 @@ abstract class Orm extends Core implements ormInterface
     }
 
     /**
+     * setPrimary
+     *
+     *
+     * @param string $pkName
+     * @return $this
+     */
+    public function setPrimary(string $pkName)
+    {
+        $this->_primary = $pkName;
+        return $this;
+    }
+
+    /**
      * getError
      *
      * @return string
