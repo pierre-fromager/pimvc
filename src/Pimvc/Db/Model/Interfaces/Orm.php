@@ -39,7 +39,7 @@ interface Orm
 
     public function getStatement();
 
-    public function getDomainInstance();
+    public function getDomainInstance(): \Pimvc\Db\Model\Domain;
 
     public function getColumns();
 
@@ -115,7 +115,7 @@ interface Orm
 
     public function add($mapperInstance);
 
-    public function update($params = []);
+    public function update(array $params = [], array $forcedType = []);
 
     public function directsql($sql, $params);
 

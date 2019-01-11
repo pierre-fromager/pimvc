@@ -225,10 +225,10 @@ abstract class Orm extends Core implements ormInterface
 
     /**
      * getDomainInstance
-     *
-     * @return mixed
+     * 
+     * @return \Pimvc\Db\Model\Domain
      */
-    public function getDomainInstance()
+    public function getDomainInstance(): \Pimvc\Db\Model\Domain
     {
         return $this->_domainInstance;
     }
@@ -559,7 +559,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @throws Exception
      */
-    public function save($domainObject, $forceAsNew = false)
+    public function save($domainObject, $forceAsNew = false, array $forcedTypes = [])
     {
         if (is_array($domainObject)) {
             $domainObjetDirty = $this->getDomainInstance();
@@ -576,7 +576,7 @@ abstract class Orm extends Core implements ormInterface
                 }
                 $this->insert($domainObject->toArray());
             } else {
-                $this->update($domainObject->toArray());
+                $this->update($domainObject->toArray(), $forcedTypes);
             }
         } else {
             $error = 'Current domain object ' . $this->_domainClass . ' failed';
@@ -1307,15 +1307,17 @@ abstract class Orm extends Core implements ormInterface
     /**
      * update a record into the given modelName from an associative array
      *
-     * @param string $modelName
      * @param array $params
+     * @param array $forcedTypes
      */
-    public function update($params = [])
+    public function update(array $params = [], array $forcedTypes = [])
     {
-        $pk = $this->_primary;
-        //$type = $this->_domainInstance->getPdo($pk);
         $sql = self::MODEL_UPDATE . $this->_name . self::MODEL_SET;
+        $quote = ($this->is4d()) ? '' : '`';
+        $ql = ($this->is4d()) ? '[' : '';
+        $qr = ($this->is4d()) ? ']' : '';
         $hasWhere = $this->hasWhere();
+        $sqlFields = $params;
         if ($hasWhere) {
             $this->bindWhere();
             $where = $this->getWhere();
@@ -1323,15 +1325,15 @@ abstract class Orm extends Core implements ormInterface
             $key = $this->_primary;
             $value = $params[$key];
             $id = ':' . $this->_primary;
-            $where = self::MODEL_WHERE . $key . " = " . $id;
+            $where = self::MODEL_WHERE . $quote . $ql . $key . $qr . $quote . " = " . $id;
+            unset($sqlFields[$key]);
         }
-        $quote = '`';
-        foreach ($params as $key => $value) {
+        foreach ($sqlFields as $key => $value) {
             $keyBind = ':' . $key;
-            $sql .= $quote . $key . $quote . ' = ' . $keyBind . ', ';
+            $sql .= $quote . $ql . $key . $qr . $quote . ' = ' . $keyBind . ', ';
         }
         $sql = substr($sql, 0, -2) . $where . ';';
-        $returnCode = $this->run($sql, $params);
+        $returnCode = $this->run($sql, $params, $forcedTypes);
         return $returnCode;
     }
 
