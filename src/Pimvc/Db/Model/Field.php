@@ -67,6 +67,12 @@ class Field
     protected $isBool;
 
     /**
+     * $isBlob
+     * @var bool
+     */
+    protected $isBlob;
+
+    /**
      * $isNumeric
      * @var bool
      */
@@ -132,6 +138,9 @@ class Field
         $this->isNumeric = false;
         $this->isNullable = false;
         $this->isUniq = false;
+        $this->isBool = false;
+        $this->isBlob = false;
+        $this->pdoType = \PDO::PARAM_STR;
     }
 
     /**
@@ -148,11 +157,13 @@ class Field
             'isInt' => $this->isInt,
             'isString' => $this->isString,
             'isBool' => $this->isBool,
+            'isBlob' => $this->isBlob,
             'isNumeric' => $this->isNumeric,
             'isNullable' => $this->isNullable,
             'isUniq' => $this->isUniq,
             'isKey' => $this->isKey,
             'isPrimaryKey' => $this->isPrimaryKey,
+            'pdoType' => $this->pdoType,
             'count' => $this->count,
         ];
     }
@@ -238,6 +249,16 @@ class Field
     }
 
     /**
+     * getIsBlob
+     *
+     * @return bool
+     */
+    public function getIsBlob(): bool
+    {
+        return $this->isBlob;
+    }
+
+    /**
      * getIsNumeric
      *
      * @return bool
@@ -314,6 +335,7 @@ class Field
             'isInt' => $this->isInt,
             'isString' => $this->isString,
             'isBool' => $this->isBool,
+            'isBlob' => $this->isBlob,
             'maxLen' => $this->maxLen,
             'decimalSeparator' => $this->decimalSeparator
         ];
@@ -428,6 +450,18 @@ class Field
     }
 
     /**
+     * setIsBlob
+     *
+     * @param bool $isBlob
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setIsBlob(bool $isBlob): Field
+    {
+        $this->isBlob = $isBlob;
+        return $this;
+    }
+
+    /**
      * setIsUniq
      *
      * @param bool $isUniq
@@ -538,12 +572,24 @@ class Field
                 preg_match('#\((.*?)\)#', $type, $lenCapture);
                 $len = (isset($lenCapture[1])) ? (int) $lenCapture[1] : 0;
                 $this->setMaxlen($len);
-                $isString = (preg_match('/^varchar/', $type) === 1);
+                $isString = (preg_match('/^varchar|text/', $type) === 1);
                 $this->setIsString($isString);
                 $this->setIsNumeric(!$isString);
                 if (!$isString) {
-                    $this->setIsInt((preg_match('/^int/', $type) === 1));
-                    $this->setIsFloat((preg_match('/^float/', $type) === 1));
+                    $isInt = (preg_match('/int/', $type) === 1);
+                    if ($isInt) {
+                        $this->setPdoType(\PDO::PARAM_INT);
+                    }
+                    $this->setIsInt($isInt);
+                    $isFloat = (preg_match('/^float/', $type) === 1);
+                    $this->setIsFloat($isFloat);
+                    $isLob = (preg_match('/lob/', $type) === 1);
+                    $this->setIsBlob($isLob);
+                    if ($isLob) {
+                        $this->setPdoType(\PDO::PARAM_LOB);
+                        $this->setIsNumeric(false);
+                        $this->setIsString(false);
+                    }
                 }
                 break;
 
@@ -594,6 +640,7 @@ class Field
                     $this->setIsBool($isBool);
                     if ($isBool) {
                         $this->setIsNumeric(false);
+                        $this->setIsString(false);
                     }
                 }
                 break;

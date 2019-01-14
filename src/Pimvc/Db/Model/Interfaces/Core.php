@@ -54,8 +54,8 @@ interface Core
 
     public function run($sql, $bindParams = [], $bindTypes = []);
 
-    public function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = []);
-    
+    public function bindArray(\PDOStatement &$poStatement, array &$paArray, array $forcedTypes = []);
+
     public function describeTable($name = '');
 
     public function getQueryType($sql);

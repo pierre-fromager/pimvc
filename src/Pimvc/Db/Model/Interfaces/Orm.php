@@ -27,51 +27,51 @@ interface Orm
     const _TABLE = 'table';
     const _CARDINALITY = 'cardinality';
 
-    public function setCast($fieldName, $typeCast);
+    public function setCast($fieldName, $typeCast): \Pimvc\Db\Model\Orm;
 
-    public function setCasts($fieldsCast);
+    public function setCasts($fieldsCast): \Pimvc\Db\Model\Orm;
 
-    public function getName();
+    public function getName(): string;
 
-    public function getDefaultSchema();
+    public function getDefaultSchema(): string;
 
-    public function getAdapter();
+    public function getAdapter(): string;
 
-    public function getStatement();
+    public function getStatement(): \PDOStatement;
 
     public function getDomainInstance(): \Pimvc\Db\Model\Domain;
 
-    public function getColumns();
+    public function getColumns(): array;
 
-    public function setFetchMode($mode);
+    public function setFetchMode(int $mode): \Pimvc\Db\Model\Orm;
 
-    public function getFetchMode();
+    public function getFetchMode(): int;
 
-    public function getPrimary();
+    public function getPrimary(): string;
 
     public function describeTable($name = '');
 
-    public function getError();
+    public function getError(): string;
 
-    public function hasError();
+    public function hasError(): bool;
 
-    public function getErrorCode();
+    public function getErrorCode(): int;
 
-    public function getErrorMessage();
+    public function getErrorMessage(): string;
 
-    public function cleanRowset();
+    public function cleanRowset(): \Pimvc\Db\Model\Orm;
 
     public function getRowset();
 
-    public function getRowsetAsArray($preservedKey = '', $assignedKeyValue = '');
+    public function getRowsetAsArray($preservedKey = '', $assignedKeyValue = ''): array;
 
     public function getCurrent();
 
-    public function previous();
+    public function previous(): bool;
 
-    public function next();
+    public function next(): bool;
 
-    public function rewind();
+    public function rewind(): \Pimvc\Db\Model\Orm;
 
     public function seek($value = 0);
 

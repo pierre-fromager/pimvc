@@ -61,7 +61,7 @@ abstract class Orm extends Core implements ormInterface
      * __construct
      *
      * @param type $config
-     * @return $this
+     * @return \Pimvc\Db\Model\Orm
      * @throws ormException
      */
     public function __construct($config = [])
@@ -104,7 +104,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return bool
      */
-    protected function is4d()
+    protected function is4d(): bool
     {
         return ($this->_adapter === self::MODEL_ADAPTER_4D);
     }
@@ -113,9 +113,9 @@ abstract class Orm extends Core implements ormInterface
      * setSchema
      *
      * @param string $schema
-     * @return $this
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setSchema($schema)
+    public function setSchema($schema): \Pimvc\Db\Model\Orm
     {
         $this->_schema = $schema;
         return $this;
@@ -128,10 +128,12 @@ abstract class Orm extends Core implements ormInterface
      *
      * @param string $fieldName
      * @param string $typeCast
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setCast($fieldName, $typeCast)
+    public function setCast($fieldName, $typeCast): \Pimvc\Db\Model\Orm
     {
         $this->_casts[$fieldName] = $typeCast;
+        return $this;
     }
 
     /**
@@ -140,12 +142,14 @@ abstract class Orm extends Core implements ormInterface
      * force casts on a fields array (pgsql only)
      *
      * @param array $fieldsCast
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setCasts($fieldsCast)
+    public function setCasts($fieldsCast): \Pimvc\Db\Model\Orm
     {
         foreach ($fieldsCast as $fieldName => $typeCast) {
             $this->_casts[$fieldName] = $typeCast;
         }
+        return $this;
     }
 
     /**
@@ -161,7 +165,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
@@ -171,7 +175,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getDefaultSchema()
+    public function getDefaultSchema(): string
     {
         return $this->_defaultSchema;
     }
@@ -181,7 +185,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getAdapter()
+    public function getAdapter(): string
     {
         return $this->_adapter;
     }
@@ -189,9 +193,9 @@ abstract class Orm extends Core implements ormInterface
     /**
      * getStatement
      *
-     * @return type
+     * @return \PDOStatement
      */
-    public function getStatement()
+    public function getStatement(): \PDOStatement
     {
         return $this->_statement;
     }
@@ -202,7 +206,7 @@ abstract class Orm extends Core implements ormInterface
      * @param string $statement
      * @return string
      */
-    protected function getCachename($name, $fieldList, $limit, $criterias)
+    protected function getCachename($name, $fieldList, $limit, $criterias): string
     {
         $limit = (is_array($limit)) ? $limit : array($limit);
         $hashTab = serialize(array_merge($limit, $criterias, $fieldList));
@@ -214,7 +218,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    protected function getDomainName()
+    protected function getDomainName(): string
     {
         $getCalledClassNameSpliter = explode(self::BACKSLASH, get_called_class());
         $entity = array_pop($getCalledClassNameSpliter);
@@ -225,7 +229,7 @@ abstract class Orm extends Core implements ormInterface
 
     /**
      * getDomainInstance
-     * 
+     *
      * @return \Pimvc\Db\Model\Domain
      */
     public function getDomainInstance(): \Pimvc\Db\Model\Domain
@@ -235,11 +239,14 @@ abstract class Orm extends Core implements ormInterface
 
     /**
      * setDomainInstance
+     *
      * @param \Pimvc\Db\Model\Domain $domainInstance
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setDomainInstance(\Pimvc\Db\Model\Domain $domainInstance)
+    public function setDomainInstance(\Pimvc\Db\Model\Domain $domainInstance): \Pimvc\Db\Model\Orm
     {
         $this->_domainInstance = $domainInstance;
+        return $this;
     }
 
     /**
@@ -247,7 +254,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return array
      */
-    protected function getDomainFields($size = 0)
+    protected function getDomainFields($size = 0): array
     {
         $objectVars = get_object_vars($this->_domainInstance);
         $fields = array_keys($objectVars);
@@ -268,7 +275,7 @@ abstract class Orm extends Core implements ormInterface
      * @param string $info
      * @return array
      */
-    protected function getMetasInfo($info = null)
+    protected function getMetasInfo($info = null): array
     {
         $result = [];
         
@@ -289,7 +296,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         $key = self::MODEL_INDEX_FIELD;
         switch ($this->_adapter) {
@@ -313,10 +320,12 @@ abstract class Orm extends Core implements ormInterface
      * setFetchMode
      *
      * @param int $mode
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setFetchMode($mode)
+    public function setFetchMode(int $mode): \Pimvc\Db\Model\Orm
     {
         $this->_fetchMode = $mode;
+        return $this;
     }
 
     /**
@@ -324,7 +333,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @param int $mode
      */
-    public function getFetchMode()
+    public function getFetchMode(): int
     {
         return $this->_fetchMode;
     }
@@ -335,7 +344,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getPrimary()
+    public function getPrimary(): string
     {
         if (!$this->_primary) {
             return $this->_columns[0];
@@ -348,9 +357,9 @@ abstract class Orm extends Core implements ormInterface
      *
      *
      * @param string $pkName
-     * @return $this
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function setPrimary(string $pkName)
+    public function setPrimary(string $pkName): \Pimvc\Db\Model\Orm
     {
         $this->_primary = $pkName;
         return $this;
@@ -361,7 +370,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getError()
+    public function getError(): string
     {
         return $this->_error;
     }
@@ -369,9 +378,9 @@ abstract class Orm extends Core implements ormInterface
     /**
      * hasError
      *
-     * @return string
+     * @return bool
      */
-    public function hasError()
+    public function hasError(): bool
     {
         return ($this->_errorCode != 0);
     }
@@ -381,7 +390,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return int
      */
-    public function getErrorCode()
+    public function getErrorCode(): int
     {
         return $this->_errorCode;
     }
@@ -391,7 +400,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return string
      */
-    public function getErrorMessage()
+    public function getErrorMessage(): string
     {
         return $this->_errorMessage;
     }
@@ -399,9 +408,9 @@ abstract class Orm extends Core implements ormInterface
     /**
      * isNew returns true if domain object id is null
      *
-     * @return boolean
+     * @return bool
      */
-    protected function isNew()
+    protected function isNew(): bool
     {
         return (empty($this->_current->{$this->_primary}));
     }
@@ -418,10 +427,11 @@ abstract class Orm extends Core implements ormInterface
     }
 
     /**
-     * cleanRowset set _rowset as an empty array
-     *
+     * cleanRowset
+     * empty _rowset
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function cleanRowset()
+    public function cleanRowset(): \Pimvc\Db\Model\Orm
     {
         $this->_rowset = [];
         return $this;
@@ -442,7 +452,7 @@ abstract class Orm extends Core implements ormInterface
      *
      * @return array
      */
-    public function getRowsetAsArray($preservedKey = '', $assignedKeyValue = '')
+    public function getRowsetAsArray($preservedKey = '', $assignedKeyValue = ''): array
     {
         $result = [];
         if (!empty($this->_rowset)) {
@@ -466,10 +476,12 @@ abstract class Orm extends Core implements ormInterface
     }
 
     /**
-     * setCurrent set current to rowset current index.
+     * setCurrent
      *
+     * set current to rowset current index.
+     * @return \Pimvc\Db\Model\Orm
      */
-    protected function setCurrent()
+    protected function setCurrent(): \Pimvc\Db\Model\Orm
     {
         $this->_current = $this->getRow($this->_currentIndex);
         return $this;
@@ -489,9 +501,9 @@ abstract class Orm extends Core implements ormInterface
      * seekable return true if seeking is available
      *
      * @param int $value
-     * @return boolean
+     * @return bool
      */
-    protected function seekable($value = 0)
+    protected function seekable(int $value = 0): bool
     {
         return (isset($this->_rowset[$value]));
     }
@@ -499,9 +511,9 @@ abstract class Orm extends Core implements ormInterface
     /**
      * previous set _current to previous row rowset
      *
-     * @return boolean
+     * @return bool
      */
-    public function previous()
+    public function previous(): bool
     {
         $isPrevious = $this->seekable($this->_currentIndex - 1);
         if ($isPrevious) {
@@ -514,9 +526,9 @@ abstract class Orm extends Core implements ormInterface
     /**
      * previous set _current to previous row rowset
      *
-     * @return boolean
+     * @return bool
      */
-    public function next()
+    public function next(): bool
     {
         $isNext = $this->seekable($this->_currentIndex + 1);
         if ($isNext) {
@@ -525,11 +537,15 @@ abstract class Orm extends Core implements ormInterface
         }
         return $isNext;
     }
-
+    
     /**
-     * rewind set _current to first row rowset
+     * rewind
+     *
+     * set _current to first row rowset
+     *
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function rewind()
+    public function rewind(): \Pimvc\Db\Model\Orm
     {
         $this->_currentIndex = 0;
         $this->setCurrent();
@@ -1353,32 +1369,30 @@ abstract class Orm extends Core implements ormInterface
         return $spbParams;
     }
 
-
-
     /**
-     * delete _current rowset
+     * delete
      *
-     * @param string $modelName
-     * @param array $params
+     * @param array $forcedTypes
+     * @return \Pimvc\Db\Model\Orm
      */
-    public function delete()
+    public function delete(array $forcedTypes = [])
     {
         $sql = self::MODEL_DELETE . $this->_name;
+        $params = [];
         if ($this->hasWhere()) {
             $this->bindWhere();
             $where = $this->getWhere();
             $sql .= $where;
-            $returnCode = $this->run($sql);
         } else {
             $id = isset($this->_current->{$this->_primary}) ? $this->_current->{$this->_primary} : '';
             if (!empty($id)) {
                 $sql .= self::MODEL_WHERE . $this->_primary
                     . '= :' . $this->_primary;
-                $params = array($this->_primary => $id);
+                $params = [$this->_primary => $id];
             }
-            $returnCode = $this->run($sql, $params);
         }
-        return $returnCode;
+        $this->run($sql, $params, $forcedTypes);
+        return $this;
     }
 
     /**

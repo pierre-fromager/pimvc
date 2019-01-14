@@ -70,12 +70,14 @@ abstract class Core extends Charset implements Interfaces\Core
     }
 
     /**
-     * bindArray binds Pdo values for query prepare
+     * bindArray
      *
-     * @param PDOStatement $poStatement
+     * @param \PDOStatement $poStatement
      * @param array $paArray
+     * @param array $forcedTypes
+     * @return $this
      */
-    public function bindArray(\PDOStatement &$poStatement, &$paArray, $forcedTypes = [])
+    public function bindArray(\PDOStatement &$poStatement, array &$paArray, array $forcedTypes = [])
     {
         foreach ($paArray as $k => $v) {
             $type = (is_int($v)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
