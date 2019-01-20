@@ -110,6 +110,13 @@ class Field
     protected $pdoType;
 
     /**
+     * $nativType
+     *
+     * @var int
+     */
+    protected $nativType;
+
+    /**
      * $stack
      * @var array
      */
@@ -141,6 +148,7 @@ class Field
         $this->isBool = false;
         $this->isBlob = false;
         $this->pdoType = \PDO::PARAM_STR;
+        $this->nativType = 0;
     }
 
     /**
@@ -164,6 +172,7 @@ class Field
             'isKey' => $this->isKey,
             'isPrimaryKey' => $this->isPrimaryKey,
             'pdoType' => $this->pdoType,
+            'pdoType' => $this->nativType,
             'count' => $this->count,
         ];
     }
@@ -311,11 +320,21 @@ class Field
     /**
      * getPdoType
      *
-     * @return bool
+     * @return int
      */
     public function getPdoType(): int
     {
         return $this->pdoType;
+    }
+
+    /**
+     * getNativType
+     *
+     * @return int
+     */
+    public function getNativType(): int
+    {
+        return $this->nativType;
     }
 
     /**
@@ -337,6 +356,8 @@ class Field
             'isBool' => $this->isBool,
             'isBlob' => $this->isBlob,
             'maxLen' => $this->maxLen,
+            'pdoType' => $this->pdoType,
+            'nativType' => $this->nativType,
             'decimalSeparator' => $this->decimalSeparator
         ];
     }
@@ -522,6 +543,18 @@ class Field
     }
 
     /**
+     * setNativType
+     *
+     * @param int $nativType
+     * @return \Pimvc\Db\Model\Field
+     */
+    public function setNativType(int $nativType): Field
+    {
+        $this->nativType = $nativType;
+        return $this;
+    }
+
+    /**
      * setFromData
      * @param array $dataGrid
      * @param string $fieldName
@@ -624,6 +657,7 @@ class Field
                 $fourdType = $desc['data_type'];
                 $type = \Pimvc\Tools\Db\Fourd\Types::getPdo($fourdType);
                 $this->setPdoType($type);
+                $this->setNativType($fourdType);
                 $this->setName($desc['column_name']);
                 $this->setIsNullable($desc['nullable'] === '1');
                 $isString = ($type == \PDO::PARAM_STR);
