@@ -20,6 +20,7 @@ class Types
     const TYPE_STRING = 10;
     const TYPE_STRING_LABEL = 'string';
     const TYPE_LOB = 12;
+    const TYPE_LOB2 = 18;
     const TYPE_LOB_LABEL = 'lob';
     const TYPE_NULL_LABEL = 'null';
     const TYPE_STMT_LABEL = 'statement';
@@ -32,14 +33,14 @@ class Types
     /**
      * getPdo returns the pdo binding's type for a given 4d type
      *
-     * @param int $Type4d
+     * @param int $type4d
      * @return int
      */
-    public static function getPdo($type4d)
+    public static function getPdo($type4d): int
     {
         $pdo = (self::isFourdInt($type4d)) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
-        $pdo = ($type4d == self::TYPE_BOOLEAN) ? \PDO::PARAM_BOOL : $pdo;
-        $pdo = ($type4d == self::TYPE_LOB) ? \PDO::PARAM_LOB : $pdo;
+        $pdo = (self::isFourdBool($type4d)) ? \PDO::PARAM_BOOL : $pdo;
+        $pdo = (self::isFourdLob($type4d)) ? \PDO::PARAM_LOB : $pdo;
         return $pdo;
     }
 
@@ -66,6 +67,28 @@ class Types
     }
 
     /**
+     * isFourdDate
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdDate(int $type4d): bool
+    {
+        return ($type4d === self::TYPE_DATE);
+    }
+
+    /**
+     * isFourdTime
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdTime(int $type4d): bool
+    {
+        return ($type4d === self::TYPE_TIME);
+    }
+
+    /**
      * isFourdBool
      *
      * @param int $type4d
@@ -77,14 +100,25 @@ class Types
     }
 
     /**
+     * isFourdLob
+     *
+     * @param int $type4d
+     * @return bool
+     */
+    public static function isFourdLob(int $type4d): bool
+    {
+        return in_array($type4d, [self::TYPE_LOB, self::TYPE_LOB2]);
+    }
+
+    /**
      * getLabel
      *
      * @param int $type4d
      * @return string
      */
-    public static function getLabel($type4d)
+    public static function getLabel(int $type4d): string
     {
-        $types = array(
+        $types = [
             self::TYPE_BOOLEAN => self::TYPE_BOOLEAN_LABEL
             , self::TYPE_INTEGER => self::TYPE_INTEGER_LABEL
             , self::TYPE_LONGINT => self::TYPE_LONGINT_LABEL
@@ -93,7 +127,8 @@ class Types
             , self::TYPE_TIME => self::TYPE_TIME_LABEL
             , self::TYPE_STRING => self::TYPE_STRING_LABEL
             , self::TYPE_LOB => self::TYPE_LOB_LABEL
-        );
+            , self::TYPE_LOB2 => self::TYPE_LOB_LABEL
+        ];
         $numericValue = '&nbsp;(' . $type4d . ')';
         return (isset($types[$type4d])) ? ucfirst($types[$type4d]) . $numericValue : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }
@@ -101,19 +136,19 @@ class Types
     /**
      * getPdoLabel
      *
-     * @param int $type4d
+     * @param int $typePdo
      * @return string
      */
-    public static function getPdoLabel($typePdo)
+    public static function getPdoLabel(int $typePdo): string
     {
-        $types = array(
+        $types = [
             \PDO::PARAM_NULL => self::TYPE_NULL_LABEL
             , \PDO::PARAM_INT => self::TYPE_INTEGER_LABEL
             , \PDO::PARAM_STR => self::TYPE_STRING_LABEL
             , \PDO::PARAM_LOB => self::TYPE_LOB_LABEL
             , \PDO::PARAM_STMT => self::TYPE_STMT_LABEL
             , \PDO::PARAM_BOOL => self::TYPE_BOOLEAN_LABEL
-        );
+        ];
         $numericValue = '&nbsp;(' . $typePdo . ')';
         return (isset($types[$typePdo])) ? ucfirst($types[$typePdo]) . $numericValue : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }
@@ -125,7 +160,7 @@ class Types
      * @param string $columnName
      * @return array
      */
-    public static function get($tableName)
+    public static function get(string $tableName): array
     {
         $output = array();
         $typeModel = new Model_4d_Columns();
@@ -150,12 +185,12 @@ class Types
      * @param int $indexTypeValue
      * @return string
      */
-    public static function getIndexTypeLabel($indexTypeValue)
+    public static function getIndexTypeLabel(int $indexTypeValue): string
     {
-        $types = array(
+        $types = [
             self::TYPE_4D_INDEX_BTREE => self::TYPE_4D_INDEX_BTREE_LABEL
             , self::TYPE_4D_INDEX_CLUSTER_BTREE => self::TYPE_4D_INDEX_CLUSTER_BTREE_LABEL
-        );
+        ];
         $numericValue = '&nbsp;(' . $indexTypeValue . ')';
         return (isset($types[$indexTypeValue])) ? ucfirst($types[$indexTypeValue]) . $numericValue : ucfirst(self::TYPE_UNKNOWN_LABEL) . $numericValue;
     }

@@ -144,9 +144,10 @@ class Fourd implements IHelper
         $columnsList = array();
         foreach ($resultModel as $column) {
             $type4d = $column['data_type'];
-            $type4dLabel = \Pimvc\Db\Pdo\Types::getLabel($type4d);
-            $typePdo = \Pimvc\Db\Pdo\Types::getPdo($type4d);
-            $pdoLabel = \Pimvc\Db\Pdo\Types::getPdoLabel($typePdo);
+            $oldtype4d = $column['old_data_type'];
+            $type4dLabel = \Pimvc\Tools\Db\Fourd\Types::getLabel($type4d);
+            $typePdo = \Pimvc\Tools\Db\Fourd\Types::getPdo($type4d);
+            $pdoLabel = \Pimvc\Tools\Db\Fourd\Types::getPdoLabel($typePdo);
             $columnsData[] = array(
                 $column[self::PARAM_COLUMN_ID]
                 , strtolower($column[self::PARAM_COLUMN_NAME])
@@ -157,6 +158,7 @@ class Fourd implements IHelper
             $columnsList[] = array(
                 self::PARAM_NAME => $column[self::PARAM_COLUMN_NAME]
                 , 't4d' => $type4d
+                , 'ot4d' => $oldtype4d
                 , self::PARAM_TYPE => $pdoLabel
                 , self::PARAM_LENGTH => $column['data_length']
             );

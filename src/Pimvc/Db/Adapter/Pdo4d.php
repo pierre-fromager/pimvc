@@ -19,7 +19,7 @@ class Pdo4d implements IAdapter
     const PREFIX_4D = '4D:';
     const PORT_PREFIX = ';port=';
     const CHARSET_PREFIX = ';charset=';
-    const DEFAULT_CHARSET = 'UTF-16LE';
+    const DEFAULT_CHARSET = 'UTF-16-LE';
 
     protected static $dsn = null;
     protected static $params = null;
@@ -56,7 +56,8 @@ class Pdo4d implements IAdapter
         $charset = self::CHARSET_PREFIX . self::DEFAULT_CHARSET;
         self::$dsn = self::PREFIX_4D
             . self::HOST_PREFIX . self::$params[self::_HOST] . ''
-            . $port . $dbname . $charset;
+            . $port . $dbname; // . $charset;
+        //echo self::$dsn;die;
     }
 
     /**
