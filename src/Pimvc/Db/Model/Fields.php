@@ -113,14 +113,28 @@ class Fields implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @return array
      */
-    public function getIndexes(): array
+    public function getIndexes($asName = false): array
     {
         $datas = [];
         for ($c = 0; $c < count($this->container); $c++) {
-            $isIndex = $this->container[$c]->getIsKey();
-            if ($isIndex) {
-                $datas[] = $this->container[$c]->toArray();
+            if ($this->container[$c]->getIsKey()) {
+                $datas[] = ($asName) ? $this->container[$c]->getName() : $this->container[$c]->toArray();
             }
+        }
+        return $datas;
+    }
+
+    /**
+     * getPdos
+     *
+     * @return array
+     */
+    public function getPdos(): array
+    {
+        $datas = [];
+        for ($c = 0; $c < count($this->container); $c++) {
+            $name = $this->container[$c]->getName();
+            $datas[$name] = $this->container[$c]->getPdoType();
         }
         return $datas;
     }
