@@ -211,7 +211,7 @@ class App implements Interfaces\App
     /**
      * getInstance
      *
-     * @return type
+     * @return \Pimvc\App
      * @throws \Exception
      */
     public static function getInstance()

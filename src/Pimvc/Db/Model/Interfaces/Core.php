@@ -17,6 +17,7 @@ interface Core
     const MODEL_ADAPTER_SQLITE = 'Pdosqlite';
     const MODEL_ADAPTER_4D = 'Pdo4d';
     const MODEL_ADAPTER_MYSQL = 'Pdomysql';
+    const MODEL_ADAPTER_MONGO = 'Mongo';
     const MODEL_ADAPTER_DEFAULT = self::MODEL_ADAPTER_MYSQL;
     const MODEL_FROM = ' FROM ';
     const MODEL_SELECT_COUNT = 'SELECT COUNT';
