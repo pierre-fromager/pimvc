@@ -26,8 +26,10 @@
  * ./configure --with-php-config /opt/php-7.3/bin/php-config
  * as sudo make ;make install
  * Edit your php.ini adding extension=mongodb.so
+ * MongoDB PHP Library
  * Once done tested ok, add the client in your project with composer :
  * composer require mongodb/mongodb
+ * @see https://docs.mongodb.com/php-library/current/
  */
 
 namespace Pimvc\Db\Adapter;
