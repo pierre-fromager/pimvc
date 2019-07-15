@@ -33,7 +33,8 @@ class File implements CacheInterface
      */
     private function __construct($name, $ttl = self::CACHE_ADAPTER_TTL)
     {
-        $this->setPath(APP_PATH . self::DEFAULT_CACHE_PATH);
+        $appPath = \Pimvc\App::getInstance()->getPath();
+        $this->setPath($appPath . self::DEFAULT_CACHE_PATH);
         $this->setName($name);
         self::$_ttl = $ttl;
     }
@@ -52,7 +53,6 @@ class File implements CacheInterface
      */
     public static function getInstance($name, $ttl = self::CACHE_ADAPTER_TTL)
     {
-        self::$_path = APP_PATH . self::DEFAULT_CACHE_PATH;
         self::$_name = $name;
         self::$_ttl = $ttl;
         if (self::DEBUG) {
@@ -102,7 +102,7 @@ class File implements CacheInterface
      *
      * @return string
      */
-    public function get()
+    public function get($key = '')
     {
         if (self::DEBUG) {
             $this->logger->logDebug(__METHOD__, basename($this->getFilename()));
@@ -125,11 +125,14 @@ class File implements CacheInterface
      * set
      *
      */
-    public function set($value)
+    public function set($key = '', $value = '')
     {
         $filename = $this->getFilename();
         if (self::DEBUG) {
             $this->logger->logDebug(__METHOD__, basename($filename));
+        }
+        if ($key && !$value) {
+            $value = $key;
         }
         $serializedCache = serialize($value);
         if (!$this->exist(self::$_path)) {
